@@ -31,8 +31,9 @@ def launchSubProcess(systemString):
     
     return(exitStatus,outputAsString,errorsAsString)
 
-def getCarrierInfo(cdrdaoExe, cdDriveLetter, cdDevicePath):
+def getCarrierInfo_cdrdao(cdrdaoExe, cdDriveLetter, cdDevicePath):
     # Determine carrier type and number of sessions on carrier
+    # Obsolete, now superseded by cd-info based function below!
     
     cdrdaoArgs = "disk-info " + cdDevicePath
     cdrdaoStatus,cdrdaoOut,cdrdaoErrors = launchSubProcess(cdrdaoExe + " " + cdrdaoArgs)
@@ -67,12 +68,38 @@ def getCarrierInfo(cdrdaoExe, cdDriveLetter, cdDevicePath):
     
     return(carrierInfo)
 
+def getCarrierInfo(cdInfoExe, cdDriveLetter):
+    # Determine carrier type and number of sessions on carrier
+    
+    # cd-info -C d: --no-header --no-device-info --no-cddb --dvd
+    
+    cdInfoArgs = "-C " + cdDriveLetter + " --no-header --no-device-info --no-cddb --dvd"
+    status, stdout, stderr = launchSubProcess(cdInfoExe + " " + cdInfoArgs)
+    print("EXIT STATUS: " + str(status))
+    print(stdout)
+    
+    carrierInfo = {}
+    
+    """
+    try:
+        # Parse cdrdao output and store key-value pairs as a dictionary
+        for line in cdrdaoOut.splitlines():
+            thisRecord = line.split(":")
+            key = thisRecord[0].strip()
+            value = thisRecord[1].strip()
+            carrierInfo[key] = value
+    except:
+        pass
+    """
+    return(carrierInfo)   
+    
     
 def main():
     # Configuration (move to config file later)
     cdDriveLetter = "D:"
     cdDevicePath = "0,0,0"
     cdrdaoExe = "C:/cdrdao/cdrdao.exe"
+    cdInfoExe = "C:/cdio/cd-info.exe"
     prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
     loadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe" 
     unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
@@ -92,7 +119,8 @@ def main():
         err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
     
     # Get carrier info
-    carrierInfo = getCarrierInfo(cdrdaoExe, cdDriveLetter, cdDevicePath)
+    #carrierInfo = getCarrierInfo(cdrdaoExe, cdDriveLetter, cdDevicePath)
+    carrierInfo = getCarrierInfo(cdInfoExe, cdDriveLetter)
     print(carrierInfo)
     
 main()
