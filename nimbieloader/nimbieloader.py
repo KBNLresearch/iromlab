@@ -31,29 +31,71 @@ def launchSubProcess(systemString):
     
     return(exitStatus,outputAsString,errorsAsString)
 
+def index_startswith_substring(the_list, substring):
+    for i, s in enumerate(the_list):
+        if s.startswith(substring):
+              return i
+    return -1
+    
 def getCarrierInfo(cdInfoExe, cdDriveLetter):
     # Determine carrier type and number of sessions on carrier
-    
+    # cd-info command line:
     # cd-info -C d: --no-header --no-device-info --no-cddb --dvd
     
     cdInfoArgs = "-C " + cdDriveLetter + " --no-header --no-device-info --no-disc-mode --no-cddb --dvd"
     status, stdout, stderr = launchSubProcess(cdInfoExe + " " + cdInfoArgs)
-    print("EXIT STATUS: " + str(status))
-    print(stdout)
+
+    # Output lines to list
+    outAsList = stdout.splitlines()
+   
+    # Set up dictionary and list for storing track list and analysis report
+    trackList = {}
+    analysisReport = []
     
+    # Locate track list and analysis report in cd-info output
+    startIndexTrackList = index_startswith_substring(outAsList, "CD-ROM Track List")
+    startIndexAnalysisReport = index_startswith_substring(outAsList, "CD Analysis Report")
+
+    # Parse track list and store interesting bits in dictionary
+    for i in range(startIndexTrackList + 2, startIndexAnalysisReport - 1, 1):
+        thisTrack = outAsList[i]
+        if thisTrack.startswith("++") == False:
+            thisTrack = thisTrack.split(": ")
+            trackNumber = int(thisTrack[0].strip())
+            trackDetails = thisTrack[1].split()
+            trackType = trackDetails[2]
+            trackList[trackNumber] = trackType
+        
+    # Flags for presence of audio / data tracks
+    containsAudio = "audio" in trackList.values()
+    containsData = "data" in trackList.values()
+        
+    # Parse analysis report
+    for i in range(startIndexAnalysisReport + 1, len(outAsList), 1):
+        thisLine = outAsList[i]
+        if thisLine.startswith("++") == False:
+            analysisReport.append(thisLine)
+    
+    # Flags for CD/Extra / multisession / mixed-mode
+    # Note that single-session mixed mode CDs are erroneously reported as
+    # multisession by libcdio. See: http://savannah.gnu.org/bugs/?49090#comment1
+
+    cdExtra = "CD-Plus/Extra" in analysisReport
+    multiSession = index_startswith_substring(analysisReport, "session #") != -1
+    mixedMode = index_startswith_substring(analysisReport, "mixed mode CD") != -1
+
+    # Main results to dictionary
     carrierInfo = {}
+   
+    carrierInfo["cdExtra"] = cdExtra
+    carrierInfo["multiSession"] = multiSession
+    carrierInfo["mixedMode"] = mixedMode
+    carrierInfo["containsAudio"] = containsAudio
+    carrierInfo["containsData"] = containsData
+    carrierInfo["cd-info-status"] = status
+
+    #print(trackList)
     
-    """
-    try:
-        # Parse cdrdao output and store key-value pairs as a dictionary
-        for line in cdrdaoOut.splitlines():
-            thisRecord = line.split(":")
-            key = thisRecord[0].strip()
-            value = thisRecord[1].strip()
-            carrierInfo[key] = value
-    except:
-        pass
-    """
     return(carrierInfo)   
     
     
