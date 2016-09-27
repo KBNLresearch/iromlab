@@ -86,7 +86,6 @@ def getCarrierInfo(cdInfoExe, cdDriveLetter):
 
     # Main results to dictionary
     carrierInfo = {}
-   
     carrierInfo["cdExtra"] = cdExtra
     carrierInfo["multiSession"] = multiSession
     carrierInfo["mixedMode"] = mixedMode
@@ -98,19 +97,21 @@ def getCarrierInfo(cdInfoExe, cdDriveLetter):
     
     return(carrierInfo)   
     
-    
 def main():
     # Configuration (move to config file later)
-    cdDriveLetter = "D:"
-    cdDevicePath = "0,0,0"
-    cdrdaoExe = "C:/cdrdao/cdrdao.exe"
+    cdDriveLetter = "I:"
     cdInfoExe = "C:/cdio/cd-info.exe"
     prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
     loadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe" 
     unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
     rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
     isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
-
+    cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
+    shnToolExe = "C:/shntool/shntool.exe"
+    
+    # Following args to be given from command line
+    batchFolder = "E:/nimbietest/"
+    
     # Setup output terminal
     global out
     global err
@@ -123,9 +124,27 @@ def main():
         out = codecs.getwriter("UTF-8")(sys.stdout.buffer)
         err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
     
-    # Get carrier info
-    #carrierInfo = getCarrierInfo(cdrdaoExe, cdDriveLetter, cdDevicePath)
-    carrierInfo = getCarrierInfo(cdInfoExe, cdDriveLetter)
-    print(carrierInfo)
+    # Initialise batch
+    prebatchArgs = "--drive=" + cdDriveLetter + " --logfile=" + batchFolder + "prebatchLog.txt" +  " --passerrorsback=" + batchFolder + "prebatchErr.txt"
+    prebatchStatus, prebatchOut, prebatchErr = launchSubProcess(prebatchExe + " " + prebatchArgs)
+    
+    discIndex = 0
+    
+    while True:
+       # Load a new disc
+       # Load.exe" --drive="I" --rejectifnodisc  --logfile="C:\Users\jkn010\AppData\Local\Temp\dBBC316.tmp"  --passerrorsback="C:\Users\jkn010\AppData\Local\Temp\dBBC317.tmp"
+       loadArgs = "--drive=" + cdDriveLetter + " --rejectifnodisc  --logfile=" + batchFolder + "loadLog.txt" +  " --passerrorsback=" + batchFolder + "loadErr.txt" 
+       loadStatus, loadOut, loadErr = launchSubProcess(loadExe + " " + loadArgs)
+       
+       # Detect disc type
+       carrierInfo = getCarrierInfo(cdInfoExe, cdDriveLetter)
+       print(carrierInfo)
+       
+       # Unload the disc
+       # Unload.exe" --drive="I" --logfile="C:\Users\jkn010\AppData\Local\Temp\dBBC316.tmp"  --passerrorsback="C:\Users\jkn010\AppData\Local\Temp\dBBC317.tmp"
+       unloadArgs = "--drive=" + cdDriveLetter + " --logfile=" + batchFolder + "unloadLog.txt" +  " --passerrorsback=" + batchFolder + "unloadErr.txt" 
+       unloadStatus, unloadOut, unloadErr = launchSubProcess(unloadExe + " " + unloadArgs)
+       
+       discIndex += 1
     
 main()
