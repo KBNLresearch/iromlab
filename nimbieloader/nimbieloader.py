@@ -31,49 +31,12 @@ def launchSubProcess(systemString):
     
     return(exitStatus,outputAsString,errorsAsString)
 
-def getCarrierInfo_cdrdao(cdrdaoExe, cdDriveLetter, cdDevicePath):
-    # Determine carrier type and number of sessions on carrier
-    # Obsolete, now superseded by cd-info based function below!
-    
-    cdrdaoArgs = "disk-info " + cdDevicePath
-    cdrdaoStatus,cdrdaoOut,cdrdaoErrors = launchSubProcess(cdrdaoExe + " " + cdrdaoArgs)
-    print("EXIT STATUS: " + str(cdrdaoStatus))
-    
-    carrierInfo = {}
-    
-    try:
-        # Parse cdrdao output and store key-value pairs as a dictionary
-        for line in cdrdaoOut.splitlines():
-            thisRecord = line.split(":")
-            key = thisRecord[0].strip()
-            value = thisRecord[1].strip()
-            carrierInfo[key] = value
-    except:
-        pass
-
-    # Cdrdao output doesn't distiguish between audio and data CDs. Workaround:
-    # look for .cda stub files (https://en.wikipedia.org/wiki/.cda_file). 
-    # This only works under Windows!
-    fileNames = [i for i in glob.glob(cdDriveLetter + "/*")]
-    fileNamesCDA = [i for i in fileNames if i.endswith(".cda")]
-
-    if len(fileNames) > 0 and len(fileNames) == len(fileNamesCDA):
-        # Looks like an audio CD
-        foundCdaStubFiles = True
-    else:
-        # Might still contain audio if this is a multisession CD!
-        foundCdaStubFiles = False
-    
-    carrierInfo["foundCdaStubFiles"] = foundCdaStubFiles
-    
-    return(carrierInfo)
-
 def getCarrierInfo(cdInfoExe, cdDriveLetter):
     # Determine carrier type and number of sessions on carrier
     
     # cd-info -C d: --no-header --no-device-info --no-cddb --dvd
     
-    cdInfoArgs = "-C " + cdDriveLetter + " --no-header --no-device-info --no-cddb --dvd"
+    cdInfoArgs = "-C " + cdDriveLetter + " --no-header --no-device-info --no-disc-mode --no-cddb --dvd"
     status, stdout, stderr = launchSubProcess(cdInfoExe + " " + cdInfoArgs)
     print("EXIT STATUS: " + str(status))
     print(stdout)
