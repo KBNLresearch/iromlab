@@ -224,7 +224,36 @@ def unload(unloadExe):
     dictOut["errors"] = errors
     
     return(dictOut)
-        
+
+def reject(rejectExe):
+    logFile = ''.join([tempDir,randomString(12),".log"])
+    errorFile = ''.join([tempDir,randomString(12),".err"])
+    
+    args = [rejectExe]
+    args.append("--drive=" + cdDriveLetter)
+    args.append("--logfile=" + logFile)
+    args.append("--passerrorsback=" + errorFile)
+    
+    status, out, err = launchSubProcess(args)
+    fLog = open(logFile, 'r')
+    fErr = open(errorFile, 'r')
+    log = fLog.read()
+    errors = fErr.read()
+    fLog.close()
+    fErr.close()
+    os.remove(logFile)
+    os.remove(errorFile)
+    
+    # All results to dictionary
+    dictOut = {}
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+    dictOut["log"] = log
+    dictOut["errors"] = errors
+    
+    return(dictOut)
+    
 def main():
 
     # Configuration (move to config file later)
@@ -268,9 +297,9 @@ def main():
     while driveIsReady == False:
         # TODO: define timeout value to prevent infinite loop in case of unreadable disc
         time.sleep(2)
+        print("Sleeping ..")
         driveIsReady = testDrive(cdDriveLetter + ":")
 
-    #time.sleep(5)
     # Get disc info
     carrierInfo = getCarrierInfo(cdInfoExe)
     
@@ -278,13 +307,13 @@ def main():
     resultUnload = unload(unloadExe)
       
     print("====== Pre-batch =====================")
-    print(resultPrebatch)
+    #print(resultPrebatch)
     print("====== Load =====================")
-    print(resultLoad)
+    #print(resultLoad)
     print("====== carrierinfo =====================")
     print(carrierInfo)
     print("====== Unload =====================")
-    print(resultUnload)
+    #print(resultUnload)
 
     """
     discIndex = 0
