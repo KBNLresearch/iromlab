@@ -135,9 +135,10 @@ def getCarrierInfo(cdInfoExe):
     dictOut["stderr"] = err
     
     return(dictOut)   
-
-    
+  
 def prebatch(prebatchExe):
+    # TODO: dBPoweramp logs use some 16-bit encoding, with 2nd byte NULL.
+    # Investigate what this is exactly and how to handle!
     logFile = ''.join([tempDir,randomString(12),".log"])
     errorFile = ''.join([tempDir,randomString(12),".err"])
     
@@ -297,7 +298,6 @@ def main():
     while driveIsReady == False:
         # TODO: define timeout value to prevent infinite loop in case of unreadable disc
         time.sleep(2)
-        print("Sleeping ..")
         driveIsReady = testDrive(cdDriveLetter + ":")
 
     # Get disc info
