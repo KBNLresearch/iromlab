@@ -125,6 +125,11 @@ def reject():
     fErr = open(errorFile, 'r')
     log = fLog.read()
     errors = fErr.read()
+    
+    # Convert log and errors from little-Endian UTF-16 to UTF-8
+    logUTF8 = log.decode("utf-16le").encode("utf-8")
+    errorsUTF8 = errors.decode("utf-16le").encode("utf-8")
+    
     fLog.close()
     fErr.close()
     os.remove(logFile)
@@ -135,7 +140,7 @@ def reject():
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
-    dictOut["log"] = log
-    dictOut["errors"] = errors
+    dictOut["log"] = logUTF8
+    dictOut["errors"] = errorsUTF8
     
     return(dictOut)

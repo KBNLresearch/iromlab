@@ -11,6 +11,20 @@ import shared
 import drivers
 import win32api
 
+"""
+Script for automated imaging / ripping of optical media using a Nimbie disc robot.
+
+Features:
+
+* Automated load / unload  / reject using dBpoweramp driver binaries
+* Disc type detection using libcdio's cd-info tool
+* Data CDs and DVDs are imaged to ISO file using IsoBuster
+* Audio CDs are ripped to WAV using CueRipper (to be replaced with dBpoweramp later)  
+
+Author: Johan van der Knijff
+Research department,  KB / National Library of the Netherlands
+
+"""
 
 def testDrive(letter):
     """
@@ -159,47 +173,41 @@ def main():
     
     print("--- Entering  driveIsReady loop")
     
-    # Exit after 10 s
-    timeout = time.time() + 10
+    # Reject if no CD is found after 20 s
+    timeout = time.time() + 20
     while driveIsReady == False and time.time() < timeout:
         # TODO: define timeout value to prevent infinite loop in case of unreadable disc
         time.sleep(2)
         driveIsReady = testDrive(cdDriveLetter + ":")
-
-    # Get disc info
-    carrierInfo = getCarrierInfo()
     
-    # Unload disc
-    resultUnload = drivers.unload()
+    if driveIsReady == False:
+        print("--- Entering  reject")
+        resultReject = drivers.reject()
+    else:
+        print("--- Entering  disc-info")
+        # Get disc info
+        carrierInfo = getCarrierInfo()
+        
+        if carrierInfo["containsAudio"] == True:
+            # Rip audio to WAV
+            pass
+        if carrierInfo["containsData"] == True:
+            # Create ISO file
+            pass
+            
+        print("--- Entering  unload")
+        # Unload disc
+        resultUnload = drivers.unload()
       
-    print("====== Pre-batch =====================")
+    #print("====== Pre-batch =====================")
     #print(resultPrebatch)
-    print("====== Load =====================")
+    #print("====== Load =====================")
     #print(resultLoad)
-    print("====== carrierinfo =====================")
+    #print("====== carrierinfo =====================")
     print(carrierInfo)
-    print("====== Unload =====================")
+    #print("====== Unload =====================")
     #print(resultUnload)
 
-    """
-    discIndex = 0
-    
-    while True:
-       # Load a new disc
-       # Load.exe" --drive="I" --rejectifnodisc  --logfile="C:\Users\jkn010\AppData\Local\Temp\dBBC316.tmp"  --passerrorsback="C:\Users\jkn010\AppData\Local\Temp\dBBC317.tmp"
-       loadArgs = "--drive=" + cdDriveLetter + " --rejectifnodisc  --logfile=" + batchFolder + "loadLog.txt" +  " --passerrorsback=" + batchFolder + "loadErr.txt" 
-       loadStatus, loadOut, loadErr = launchSubProcess(loadExe + " " + loadArgs)
-       
-       # Detect disc type
-       carrierInfo = getCarrierInfo(cdInfoExe, cdDriveLetter)
-       print(carrierInfo)
-       
-       # Unload the disc
-       # Unload.exe" --drive="I" --logfile="C:\Users\jkn010\AppData\Local\Temp\dBBC316.tmp"  --passerrorsback="C:\Users\jkn010\AppData\Local\Temp\dBBC317.tmp"
-       unloadArgs = "--drive=" + cdDriveLetter + " --logfile=" + batchFolder + "unloadLog.txt" +  " --passerrorsback=" + batchFolder + "unloadErr.txt" 
-       unloadStatus, unloadOut, unloadErr = launchSubProcess(unloadExe + " " + unloadArgs)
-       
-       discIndex += 1
-       """
+
     
 main()
