@@ -6,43 +6,11 @@ import imp
 import glob
 import codecs
 import xml.etree.ElementTree as ETree
-import sys
-import subprocess as sub
-import string
-from random import choice
+import config
+import shared
+import drivers
 import win32api
 
-def launchSubProcess(args):
-    # Launch subprocess and return exit code, stdout and stderr
-    try:
-        # Execute command line; stdout + stderr redirected to objects
-        # 'output' and 'errors'.
-        p = sub.Popen(args,stdout=sub.PIPE,stderr=sub.PIPE)
-        output, errors = p.communicate()
-                
-        # Decode to UTF8
-        outputAsString=output.decode('utf-8')
-        errorsAsString=errors.decode('utf-8')
-                
-        exitStatus=p.returncode
-  
-    except Exception:
-        # I don't even want to to start thinking how one might end up here ...
-        exitStatus=-99
-        outputAsString=""
-        errorsAsString=""
-    
-    return(exitStatus,outputAsString,errorsAsString)
-
-def randomString(length):
-    # Generate text string with random characters (a-z;A-Z;0-9)
-    return(''.join(choice(string.ascii_letters + string.digits) for i in range(length)))
-        
-def index_startswith_substring(the_list, substring):
-    for i, s in enumerate(the_list):
-        if s.startswith(substring):
-              return i
-    return -1
 
 def testDrive(letter):
     """
@@ -67,21 +35,21 @@ def testDrive(letter):
     win32api.SetErrorMode(oldError)
     return(returnValue)
     
-def getCarrierInfo(cdInfoExe):
+def getCarrierInfo():
     # Determine carrier type and number of sessions on carrier
     # cd-info command line:
     # cd-info -C d: --no-header --no-device-info --no-cddb --dvd
     
-    args = [cdInfoExe]
+    args = [config.cdInfoExe]
     args.append( "-C")
-    args.append("".join([cdDriveLetter, ":"]))
+    args.append("".join([config.cdDriveLetter, ":"]))
     args.append("--no-header")
     args.append("--no-device-info")
     args.append("--no-disc-mode")
     args.append("--no-cddb")
     args.append("--dvd")
     
-    status, out, err = launchSubProcess(args)
+    status, out, err = shared.launchSubProcess(args)
 
     # Output lines to list
     outAsList = out.splitlines()
@@ -91,8 +59,8 @@ def getCarrierInfo(cdInfoExe):
     analysisReport = []
     
     # Locate track list and analysis report in cd-info output
-    startIndexTrackList = index_startswith_substring(outAsList, "CD-ROM Track List")
-    startIndexAnalysisReport = index_startswith_substring(outAsList, "CD Analysis Report")
+    startIndexTrackList = shared.index_startswith_substring(outAsList, "CD-ROM Track List")
+    startIndexAnalysisReport = shared.index_startswith_substring(outAsList, "CD Analysis Report")
 
     # Parse track list and store interesting bits in dictionary
     for i in range(startIndexTrackList + 2, startIndexAnalysisReport - 1, 1):
@@ -118,9 +86,9 @@ def getCarrierInfo(cdInfoExe):
     # Note that single-session mixed mode CDs are erroneously reported as
     # multisession by libcdio. See: http://savannah.gnu.org/bugs/?49090#comment1
 
-    cdExtra = index_startswith_substring(analysisReport, "CD-Plus/Extra") != -1
-    multiSession = index_startswith_substring(analysisReport, "session #") != -1
-    mixedMode = index_startswith_substring(analysisReport, "mixed mode CD") != -1
+    cdExtra = shared.index_startswith_substring(analysisReport, "CD-Plus/Extra") != -1
+    multiSession = shared.index_startswith_substring(analysisReport, "session #") != -1
+    mixedMode = shared.index_startswith_substring(analysisReport, "mixed mode CD") != -1
 
     # Main results to dictionary
     dictOut = {}
@@ -135,131 +103,10 @@ def getCarrierInfo(cdInfoExe):
     dictOut["stderr"] = err
     
     return(dictOut)   
-  
-def prebatch(prebatchExe):
-    # TODO: dBPoweramp logs use some 16-bit encoding, with 2nd byte NULL.
-    # Investigate what this is exactly and how to handle!
-    logFile = ''.join([tempDir,randomString(12),".log"])
-    errorFile = ''.join([tempDir,randomString(12),".err"])
-    
-    args = [prebatchExe]
-    args.append("--drive=" + cdDriveLetter)
-    args.append("--logfile=" + logFile)
-    args.append("--passerrorsback=" + errorFile)
-        
-    status, out, err = launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    fLog.close()
-    fErr.close()
-    os.remove(logFile)
-    os.remove(errorFile)
- 
-    # All results to dictionary
-    dictOut = {}
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-    dictOut["errors"] = errors
-    
-    return(dictOut)
-    
-def load(loadExe):
-    logFile = ''.join([tempDir,randomString(12),".log"])
-    errorFile = ''.join([tempDir,randomString(12),".err"])
-    
-    args = [loadExe]
-    args.append("--drive=" + cdDriveLetter)
-    args.append("--rejectifnodisc")
-    args.append("--logfile=" + logFile)
-    args.append("--passerrorsback=" + errorFile)
-    
-    status, out, err = launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    fLog.close()
-    fErr.close()
-    os.remove(logFile)
-    os.remove(errorFile)
-    
-    # All results to dictionary
-    dictOut = {}
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-    dictOut["errors"] = errors
-    
-    return(dictOut)
-
-def unload(unloadExe):
-    logFile = ''.join([tempDir,randomString(12),".log"])
-    errorFile = ''.join([tempDir,randomString(12),".err"])
-    
-    args = [unloadExe]
-    args.append("--drive=" + cdDriveLetter)
-    args.append("--logfile=" + logFile)
-    args.append("--passerrorsback=" + errorFile)
-    
-    status, out, err = launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    fLog.close()
-    fErr.close()
-    os.remove(logFile)
-    os.remove(errorFile)
-    
-    # All results to dictionary
-    dictOut = {}
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-    dictOut["errors"] = errors
-    
-    return(dictOut)
-
-def reject(rejectExe):
-    logFile = ''.join([tempDir,randomString(12),".log"])
-    errorFile = ''.join([tempDir,randomString(12),".err"])
-    
-    args = [rejectExe]
-    args.append("--drive=" + cdDriveLetter)
-    args.append("--logfile=" + logFile)
-    args.append("--passerrorsback=" + errorFile)
-    
-    status, out, err = launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    fLog.close()
-    fErr.close()
-    os.remove(logFile)
-    os.remove(errorFile)
-    
-    # All results to dictionary
-    dictOut = {}
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-    dictOut["errors"] = errors
-    
-    return(dictOut)
     
 def main():
 
     # Configuration (move to config file later)
-    global cdDriveLetter
-    global tempDir
     
     cdDriveLetter = "I"
     cdInfoExe = "C:/cdio/cd-info.exe"
@@ -274,6 +121,19 @@ def main():
     # Following args to be given from command line
     batchFolder = "E:/nimbietest/"
     
+    # Make configuration available to any module that imports 'config.py'
+    config.cdDriveLetter = cdDriveLetter
+    config.cdInfoExe = cdInfoExe
+    config.prebatchExe = prebatchExe
+    config.loadExe = loadExe
+    config.unloadExe = unloadExe
+    config.rejectExe = rejectExe
+    config.isoBusterExe = isoBusterExe
+    config.cueRipperExe = cueRipperExe
+    config.shnToolExe = shnToolExe
+    config.tempDir = tempDir
+    config.batchFolder = batchFolder
+        
     # Setup output terminal
     global out
     global err
@@ -287,24 +147,30 @@ def main():
         err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
     
     # Initialise batch
-    resultPrebatch = prebatch(prebatchExe)
-       
-    # Load disc
-    resultLoad = load(loadExe)
+    resultPrebatch = drivers.prebatch()
     
+    print("--- Starting load command")     
+    # Load disc
+    resultLoad = drivers.load()
+    
+    print(resultLoad)
     # Test if drive is ready for reading
     driveIsReady = False
     
-    while driveIsReady == False:
+    print("--- Entering  driveIsReady loop")
+    
+    # Exit after 10 s
+    timeout = time.time() + 10
+    while driveIsReady == False and time.time() < timeout:
         # TODO: define timeout value to prevent infinite loop in case of unreadable disc
         time.sleep(2)
         driveIsReady = testDrive(cdDriveLetter + ":")
 
     # Get disc info
-    carrierInfo = getCarrierInfo(cdInfoExe)
+    carrierInfo = getCarrierInfo()
     
     # Unload disc
-    resultUnload = unload(unloadExe)
+    resultUnload = drivers.unload()
       
     print("====== Pre-batch =====================")
     #print(resultPrebatch)
