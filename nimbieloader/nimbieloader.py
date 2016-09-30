@@ -117,6 +117,93 @@ def getCarrierInfo():
     dictOut["stderr"] = err
     
     return(dictOut)   
+
+def isoBusterExtract(writeDirectory, session):
+    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /l:"E:\nimbieTest\ib.log"
+    
+    isoFile = os.path.join(writeDirectory, "disc.iso")
+    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
+
+    args = [config.isoBusterExe]
+    args.append("".join(["/d:", config.cdDriveLetter, ":"]))
+    args.append("".join(["/ei:", isoFile]))
+    args.append("/et:u")
+    args.append("/ep:oea")
+    args.append("/ep:npc")
+    args.append("/c")
+    args.append("/m")
+    args.append("/nosplash")
+    args.append("".join(["/l:", logFile]))
+
+    status, out, err = shared.launchSubProcess(args)
+
+    fLog = open(logFile, 'r')
+    log = fLog.read()
+
+    fLog.close()
+    os.remove(logFile)
+
+    # All results to dictionary
+    dictOut = {}
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+    dictOut["log"] = log
+        
+    return(dictOut)    
+
+def cueRipperRip(writeDirectory):
+    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /l:"E:\nimbieTest\ib.log"
+    
+    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
+
+    args = [config.cueRipperExe]
+    args.append("-D")
+    args.append("".join([config.cdDriveLetter, ":"]))
+
+    # Not possible to define output path in Cueripper, so we have to temporarily
+    # go to the write directory
+    with shared.cd(writeDirectory):
+        status, out, err = shared.launchSubProcess(args)
+
+    # All results to dictionary
+    dictOut = {}
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+        
+    return(dictOut)  
+
+def paranoiaRip(writeDirectory):
+
+    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
+
+    args = [config.cdParanoiaExe]
+    args.append("-d")
+    args.append("".join([config.cdDriveLetter, ":"]))
+    args.append("-B")
+    args.append("-l")
+    args.append(logFile)
+
+    # Not possible to define output path, so we have to temporarily
+    # go to the write directory
+    with shared.cd(writeDirectory):
+        status, out, err = shared.launchSubProcess(args)
+
+    fLog = open(logFile, 'r')
+    log = fLog.read()
+
+    fLog.close()
+    os.remove(logFile)
+        
+    # All results to dictionary
+    dictOut = {}
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+    dictOut["log"] = log
+    
+    return(dictOut)  
     
 def main():
 
@@ -130,6 +217,7 @@ def main():
     rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
     isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
     cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
+    cdParanoiaExe = "C:/cdio/cd-paranoia.exe"
     shnToolExe = "C:/shntool/shntool.exe"
     tempDir = "C:/Temp/"
     # Following args to be given from command line
@@ -144,6 +232,7 @@ def main():
     config.rejectExe = rejectExe
     config.isoBusterExe = isoBusterExe
     config.cueRipperExe = cueRipperExe
+    config.cdParanoiaExe = cdParanoiaExe
     config.shnToolExe = shnToolExe
     config.tempDir = tempDir
     config.batchFolder = batchFolder
@@ -163,6 +252,15 @@ def main():
     # Initialise batch
     resultPrebatch = drivers.prebatch()
     
+    # Internal identifier for this disc
+    id = "002"
+    
+    # Output folder for this disc
+    dirOut = os.path.join(config.batchFolder, id)
+    
+    if not os.path.exists(dirOut):
+        os.makedirs(dirOut)
+        
     print("--- Starting load command")     
     # Load disc
     resultLoad = drivers.load()
@@ -187,27 +285,25 @@ def main():
         print("--- Entering  disc-info")
         # Get disc info
         carrierInfo = getCarrierInfo()
+        print(carrierInfo)
         
         if carrierInfo["containsAudio"] == True:
+            print("--- Starting audio ripping")
             # Rip audio to WAV
-            pass
+            # TODO:
+            # - CueRipper fails on Nimbie drive
+            # - cdparanoia cannot extract audio from enhanced CDs
+            # - dBpoweramp doesn't have command line interface
+            # - cdrdao might work but produces bin/ toc files
+            resultParanoia = paranoiaRip(dirOut)
+            print(resultParanoia)
         if carrierInfo["containsData"] == True:
             # Create ISO file
-            pass
+            resultIsoBuster = isoBusterExtract(dirOut, 1)
+            print(resultIsoBuster)
             
         print("--- Entering  unload")
         # Unload disc
         resultUnload = drivers.unload()
-      
-    #print("====== Pre-batch =====================")
-    #print(resultPrebatch)
-    #print("====== Load =====================")
-    #print(resultLoad)
-    #print("====== carrierinfo =====================")
-    print(carrierInfo)
-    #print("====== Unload =====================")
-    #print(resultUnload)
-
-
     
 main()
