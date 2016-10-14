@@ -1,6 +1,7 @@
 import sys
 
 cdDriveLetter = ""
+cdDeviceName = ""
 cdInfoExe = ""
 prebatchExe = ""
 loadExe = ""

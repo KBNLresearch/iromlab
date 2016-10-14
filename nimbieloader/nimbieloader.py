@@ -10,6 +10,7 @@ import config
 import shared
 import drivers
 import win32api
+import pprint
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -119,7 +120,7 @@ def getCarrierInfo():
     return(dictOut)   
 
 def isoBusterExtract(writeDirectory, session):
-    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /l:"E:\nimbieTest\ib.log"
+    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /s:1 /l:"E:\nimbieTest\ib.log"
     
     isoFile = os.path.join(writeDirectory, "disc.iso")
     logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
@@ -133,6 +134,7 @@ def isoBusterExtract(writeDirectory, session):
     args.append("/c")
     args.append("/m")
     args.append("/nosplash")
+    args.append("".join(["/s:",str(session)]))
     args.append("".join(["/l:", logFile]))
 
     status, out, err = shared.launchSubProcess(args)
@@ -214,7 +216,8 @@ def cdrdaoExtract(writeDirectory, session):
     args = [config.cdrdaoExe]
     args.append("read-cd")
     args.append("--read-raw")
-    args.append("".join([config.cdDriveLetter, ":"]))
+    args.append("--device")
+    args.append(config.cdDeviceName)
     args.append("--datafile")
     args.append(binFile)
     args.append("--driver")
@@ -238,9 +241,13 @@ def cdrdaoExtract(writeDirectory, session):
     
 def main():
 
+    # For debugging only
+    pp = pprint.PrettyPrinter(indent=4)
+
     # Configuration (move to config file later)
     
     cdDriveLetter = "I"
+    cdDeviceName = "5,0,0" # only needed by cdrdao, remove later! 
     cdInfoExe = "C:/cdio/cd-info.exe"
     prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
     loadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe" 
@@ -257,6 +264,7 @@ def main():
     
     # Make configuration available to any module that imports 'config.py'
     config.cdDriveLetter = cdDriveLetter
+    config.cdDeviceName = cdDeviceName
     config.cdInfoExe = cdInfoExe
     config.prebatchExe = prebatchExe
     config.loadExe = loadExe
@@ -298,7 +306,7 @@ def main():
     # Load disc
     resultLoad = drivers.load()
     
-    print(resultLoad)
+    pp.pprint(resultLoad)
     # Test if drive is ready for reading
     driveIsReady = False
     
@@ -318,7 +326,7 @@ def main():
         print("--- Entering  disc-info")
         # Get disc info
         carrierInfo = getCarrierInfo()
-        print(carrierInfo)
+        pp.pprint(carrierInfo)
         
         # Assumptions in below workflow:
         # 1. Audio tracks are always part of 1st session
@@ -332,11 +340,11 @@ def main():
             # - cdparanoia 10.2 (Windows) cannot extract audio from enhanced CDs
             # - cdrdao works, but only only produces bin/ toc files
             resultCdrdao = cdrdaoExtract(dirOut, 1)
-            print(resultCdrdao)
+            pp.pprint(resultCdrdao)
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 # Create ISO file from data on 2nd session
                 resultIsoBuster = isoBusterExtract(dirOut, 2)
-                print(resultIsoBuster)
+                pp.pprint(resultIsoBuster)
             
         print("--- Entering  unload")
         # Unload disc
