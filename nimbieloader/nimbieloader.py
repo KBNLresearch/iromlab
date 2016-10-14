@@ -204,6 +204,44 @@ def paranoiaRip(writeDirectory):
     dictOut["log"] = log
     
     return(dictOut)  
+
+def cdrdaoExtract(writeDirectory, session):
+    # Extracts selected session to a single bin/toc file
+    
+    binFile = os.path.join(writeDirectory, "image.bin")
+    tocFile = os.path.join(writeDirectory, "image.toc")
+
+    args = [config.cdrdaoExe]
+    args.append("read-cd")
+    args.append("--read-raw")
+    args.append("".join([config.cdDriveLetter, ":"]))
+    args.append("--datafile")
+    args.append(binFile)
+    args.append("--driver")
+    args.append("generic-mmc-raw")
+    args.append("--session")
+    args.append(str(session))
+    args.append(tocFile)
+
+    # Not possible to define output path, so we have to temporarily
+    # go to the write directory
+    with shared.cd(writeDirectory):
+        status, out, err = shared.launchSubProcess(args)
+
+    fLog = open(logFile, 'r')
+    log = fLog.read()
+
+    fLog.close()
+    os.remove(logFile)
+        
+    # All results to dictionary
+    dictOut = {}
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+    dictOut["log"] = log
+    
+    return(dictOut)  
     
 def main():
 
@@ -218,6 +256,7 @@ def main():
     isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
     cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
     cdParanoiaExe = "C:/cdio/cd-paranoia.exe"
+    cdrdaoExe = "C:/cdrdao/cdrdao.exe"
     shnToolExe = "C:/shntool/shntool.exe"
     tempDir = "C:/Temp/"
     # Following args to be given from command line
@@ -233,6 +272,7 @@ def main():
     config.isoBusterExe = isoBusterExe
     config.cueRipperExe = cueRipperExe
     config.cdParanoiaExe = cdParanoiaExe
+    config.cdrdaoExe = cdrdaoExe
     config.shnToolExe = shnToolExe
     config.tempDir = tempDir
     config.batchFolder = batchFolder
