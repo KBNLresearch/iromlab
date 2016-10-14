@@ -227,19 +227,12 @@ def cdrdaoExtract(writeDirectory, session):
     # go to the write directory
     with shared.cd(writeDirectory):
         status, out, err = shared.launchSubProcess(args)
-
-    fLog = open(logFile, 'r')
-    log = fLog.read()
-
-    fLog.close()
-    os.remove(logFile)
-        
+       
     # All results to dictionary
     dictOut = {}
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
-    dictOut["log"] = log
     
     return(dictOut)  
     
@@ -327,20 +320,23 @@ def main():
         carrierInfo = getCarrierInfo()
         print(carrierInfo)
         
+        # Assumptions in below workflow:
+        # 1. Audio tracks are always part of 1st session
+        # 2. If disc is of CD-Extra type, there's one data track on the 2nd session
         if carrierInfo["containsAudio"] == True:
             print("--- Starting audio ripping")
             # Rip audio to WAV
             # TODO:
-            # - CueRipper fails on Nimbie drive
-            # - cdparanoia cannot extract audio from enhanced CDs
             # - dBpoweramp doesn't have command line interface
-            # - cdrdao might work but produces bin/ toc files
-            resultParanoia = paranoiaRip(dirOut)
-            print(resultParanoia)
-        if carrierInfo["containsData"] == True:
-            # Create ISO file
-            resultIsoBuster = isoBusterExtract(dirOut, 1)
-            print(resultIsoBuster)
+            # - CueRipper fails on Nimbie drive
+            # - cdparanoia 10.2 (Windows) cannot extract audio from enhanced CDs
+            # - cdrdao works, but only only produces bin/ toc files
+            resultCdrdao = cdrdaoExtract(dirOut, 1)
+            print(resultCdrdao)
+            if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
+                # Create ISO file from data on 2nd session
+                resultIsoBuster = isoBusterExtract(dirOut, 2)
+                print(resultIsoBuster)
             
         print("--- Entering  unload")
         # Unload disc
