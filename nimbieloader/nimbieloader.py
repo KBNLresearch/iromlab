@@ -11,6 +11,7 @@ import shared
 import drivers
 import win32api
 import pprint
+import hashlib
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -238,6 +239,35 @@ def cdrdaoExtract(writeDirectory, session):
     dictOut["stderr"] = err
     
     return(dictOut)  
+
+def generate_file_md5(fileIn):
+    # Generate MD5 hash of file
+    # fileIn is read in chunks to ensure it will work with (very) large files as well
+    # Adapted from: http://stackoverflow.com/a/1131255/1209004
+
+    blocksize = 2**20
+    m = hashlib.md5()
+    with open(fileIn, "rb") as f:
+        while True:
+            buf = f.read(blocksize)
+            if not buf:
+                break
+            m.update(buf)
+    return m.hexdigest()
+
+def checksumDirectory(directory):
+    # All files in directory
+    allFiles = glob.glob(directory + "/*")
+    
+    # Dictionary for storing results
+    checksums = {}
+    
+    for fName in allFiles:
+        md5 = generate_file_md5(fName)
+        checksums[fName] = md5
+   
+    # TODO continue here ...
+    open os.path.join(directory, "checksums.md5") for output  
     
 def main():
 
@@ -300,10 +330,10 @@ def main():
     reject = False
     
     # Output folder for this disc
-    dirOut = os.path.join(config.batchFolder, id)
+    dirDisc = os.path.join(config.batchFolder, id)
     
-    if not os.path.exists(dirOut):
-        os.makedirs(dirOut)
+    if not os.path.exists(dirDisc):
+        os.makedirs(dirDisc)
         
     print("--- Starting load command")     
     # Load disc
@@ -342,18 +372,33 @@ def main():
             # - CueRipper fails on Nimbie drive
             # - cdparanoia 10.2 (Windows) cannot extract audio from enhanced CDs
             # - cdrdao works, but only only produces bin/ toc files
+            dirOut = os.path.join(dirDisc, "audio")
+            if not os.path.exists(dirOut):
+                os.makedirs(dirOut)
+                
             resultCdrdao = cdrdaoExtract(dirOut, 1)
+            
             pp.pprint(resultCdrdao)
+            
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 print("--- Extract data session of cdExtra to ISO")
                 # Create ISO file from data on 2nd session
+                dirOut = os.path.join(dirDisc, "data")
+                if not os.path.exists(dirOut):
+                    os.makedirs(dirOut)
+                
                 resultIsoBuster = isoBusterExtract(dirOut, 2)
                 if resultIsoBuster["log"].strip() != "0":
-                    reject = True
+                    reject = True            
                 pp.pprint(resultIsoBuster)
+
         elif carrierInfo["containsData"] == True:
             print("--- Extract data session to ISO")
             # Create ISO image of first session
+            dirOut = os.path.join(dirDisc, "data")
+            if not os.path.exists(dirOut):
+                os.makedirs(dirOut)
+                
             resultIsoBuster = isoBusterExtract(dirOut, 1)
             if resultIsoBuster["log"].strip() != "0":
                 reject = True
