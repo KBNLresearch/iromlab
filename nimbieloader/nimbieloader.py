@@ -296,6 +296,9 @@ def main():
     # Internal identifier for this disc
     id = "002"
     
+    # Initialise reject status
+    reject = False
+    
     # Output folder for this disc
     dirOut = os.path.join(config.batchFolder, id)
     
@@ -342,12 +345,25 @@ def main():
             resultCdrdao = cdrdaoExtract(dirOut, 1)
             pp.pprint(resultCdrdao)
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
+                print("--- Extract data session of cdExtra to ISO")
                 # Create ISO file from data on 2nd session
                 resultIsoBuster = isoBusterExtract(dirOut, 2)
+                if resultIsoBuster["log"].strip() != "0":
+                    reject = True
                 pp.pprint(resultIsoBuster)
-            
+        elif carrierInfo["containsData"] == True:
+            print("--- Extract data session to ISO")
+            # Create ISO image of first session
+            resultIsoBuster = isoBusterExtract(dirOut, 1)
+            if resultIsoBuster["log"].strip() != "0":
+                reject = True
+            pp.pprint(resultIsoBuster)
         print("--- Entering  unload")
-        # Unload disc
-        resultUnload = drivers.unload()
+
+        # Unload or reject disc
+        if reject == False:
+            resultUnload = drivers.unload()
+        else:
+            resultReject = drivers.reject()
     
 main()
