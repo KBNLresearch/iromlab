@@ -279,64 +279,11 @@ def checksumDirectory(directory):
         fChecksum.close()
     except IOError:
         errorExit("Cannot write " + fChecksum, err)
-        
-def main():
 
+def processDisc(id):
     # For debugging only
     pp = pprint.PrettyPrinter(indent=4)
-
-    # Configuration (move to config file later)
-    
-    cdDriveLetter = "I"
-    cdDeviceName = "5,0,0" # only needed by cdrdao, remove later! 
-    cdInfoExe = "C:/cdio/cd-info.exe"
-    prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
-    loadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe" 
-    unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
-    rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
-    isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
-    cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
-    cdParanoiaExe = "C:/cdio/cd-paranoia.exe"
-    cdrdaoExe = "C:/cdrdao/cdrdao.exe"
-    shnToolExe = "C:/shntool/shntool.exe"
-    tempDir = "C:/Temp/"
-    # Following args to be given from command line
-    batchFolder = "E:/nimbietest/"
-    
-    # Make configuration available to any module that imports 'config.py'
-    config.cdDriveLetter = cdDriveLetter
-    config.cdDeviceName = cdDeviceName
-    config.cdInfoExe = cdInfoExe
-    config.prebatchExe = prebatchExe
-    config.loadExe = loadExe
-    config.unloadExe = unloadExe
-    config.rejectExe = rejectExe
-    config.isoBusterExe = isoBusterExe
-    config.cueRipperExe = cueRipperExe
-    config.cdParanoiaExe = cdParanoiaExe
-    config.cdrdaoExe = cdrdaoExe
-    config.shnToolExe = shnToolExe
-    config.tempDir = tempDir
-    config.batchFolder = batchFolder
         
-    # Setup output terminal
-    global out
-    global err
-       
-    # Set encoding of the terminal to UTF-8
-    if sys.version.startswith("2"):
-        out = codecs.getwriter("UTF-8")(sys.stdout)
-        err = codecs.getwriter("UTF-8")(sys.stderr)
-    elif sys.version.startswith("3"):
-        out = codecs.getwriter("UTF-8")(sys.stdout.buffer)
-        err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
-    
-    # Initialise batch
-    resultPrebatch = drivers.prebatch()
-    
-    # Internal identifier for this disc
-    id = "002"
-    
     # Initialise reject status
     reject = False
     
@@ -361,7 +308,7 @@ def main():
     while driveIsReady == False and time.time() < timeout:
         # TODO: define timeout value to prevent infinite loop in case of unreadable disc
         time.sleep(2)
-        driveIsReady = testDrive(cdDriveLetter + ":")
+        driveIsReady = testDrive(config.cdDriveLetter + ":")
     
     if driveIsReady == False:
         print("--- Entering  reject")
@@ -424,5 +371,63 @@ def main():
             resultUnload = drivers.unload()
         else:
             resultReject = drivers.reject()
+
+        
+def main():
+
+    # Configuration (move to config file later)
+    
+    cdDriveLetter = "I"
+    cdDeviceName = "5,0,0" # only needed by cdrdao, remove later! 
+    cdInfoExe = "C:/cdio/cd-info.exe"
+    prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
+    loadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe" 
+    unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
+    rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
+    isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
+    cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
+    cdParanoiaExe = "C:/cdio/cd-paranoia.exe"
+    cdrdaoExe = "C:/cdrdao/cdrdao.exe"
+    shnToolExe = "C:/shntool/shntool.exe"
+    tempDir = "C:/Temp/"
+    # Following args to be given from command line
+    batchFolder = "E:/nimbietest/"
+    
+    # Make configuration available to any module that imports 'config.py'
+    config.cdDriveLetter = cdDriveLetter
+    config.cdDeviceName = cdDeviceName
+    config.cdInfoExe = cdInfoExe
+    config.prebatchExe = prebatchExe
+    config.loadExe = loadExe
+    config.unloadExe = unloadExe
+    config.rejectExe = rejectExe
+    config.isoBusterExe = isoBusterExe
+    config.cueRipperExe = cueRipperExe
+    config.cdParanoiaExe = cdParanoiaExe
+    config.cdrdaoExe = cdrdaoExe
+    config.shnToolExe = shnToolExe
+    config.tempDir = tempDir
+    config.batchFolder = batchFolder
+        
+    # Setup output terminal
+    global out
+    global err
+       
+    # Set encoding of the terminal to UTF-8
+    if sys.version.startswith("2"):
+        out = codecs.getwriter("UTF-8")(sys.stdout)
+        err = codecs.getwriter("UTF-8")(sys.stderr)
+    elif sys.version.startswith("3"):
+        out = codecs.getwriter("UTF-8")(sys.stdout.buffer)
+        err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
+    
+    # Initialise batch
+    resultPrebatch = drivers.prebatch()
+    
+    # Internal identifier for this disc
+    ids = ["001","002"]
+    for id in ids:
+        # Process disc
+        processDisc(id)
     
 main()
