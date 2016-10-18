@@ -28,6 +28,10 @@ Research department,  KB / National Library of the Netherlands
 
 """
 
+def errorExit(error, terminal):
+    terminal.write("Error - " + error + "\n")
+    sys.exit()
+
 def testDrive(letter):
     """
     Tests a given drive letter to see if the drive is question is ready for 
@@ -266,9 +270,16 @@ def checksumDirectory(directory):
         md5 = generate_file_md5(fName)
         checksums[fName] = md5
    
-    # TODO continue here ...
-    open os.path.join(directory, "checksums.md5") for output  
-    
+    # Write checksum file
+    try:
+        fChecksum = open(os.path.join(directory, "checksums.md5"), "w")
+        for fName in checksums:
+            lineOut = checksums[fName] + " " + os.path.basename(fName) + '\n'
+            fChecksum.write(lineOut)
+        fChecksum.close()
+    except IOError:
+        errorExit("Cannot write " + fChecksum, err)
+        
 def main():
 
     # For debugging only
@@ -377,6 +388,7 @@ def main():
                 os.makedirs(dirOut)
                 
             resultCdrdao = cdrdaoExtract(dirOut, 1)
+            checksumDirectory(dirOut)
             
             pp.pprint(resultCdrdao)
             
@@ -388,6 +400,7 @@ def main():
                     os.makedirs(dirOut)
                 
                 resultIsoBuster = isoBusterExtract(dirOut, 2)
+                checksumDirectory(dirOut)
                 if resultIsoBuster["log"].strip() != "0":
                     reject = True            
                 pp.pprint(resultIsoBuster)
@@ -400,6 +413,7 @@ def main():
                 os.makedirs(dirOut)
                 
             resultIsoBuster = isoBusterExtract(dirOut, 1)
+            checksumDirectory(dirOut)
             if resultIsoBuster["log"].strip() != "0":
                 reject = True
             pp.pprint(resultIsoBuster)
