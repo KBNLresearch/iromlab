@@ -12,6 +12,7 @@ import drivers
 import win32api
 import pprint
 import hashlib
+import logging
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -117,7 +118,6 @@ def getCarrierInfo():
     dictOut["mixedMode"] = mixedMode
     dictOut["containsAudio"] = containsAudio
     dictOut["containsData"] = containsData
-    dictOut["cd-info-status"] = status
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -283,21 +283,26 @@ def checksumDirectory(directory):
 def processDisc(id):
     # For debugging only
     pp = pprint.PrettyPrinter(indent=4)
+    
+    logging.info(''.join(['### Disc identifier: ',id]))
         
     # Initialise reject status
     reject = False
     
     # Output folder for this disc
     dirDisc = os.path.join(config.batchFolder, id)
+    logging.info(''.join(['disc directory: ',dirDisc]))
     
     if not os.path.exists(dirDisc):
         os.makedirs(dirDisc)
         
     print("--- Starting load command")     
     # Load disc
+    logging.info('*** Loading disc ***')
     resultLoad = drivers.load()
+    logging.info(''.join(['load command output: ',resultLoad['log'].strip()]))
     
-    pp.pprint(resultLoad)
+    #pp.pprint(resultLoad)
     # Test if drive is ready for reading
     driveIsReady = False
     
@@ -313,17 +318,26 @@ def processDisc(id):
     if driveIsReady == False:
         print("--- Entering  reject")
         resultReject = drivers.reject()
+        logging.error('drive not ready')
+        logging.info(''.join(['reject command output: ',resultReject['log'].strip()]))
     else:
         print("--- Entering  disc-info")
         # Get disc info
         carrierInfo = getCarrierInfo()
-        pp.pprint(carrierInfo)
+        # pp.pprint(carrierInfo)
+        logging.info('*** Running disc-info ***')
+        logging.info(''.join(['cd-info-status: ', str(carrierInfo['status'])]))
+        logging.info(''.join(['cdExtra: ', str(carrierInfo['cdExtra'])]))
+        logging.info(''.join(['containsAudio: ', str(carrierInfo['containsAudio'])]))
+        logging.info(''.join(['containsData: ', str(carrierInfo['containsData'])]))
+        logging.info(''.join(['mixedMode: ', str(carrierInfo['mixedMode'])]))
+        logging.info(''.join(['multiSession: ', str(carrierInfo['multiSession'])]))
         
         # Assumptions in below workflow:
         # 1. Audio tracks are always part of 1st session
         # 2. If disc is of CD-Extra type, there's one data track on the 2nd session
         if carrierInfo["containsAudio"] == True:
-            print("--- Starting audio ripping")
+            logging.info('*** Ripping audio ***')
             # Rip audio to WAV
             # TODO:
             # - dBpoweramp doesn't have command line interface
@@ -335,11 +349,14 @@ def processDisc(id):
                 os.makedirs(dirOut)
                 
             resultCdrdao = cdrdaoExtract(dirOut, 1)
+            logging.info(''.join(['cdrdao-status: ', str(resultCdrdao['status'])]))
+            # TODO: maybe include full cdrdao output?
             checksumDirectory(dirOut)
             
-            pp.pprint(resultCdrdao)
+            #pp.pprint(resultCdrdao)
             
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
+                logging.info('*** Extracting data session of cdExtra to ISO ***')
                 print("--- Extract data session of cdExtra to ISO")
                 # Create ISO file from data on 2nd session
                 dirOut = os.path.join(dirDisc, "data")
@@ -349,11 +366,17 @@ def processDisc(id):
                 resultIsoBuster = isoBusterExtract(dirOut, 2)
                 checksumDirectory(dirOut)
                 if resultIsoBuster["log"].strip() != "0":
-                    reject = True            
-                pp.pprint(resultIsoBuster)
+                    reject = True
+                    logging.error("Isobuster exited with error(s)")
+                
+                logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
+                logging.info(''.join(['isobuster-log: ', resultIsoBuster['log'].strip()]))
+                
+                #pp.pprint(resultIsoBuster)
 
         elif carrierInfo["containsData"] == True:
-            print("--- Extract data session to ISO")
+            #print("--- Extract data session to ISO")
+            logging.info('*** Extract data session to ISO ***')
             # Create ISO image of first session
             dirOut = os.path.join(dirDisc, "data")
             if not os.path.exists(dirOut):
@@ -363,14 +386,23 @@ def processDisc(id):
             checksumDirectory(dirOut)
             if resultIsoBuster["log"].strip() != "0":
                 reject = True
-            pp.pprint(resultIsoBuster)
+                logging.error("Isobuster exited with error(s)")
+            
+            logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
+            logging.info(''.join(['isobuster-log: ', resultIsoBuster['log'].strip()]))
+            #pp.pprint(resultIsoBuster)
+            
         print("--- Entering  unload")
 
         # Unload or reject disc
         if reject == False:
+            logging.info('*** Unloading disc ***')
             resultUnload = drivers.unload()
+            logging.info(''.join(['unload command output: ',resultUnload['log'].strip()]))
         else:
+            logging.info('*** Rejecting disc ***')
             resultReject = drivers.reject()
+            logging.error(''.join(['reject command output: ', resultReject['log'].strip()]))
 
         
 def main():
@@ -407,8 +439,15 @@ def main():
     config.cdrdaoExe = cdrdaoExe
     config.shnToolExe = shnToolExe
     config.tempDir = tempDir
-    config.batchFolder = batchFolder
-        
+    config.batchFolder = os.path.normpath(batchFolder)
+
+    # Set up log file
+    logFile = os.path.join(batchFolder, "batch.log")
+    global logging
+    logging.basicConfig(filename=logFile, 
+                            level=logging.DEBUG, 
+                            format='%(asctime)s - %(levelname)s - %(message)s')
+    
     # Setup output terminal
     global out
     global err
@@ -420,7 +459,7 @@ def main():
     elif sys.version.startswith("3"):
         out = codecs.getwriter("UTF-8")(sys.stdout.buffer)
         err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
-    
+            
     # Initialise batch
     resultPrebatch = drivers.prebatch()
     
@@ -429,5 +468,6 @@ def main():
     for id in ids:
         # Process disc
         processDisc(id)
+
     
 main()
