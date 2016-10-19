@@ -16,6 +16,9 @@ def prebatch():
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--logfile=" + logFile)
     args.append("--passerrorsback=" + errorFile)
+    
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
         
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
@@ -34,6 +37,7 @@ def prebatch():
  
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -51,6 +55,9 @@ def load():
     args.append("--rejectifnodisc")
     args.append("--logfile=" + logFile)
     args.append("--passerrorsback=" + errorFile)
+
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
     
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
@@ -69,6 +76,7 @@ def load():
         
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -85,6 +93,9 @@ def unload():
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--logfile=" + logFile)
     args.append("--passerrorsback=" + errorFile)
+
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
     
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
@@ -103,6 +114,7 @@ def unload():
     
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -119,6 +131,9 @@ def reject():
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--logfile=" + logFile)
     args.append("--passerrorsback=" + errorFile)
+
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
     
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
@@ -137,6 +152,7 @@ def reject():
     
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err

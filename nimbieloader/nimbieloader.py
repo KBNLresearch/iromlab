@@ -70,6 +70,9 @@ def getCarrierInfo():
     args.append("--no-cddb")
     args.append("--dvd")
     
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
+     
     status, out, err = shared.launchSubProcess(args)
 
     # Output lines to list
@@ -113,6 +116,7 @@ def getCarrierInfo():
 
     # Main results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["cdExtra"] = cdExtra
     dictOut["multiSession"] = multiSession
     dictOut["mixedMode"] = mixedMode
@@ -142,6 +146,9 @@ def isoBusterExtract(writeDirectory, session):
     args.append("".join(["/s:",str(session)]))
     args.append("".join(["/l:", logFile]))
 
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
+
     status, out, err = shared.launchSubProcess(args)
 
     fLog = open(logFile, 'r')
@@ -152,34 +159,13 @@ def isoBusterExtract(writeDirectory, session):
 
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
     dictOut["log"] = log
         
     return(dictOut)    
-
-def cueRipperRip(writeDirectory):
-    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /l:"E:\nimbieTest\ib.log"
-    
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-
-    args = [config.cueRipperExe]
-    args.append("-D")
-    args.append("".join([config.cdDriveLetter, ":"]))
-
-    # Not possible to define output path in Cueripper, so we have to temporarily
-    # go to the write directory
-    with shared.cd(writeDirectory):
-        status, out, err = shared.launchSubProcess(args)
-
-    # All results to dictionary
-    dictOut = {}
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-        
-    return(dictOut)  
 
 def paranoiaRip(writeDirectory):
 
@@ -191,6 +177,9 @@ def paranoiaRip(writeDirectory):
     args.append("-B")
     args.append("-l")
     args.append(logFile)
+
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
 
     # Not possible to define output path, so we have to temporarily
     # go to the write directory
@@ -205,6 +194,7 @@ def paranoiaRip(writeDirectory):
         
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -231,6 +221,9 @@ def cdrdaoExtract(writeDirectory, session):
     args.append(str(session))
     args.append(tocFile)
 
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
+
     # Not possible to define output path, so we have to temporarily
     # go to the write directory
     with shared.cd(writeDirectory):
@@ -238,6 +231,7 @@ def cdrdaoExtract(writeDirectory, session):
        
     # All results to dictionary
     dictOut = {}
+    dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -281,28 +275,19 @@ def checksumDirectory(directory):
         errorExit("Cannot write " + fChecksum, err)
 
 def processDisc(id):
-    # For debugging only
-    pp = pprint.PrettyPrinter(indent=4)
     
     logging.info(''.join(['### Disc identifier: ',id]))
         
     # Initialise reject status
     reject = False
-    
-    # Output folder for this disc
-    dirDisc = os.path.join(config.batchFolder, id)
-    logging.info(''.join(['disc directory: ',dirDisc]))
-    
-    if not os.path.exists(dirDisc):
-        os.makedirs(dirDisc)
-        
+            
     print("--- Starting load command")     
     # Load disc
     logging.info('*** Loading disc ***')
     resultLoad = drivers.load()
+    logging.info(''.join(['load command: ', resultLoad['cmdStr']]))
     logging.info(''.join(['load command output: ',resultLoad['log'].strip()]))
     
-    #pp.pprint(resultLoad)
     # Test if drive is ready for reading
     driveIsReady = False
     
@@ -319,13 +304,39 @@ def processDisc(id):
         print("--- Entering  reject")
         resultReject = drivers.reject()
         logging.error('drive not ready')
+        logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
         logging.info(''.join(['reject command output: ',resultReject['log'].strip()]))
+        #
+        # !!IMPORTANT!!: we can end up here b/c of 2 situations:
+        #
+        # 1. No disc was loaded (b/c loader was empty at time 'load' command was run
+        # 2. A disc was loaded, but it is not accessable (badly damaged disc)
+        #
+        # In production env. where ech disc corresponds to a catalog identifier in a
+        # queue, 1. can simply be ignored (keep trying to load another disc, once disc
+        # is loaded it can be linked to next catalog identifier in queue). However, in case
+        # 2. the failed disc corresponds to the next identifier in the queue! So somehow
+        # we need to distinguish these cases in order to keep discs in sync with identifiers!
+        #
+        # TODO: find out if case 2. is really possible (e.g. by using deliberately damaged/
+        # unredable disc. If not, we can safely assume case 1. and adapt script accordingly.
+        # 
+        # RESULT: tested with blank CD, same behavior as no CD at all!
+        # 
+        # Possible solution: http://stackoverflow.com/a/2288126
     else:
-        print("--- Entering  disc-info")
+        # Create output folder for this disc
+        dirDisc = os.path.join(config.batchFolder, id)
+        logging.info(''.join(['disc directory: ',dirDisc]))
+    
+        if not os.path.exists(dirDisc):
+            os.makedirs(dirDisc)
+
+        print("--- Entering  cd-info")
         # Get disc info
+        logging.info('*** Running cd-info ***')
         carrierInfo = getCarrierInfo()
-        # pp.pprint(carrierInfo)
-        logging.info('*** Running disc-info ***')
+        logging.info(''.join(['cd-info command: ', carrierInfo['cmdStr']]))
         logging.info(''.join(['cd-info-status: ', str(carrierInfo['status'])]))
         logging.info(''.join(['cdExtra: ', str(carrierInfo['cdExtra'])]))
         logging.info(''.join(['containsAudio: ', str(carrierInfo['containsAudio'])]))
@@ -349,12 +360,11 @@ def processDisc(id):
                 os.makedirs(dirOut)
                 
             resultCdrdao = cdrdaoExtract(dirOut, 1)
+            logging.info(''.join(['cdrdao command: ', resultCdrdao['cmdStr']]))
             logging.info(''.join(['cdrdao-status: ', str(resultCdrdao['status'])]))
             # TODO: maybe include full cdrdao output?
             checksumDirectory(dirOut)
-            
-            #pp.pprint(resultCdrdao)
-            
+                        
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 print("--- Extract data session of cdExtra to ISO")
@@ -369,13 +379,11 @@ def processDisc(id):
                     reject = True
                     logging.error("Isobuster exited with error(s)")
                 
+                logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
                 logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
                 logging.info(''.join(['isobuster-log: ', resultIsoBuster['log'].strip()]))
                 
-                #pp.pprint(resultIsoBuster)
-
         elif carrierInfo["containsData"] == True:
-            #print("--- Extract data session to ISO")
             logging.info('*** Extract data session to ISO ***')
             # Create ISO image of first session
             dirOut = os.path.join(dirDisc, "data")
@@ -388,21 +396,23 @@ def processDisc(id):
                 reject = True
                 logging.error("Isobuster exited with error(s)")
             
+            logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
             logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
             logging.info(''.join(['isobuster-log: ', resultIsoBuster['log'].strip()]))
-            #pp.pprint(resultIsoBuster)
-            
+
         print("--- Entering  unload")
 
         # Unload or reject disc
         if reject == False:
             logging.info('*** Unloading disc ***')
             resultUnload = drivers.unload()
+            logging.info(''.join(['unload command: ', resultUnload['cmdStr']]))
             logging.info(''.join(['unload command output: ',resultUnload['log'].strip()]))
         else:
             logging.info('*** Rejecting disc ***')
             resultReject = drivers.reject()
-            logging.error(''.join(['reject command output: ', resultReject['log'].strip()]))
+            logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
+            logging.info(''.join(['reject command output: ', resultReject['log'].strip()]))
 
         
 def main():
@@ -461,10 +471,13 @@ def main():
         err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
             
     # Initialise batch
+    logging.info('*** Initialising batch ***')
     resultPrebatch = drivers.prebatch()
-    
+    logging.info(''.join(['prebatch command: ', resultPrebatch['cmdStr']]))
+    logging.info(''.join(['prebatch command output: ',resultPrebatch['log'].strip()]))
+        
     # Internal identifier for this disc
-    ids = ["001","002"]
+    ids = ["001","002", "003"]
     for id in ids:
         # Process disc
         processDisc(id)
