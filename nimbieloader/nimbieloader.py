@@ -10,6 +10,7 @@ import config
 import shared
 import drivers
 import win32api
+import wmi # Dependency: python -m pip install wmi
 import pprint
 import hashlib
 import logging
@@ -55,6 +56,18 @@ def testDrive(letter):
     # started messing with it:
     win32api.SetErrorMode(oldError)
     return(returnValue)
+
+def mediumLoaded(driveName):
+    # Returns True if medium is loaded (also if blank/unredable), False if not
+    c = wmi.WMI()
+    foundDriveName = False
+    loaded = False
+    for cdrom in c.Win32_CDROMDrive():
+        if cdrom.Drive == driveName:
+            foundDriveName = True
+            loaded = cdrom.MediaLoaded       
+    
+    return(foundDriveName, loaded)
     
 def getCarrierInfo():
     # Determine carrier type and number of sessions on carrier
@@ -288,22 +301,25 @@ def processDisc(id):
     logging.info(''.join(['load command: ', resultLoad['cmdStr']]))
     logging.info(''.join(['load command output: ',resultLoad['log'].strip()]))
     
-    # Test if drive is ready for reading
-    driveIsReady = False
+    # Test if disc is loaded
+    discLoaded = False
     
     print("--- Entering  driveIsReady loop")
     
     # Reject if no CD is found after 20 s
-    timeout = time.time() + 20
-    while driveIsReady == False and time.time() < timeout:
-        # TODO: define timeout value to prevent infinite loop in case of unreadable disc
+    timeout = time.time() + int(config.secondsToTimeout)
+    while discLoaded == False and time.time() < timeout:
+        # Timeout value prevents infinite loop in case of unreadable disc
         time.sleep(2)
-        driveIsReady = testDrive(config.cdDriveLetter + ":")
+        foundDrive, discLoaded = mediumLoaded(config.cdDriveLetter + ":")
+
+    if foundDrive == False:
+        logging.error(''.join(['drive ', config.cdDriveLetter, ' does not exist']))
     
-    if driveIsReady == False:
+    if discLoaded == False:
         print("--- Entering  reject")
         resultReject = drivers.reject()
-        logging.error('drive not ready')
+        logging.error('no disc loaded')
         logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
         logging.info(''.join(['reject command output: ',resultReject['log'].strip()]))
         #
@@ -317,13 +333,16 @@ def processDisc(id):
         # is loaded it can be linked to next catalog identifier in queue). However, in case
         # 2. the failed disc corresponds to the next identifier in the queue! So somehow
         # we need to distinguish these cases in order to keep discs in sync with identifiers!
+        # 
+        # UPDATE: Case 1. can be eliminated if loading of a CD is made dependent of
+        # a queue of disc ids (which are entered by operator at time of adding a CD)
         #
-        # TODO: find out if case 2. is really possible (e.g. by using deliberately damaged/
-        # unredable disc. If not, we can safely assume case 1. and adapt script accordingly.
-        # 
-        # RESULT: tested with blank CD, same behavior as no CD at all!
-        # 
-        # Possible solution: http://stackoverflow.com/a/2288126
+        # In that case:
+        #
+        # queue is empty --> no CD in loader --> pause loading until new item in queue
+        #
+        # (Can still go wrong if items are entered in queue w/o loading any CDs, but
+        # this is an edge case)
     else:
         # Create output folder for this disc
         dirDisc = os.path.join(config.batchFolder, id)
@@ -419,7 +438,7 @@ def main():
 
     # Configuration (move to config file later)
     
-    cdDriveLetter = "I"
+    cdDriveLetter = "J"
     cdDeviceName = "5,0,0" # only needed by cdrdao, remove later! 
     cdInfoExe = "C:/cdio/cd-info.exe"
     prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
@@ -434,6 +453,7 @@ def main():
     tempDir = "C:/Temp/"
     # Following args to be given from command line
     batchFolder = "E:/nimbietest/"
+    secondsToTimeout = "20"
     
     # Make configuration available to any module that imports 'config.py'
     config.cdDriveLetter = cdDriveLetter
@@ -450,6 +470,7 @@ def main():
     config.shnToolExe = shnToolExe
     config.tempDir = tempDir
     config.batchFolder = os.path.normpath(batchFolder)
+    config.secondsToTimeout = secondsToTimeout
 
     # Set up log file
     logFile = os.path.join(batchFolder, "batch.log")
@@ -477,7 +498,7 @@ def main():
     logging.info(''.join(['prebatch command output: ',resultPrebatch['log'].strip()]))
         
     # Internal identifier for this disc
-    ids = ["001","002", "003"]
+    ids = ["001", "002", "003"]
     for id in ids:
         # Process disc
         processDisc(id)

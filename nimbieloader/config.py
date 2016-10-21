@@ -14,4 +14,5 @@ cdrdaoExe = ""
 shnToolExe = ""
 tempDir = ""
 batchFolder = ""
+secondsToTimeout = ""
 
