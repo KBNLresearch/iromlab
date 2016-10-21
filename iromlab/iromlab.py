@@ -34,29 +34,6 @@ def errorExit(error, terminal):
     terminal.write("Error - " + error + "\n")
     sys.exit()
 
-def testDrive(letter):
-    """
-    Tests a given drive letter to see if the drive is question is ready for 
-    access. This is to handle things like floppy drives and USB card readers
-    which have to have physical media inserted in order to be accessed.
-    Returns true if the drive is ready, false if not.
-    Source: http://stackoverflow.com/a/1020363
-    """
-    returnValue = False
-    # This prevents Windows from showing an error to the user, and allows python 
-    # to handle the exception on its own.
-    oldError = win32api.SetErrorMode(1) #note that SEM_FAILCRITICALERRORS = 1
-    try:
-    	freeSpace = win32api.GetDiskFreeSpaceEx(letter)
-    except:
-    	returnValue = False
-    else:
-    	returnValue = True
-    # restore the Windows error handling state to whatever it was before we
-    # started messing with it:
-    win32api.SetErrorMode(oldError)
-    return(returnValue)
-
 def mediumLoaded(driveName):
     # Returns True if medium is loaded (also if blank/unredable), False if not
     c = wmi.WMI()
@@ -236,12 +213,12 @@ def cdrdaoExtract(writeDirectory, session):
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
-
+    
     # Not possible to define output path, so we have to temporarily
     # go to the write directory
     with shared.cd(writeDirectory):
         status, out, err = shared.launchSubProcess(args)
-       
+    
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -379,6 +356,7 @@ def processDisc(id):
                 os.makedirs(dirOut)
                 
             resultCdrdao = cdrdaoExtract(dirOut, 1)
+            resultShnTool = cdrdaoExtract(dirOut, 1)
             logging.info(''.join(['cdrdao command: ', resultCdrdao['cmdStr']]))
             logging.info(''.join(['cdrdao-status: ', str(resultCdrdao['status'])]))
             # TODO: maybe include full cdrdao output?
