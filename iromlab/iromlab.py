@@ -14,6 +14,12 @@ import wmi # Dependency: python -m pip install wmi
 import pprint
 import hashlib
 import logging
+try:
+    # Py 2.7
+    import Queue as queue
+except ImportError:
+    # Py 3.x
+    import queue
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -474,12 +480,20 @@ def main():
     resultPrebatch = drivers.prebatch()
     logging.info(''.join(['prebatch command: ', resultPrebatch['cmdStr']]))
     logging.info(''.join(['prebatch command output: ',resultPrebatch['log'].strip()]))
-        
+    
+    
     # Internal identifier for this disc
     ids = ["001", "002", "003"]
+    
+    # Set up queue
+    q = queue.Queue()
+    
+    # Fill the queue
+    for id in ids:
+        q.put(id)
+    
     for id in ids:
         # Process disc
-        processDisc(id)
-
+        processDisc(q.get())
     
 main()
