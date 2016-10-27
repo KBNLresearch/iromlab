@@ -74,7 +74,7 @@ class carrierEntry(tk.Frame):
         self.v = tk.IntVar()
         self.v.set(1)
         
-        tk.Label(self, text='Carrier type:').grid(column=0, row=5,
+        tk.Label(self, text='Carrier type').grid(column=0, row=5,
                 sticky='w', columnspan=4)
         
         # List with all possible carrier types + corresponding button codes
@@ -85,24 +85,24 @@ class carrierEntry(tk.Frame):
             ('dvd-video',4)
         ]
         
-        rowValue = 6
+        rowValue = 5
         
         for carrierType in carrierTypes:
-            self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1]).grid(column=0, row=rowValue, 
+            self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1]).grid(column=2, row=rowValue, 
             sticky='w')
             rowValue += 1
         
         self.submit_button = tk.Button(self, text='Submit',
                 command=self.submit)
-        self.submit_button.grid(column=0, row=10, columnspan=4)
+        self.submit_button.grid(column=0, row=11,  columnspan=3)
         
         self.submit_button = tk.Button(self, text='Quit',
                 command=self.on_quit)
-        self.submit_button.grid(column=2, row=10, columnspan=4)
+        self.submit_button.grid(column=2, row=11,  columnspan=3)
  
         self.answer_frame = tk.LabelFrame(self, text='Answer',
                 height=100)
-        self.answer_frame.grid(column=0, row=11, columnspan=4, sticky='nesw')
+        self.answer_frame.grid(column=0, row=12, columnspan=4, sticky='nesw')
  
         self.answer_label = tk.Label(self.answer_frame, text='')
         self.answer_label.grid(column=0, row=0)
