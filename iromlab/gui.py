@@ -22,6 +22,7 @@ class carrierEntry(tk.Frame):
  
     def submit(self):
         # Fetch entered values
+        
         catid = self.catid_entry.get()
         volumeNo = self.volumeNo_entry.get()
         noVolumes = self.noVolumes_entry.get()
@@ -33,10 +34,11 @@ class carrierEntry(tk.Frame):
         print(self.v.get())
         
         # Reset entry fields
+        
         self.catid_entry.delete(0, tk.END)
         self.volumeNo_entry.delete(0, tk.END)
         self.noVolumes_entry.delete(0, tk.END)
-  
+        
     def init_gui(self):
         # Build GUI
         self.root.title('iromlab')
@@ -74,19 +76,29 @@ class carrierEntry(tk.Frame):
         
         tk.Label(self, text='Carrier type:').grid(column=0, row=5,
                 sticky='w', columnspan=4)
-                
-        self.rb1 = tk.Radiobutton(self, text='cd-rom', variable=self.v, value=1).grid(column=0, row=6, 
+        
+        # List with all possible carrier types + corresponding button codes
+        carrierTypes = [
+            ('cd-audio',1),
+            ('cd-rom',2),
+            ('dvd-rom',3),
+            ('dvd-video',4)
+        ]
+        
+        rowValue = 6
+        
+        for carrierType in carrierTypes:
+            self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1]).grid(column=0, row=rowValue, 
             sticky='w')
-        self.rb2 = tk.Radiobutton(self, text='cd-audio', variable=self.v, value=2).grid(column=0, row=7, 
-            sticky='w')
-        self.rb3 = tk.Radiobutton(self, text='dvd-rom', variable=self.v, value=3).grid(column=0, row=8, 
-            sticky='w')
-        self.rb4 = tk.Radiobutton(self, text='dvd-video', variable=self.v, value=4).grid(column=0, row=9, 
-            sticky='w')   
-  
+            rowValue += 1
+        
         self.submit_button = tk.Button(self, text='Submit',
                 command=self.submit)
         self.submit_button.grid(column=0, row=10, columnspan=4)
+        
+        self.submit_button = tk.Button(self, text='Quit',
+                command=self.on_quit)
+        self.submit_button.grid(column=2, row=10, columnspan=4)
  
         self.answer_frame = tk.LabelFrame(self, text='Answer',
                 height=100)
@@ -102,4 +114,3 @@ if __name__ == '__main__':
     root = tk.Tk()
     carrierEntry(root)
     root.mainloop()
-
