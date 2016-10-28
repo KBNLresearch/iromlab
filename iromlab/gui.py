@@ -11,7 +11,15 @@ except ImportError:
 
 import tkMessageBox
 from kbapi import sru
-        
+
+def representsInt(s):
+    # Source: http://stackoverflow.com/a/1267145
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
+    
 class carrierEntry(tk.Frame):
     
     def __init__(self, parent, *args, **kwargs):
@@ -30,27 +38,41 @@ class carrierEntry(tk.Frame):
         volumeNo = self.volumeNo_entry.get()
         noVolumes = self.noVolumes_entry.get()
         carrierType = self.v.get()
+        #self.answer_label['text'] = catid
         
-        self.answer_label['text'] = catid
-        
-        # Lookup catalog identifier
+         # Lookup catalog identifier
         sruSearchString = '"PPN=' + str(catid) + '"'
         response = sru.search(sruSearchString,"GGC")
-        
         noGGCRecords = response.sru.nr_of_records
-        if noGGCRecords == 0:
+        
+        if representsInt(volumeNo) == False:
+            msg = "Volume number must be integer value"
+            tkMessageBox.showerror("Type mismatch", msg)
+        elif representsInt(noVolumes) == False:
+            msg = "Number of volumes must be integer value"
+            tkMessageBox.showerror("Type mismatch", msg) 
+        elif int(volumeNo) > int(noVolumes):
+            msg = "Volume number cannot be larger than number of volumes"
+            tkMessageBox.showerror("Value error", msg)
+        elif noGGCRecords == 0:
+            # No matching record found
             msg = ("Search for PPN=" + str(catid) + " returned " + \
                 "no matching record in catalog!")
             tkMessageBox.showerror("PPN not found", msg)
         else:
-            print(catid,volumeNo,noVolumes)
-            print(self.v.get())
+            # Matching record found. Display title and ask for confirmation
+            record = next(response.records)
+            title = record.titles[0]
+            msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
+            if tkMessageBox.askyesno("Confirm", msg):
+                print(catid,volumeNo,noVolumes)
+                print(self.v.get())
         
-            # Reset entry fields
+                # Reset entry fields
         
-            self.catid_entry.delete(0, tk.END)
-            self.volumeNo_entry.delete(0, tk.END)
-            self.noVolumes_entry.delete(0, tk.END)
+                self.catid_entry.delete(0, tk.END)
+                self.volumeNo_entry.delete(0, tk.END)
+                self.noVolumes_entry.delete(0, tk.END)
         
     def init_gui(self):
         # Build GUI
@@ -112,14 +134,16 @@ class carrierEntry(tk.Frame):
         self.submit_button = tk.Button(self, text='Quit',
                 command=self.on_quit)
         self.submit_button.grid(column=2, row=11,  columnspan=3)
- 
+        
+        """
         self.answer_frame = tk.LabelFrame(self, text='Answer',
                 height=100)
         self.answer_frame.grid(column=0, row=12, columnspan=4, sticky='nesw')
  
         self.answer_label = tk.Label(self.answer_frame, text='')
         self.answer_label.grid(column=0, row=0)
-  
+        """
+        
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
  
