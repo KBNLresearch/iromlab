@@ -1,14 +1,17 @@
 """
 Adapted from: http://www.datadependence.com/2016/04/how-to-build-gui-in-python-3/
 """
- 
+
 try:
     import tkinter as tk #Python 3.x
     from tkinter import ttk as ttk
 except ImportError:
     import Tkinter as tk # Python 2.x
     import ttk as ttk
-     
+
+import tkMessageBox
+from kbapi import sru
+        
 class carrierEntry(tk.Frame):
     
     def __init__(self, parent, *args, **kwargs):
@@ -30,14 +33,24 @@ class carrierEntry(tk.Frame):
         
         self.answer_label['text'] = catid
         
-        print(catid,volumeNo,noVolumes)
-        print(self.v.get())
+        # Lookup catalog identifier
+        sruSearchString = '"PPN=' + str(catid) + '"'
+        response = sru.search(sruSearchString,"GGC")
         
-        # Reset entry fields
+        noGGCRecords = response.sru.nr_of_records
+        if noGGCRecords == 0:
+            msg = ("Search for PPN=" + str(catid) + " returned " + \
+                "no matching record in catalog!")
+            tkMessageBox.showerror("PPN not found", msg)
+        else:
+            print(catid,volumeNo,noVolumes)
+            print(self.v.get())
         
-        self.catid_entry.delete(0, tk.END)
-        self.volumeNo_entry.delete(0, tk.END)
-        self.noVolumes_entry.delete(0, tk.END)
+            # Reset entry fields
+        
+            self.catid_entry.delete(0, tk.END)
+            self.volumeNo_entry.delete(0, tk.END)
+            self.noVolumes_entry.delete(0, tk.END)
         
     def init_gui(self):
         # Build GUI
