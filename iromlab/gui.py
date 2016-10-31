@@ -32,13 +32,17 @@ class carrierEntry(tk.Frame):
         quit()
  
     def submit(self):
-        # Fetch entered values
+        # Fetch entered values (strip any leading / tralue whitespace characters)
         
-        catid = self.catid_entry.get()
-        volumeNo = self.volumeNo_entry.get()
-        noVolumes = self.noVolumes_entry.get()
-        carrierType = self.v.get()
-        #self.answer_label['text'] = catid
+        catid = self.catid_entry.get().strip()
+        volumeNo = self.volumeNo_entry.get().strip()
+        noVolumes = self.noVolumes_entry.get().strip()
+        carrierTypeCode = self.v.get()
+        
+        # Lookup carrierType for carrierTypeCode value
+        for i in self.carrierTypes:
+            if i[1] == carrierTypeCode:
+                carrierType = i[0]
         
          # Lookup catalog identifier
         sruSearchString = '"PPN=' + str(catid) + '"'
@@ -50,7 +54,10 @@ class carrierEntry(tk.Frame):
             tkMessageBox.showerror("Type mismatch", msg)
         elif representsInt(noVolumes) == False:
             msg = "Number of volumes must be integer value"
-            tkMessageBox.showerror("Type mismatch", msg) 
+            tkMessageBox.showerror("Type mismatch", msg)
+        elif int(volumeNo) < 1:
+            msg = "Volume number must be greater than or equal to 1"
+            tkMessageBox.showerror("Value error", msg)
         elif int(volumeNo) > int(noVolumes):
             msg = "Volume number cannot be larger than number of volumes"
             tkMessageBox.showerror("Value error", msg)
@@ -65,9 +72,8 @@ class carrierEntry(tk.Frame):
             title = record.titles[0]
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
-                print(catid,volumeNo,noVolumes)
-                print(self.v.get())
-        
+                print(catid,volumeNo,noVolumes,carrierType)
+                        
                 # Reset entry fields
         
                 self.catid_entry.delete(0, tk.END)
@@ -88,9 +94,9 @@ class carrierEntry(tk.Frame):
                 row=1, columnspan=4, sticky='ew')
                 
         # Catalog ID        
-        tk.Label(self, text='Catalog ID (PPN)').grid(column=0, row=2,
+        tk.Label(self, text='PPN').grid(column=0, row=2,
                 sticky='w')
-        self.catid_entry = tk.Entry(self, width=10)
+        self.catid_entry = tk.Entry(self, width=12)
         self.catid_entry.grid(column=2, row = 2)
 
         # Volume number
@@ -113,16 +119,16 @@ class carrierEntry(tk.Frame):
                 sticky='w', columnspan=4)
         
         # List with all possible carrier types + corresponding button codes
-        carrierTypes = [
-            ('cd-audio',1),
-            ('cd-rom',2),
-            ('dvd-rom',3),
-            ('dvd-video',4)
+        self.carrierTypes = [
+            ['cd-rom',1],
+            ['cd-audio',2],
+            ['dvd-rom',3],
+            ['dvd-video',4]
         ]
         
         rowValue = 5
         
-        for carrierType in carrierTypes:
+        for carrierType in self.carrierTypes:
             self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1]).grid(column=2, row=rowValue, 
             sticky='w')
             rowValue += 1
