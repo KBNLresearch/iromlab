@@ -1,6 +1,11 @@
 """
 Adapted from: http://www.datadependence.com/2016/04/how-to-build-gui-in-python-3/
 """
+import os
+import time
+import threading
+import shared
+import glob
 
 try:
     import tkinter as tk #Python 3.x
@@ -11,6 +16,35 @@ except ImportError:
 
 import tkMessageBox
 from kbapi import sru
+
+global jobsFolder
+jobsFolder = 'E:/nimbietest/jobs/'
+
+def workerTest():
+
+    while True:
+        time.sleep(10)
+        # Get directory listing, sorted by creation time
+        files = filter(os.path.isfile, glob.glob(jobsFolder + '*'))
+        #files.sort(key=lambda x: os.path.getmtime(x))
+        files.sort(key=lambda x: os.path.getctime(x))
+        
+        noFiles = len(files)
+        print(noFiles)
+
+        if noFiles > 0:
+            # Identify oldest file
+            fileOldest = files[0]
+            
+            # Open file and read contents 
+            fOldest = open(fileOldest, "r")
+            lines = fOldest.readlines()
+            fOldest.close()
+            print(lines)
+            
+            # Remove file
+            os.remove(fileOldest)
+        
 
 def representsInt(s):
     # Source: http://stackoverflow.com/a/1267145
@@ -32,6 +66,7 @@ class carrierEntry(tk.Frame):
         quit()
  
     def submit(self):
+            
         # Fetch entered values (strip any leading / tralue whitespace characters)
         
         catid = self.catid_entry.get().strip()
@@ -72,7 +107,16 @@ class carrierEntry(tk.Frame):
             title = record.titles[0]
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
-                print(catid,volumeNo,noVolumes,carrierType)
+                # Job file
+                
+                if not os.path.exists(jobsFolder):
+                    os.makedirs(jobsFolder)
+                
+                jobFile = ''.join([shared.randomString(12),".txt"])
+                fJob = open(os.path.join(jobsFolder, jobFile), "w")
+                lineOut = ','.join([catid, volumeNo, noVolumes, carrierType]) + '\n'
+                fJob.write(lineOut)
+                #print(catid,volumeNo,noVolumes,carrierType)
                         
                 # Reset entry fields
         
@@ -156,4 +200,7 @@ class carrierEntry(tk.Frame):
 if __name__ == '__main__':
     root = tk.Tk()
     carrierEntry(root)
+    
+    t1 = threading.Thread(target=workerTest, args=[])
+    t1.start()
     root.mainloop()
