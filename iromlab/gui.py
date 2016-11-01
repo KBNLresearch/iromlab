@@ -51,6 +51,7 @@ def workerTest():
             if lines[0] == 'EOB\n':
                 # End of current batch
                 endOfBatchFlag = True
+                quit()
                  
 def representsInt(s):
     # Source: http://stackoverflow.com/a/1267145
@@ -75,7 +76,7 @@ class carrierEntry(tk.Frame):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
         added. Are you really sure you want to do this?"
         if tkMessageBox.askyesno("Confirm", msg):
-            # Create End Od Batch job file; this will tell the main worker processing 
+            # Create End Of Batch job file; this will tell the main worker processing 
             # loop to stop
             
             if not os.path.exists(jobsFolder):
@@ -206,14 +207,6 @@ class carrierEntry(tk.Frame):
                 command=self.on_finalise)
         self.submit_button.grid(column=2, row=11,  columnspan=3)
         
-        """
-        self.answer_frame = tk.LabelFrame(self, text='Answer',
-                height=100)
-        self.answer_frame.grid(column=0, row=12, columnspan=4, sticky='nesw')
- 
-        self.answer_label = tk.Label(self.answer_frame, text='')
-        self.answer_label.grid(column=0, row=0)
-        """
         
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
