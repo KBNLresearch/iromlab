@@ -1,6 +1,7 @@
 """
 Adapted from: http://www.datadependence.com/2016/04/how-to-build-gui-in-python-3/
 """
+import sys
 import os
 import time
 import threading
@@ -22,7 +23,10 @@ jobsFolder = 'E:/nimbietest/jobs/'
 
 def workerTest():
 
-    while True:
+    # Flag that marks end of batch (main processing loop keeps running while False)
+    endOfBatchFlag = False
+    
+    while endOfBatchFlag == False:
         time.sleep(10)
         # Get directory listing, sorted by creation time
         files = filter(os.path.isfile, glob.glob(jobsFolder + '*'))
@@ -41,11 +45,13 @@ def workerTest():
             lines = fOldest.readlines()
             fOldest.close()
             print(lines)
-            
             # Remove file
             os.remove(fileOldest)
-        
-
+            
+            if lines[0] == 'EOB\n':
+                # End of current batch
+                endOfBatchFlag = True
+                 
 def representsInt(s):
     # Source: http://stackoverflow.com/a/1267145
     try: 
@@ -64,6 +70,22 @@ class carrierEntry(tk.Frame):
     def on_quit(self):
         # Exits program.
         quit()
+    
+    def on_finalise(self):
+        msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
+        added. Are you really sure you want to do this?"
+        if tkMessageBox.askyesno("Confirm", msg):
+            # Create End Od Batch job file; this will tell the main worker processing 
+            # loop to stop
+            
+            if not os.path.exists(jobsFolder):
+                os.makedirs(jobsFolder)
+            
+            jobFile = 'eob.txt' 
+            fJob = open(os.path.join(jobsFolder, jobFile), "w")
+            lineOut = 'EOB\n'
+            fJob.write(lineOut)
+            quit()
  
     def submit(self):
             
@@ -116,15 +138,22 @@ class carrierEntry(tk.Frame):
                 fJob = open(os.path.join(jobsFolder, jobFile), "w")
                 lineOut = ','.join([catid, volumeNo, noVolumes, carrierType]) + '\n'
                 fJob.write(lineOut)
-                #print(catid,volumeNo,noVolumes,carrierType)
                         
-                # Reset entry fields
-        
+                # Reset entry fields        
                 self.catid_entry.delete(0, tk.END)
                 self.volumeNo_entry.delete(0, tk.END)
                 self.noVolumes_entry.delete(0, tk.END)
         
     def init_gui(self):
+        
+        # List with all possible carrier types + corresponding button codes
+        self.carrierTypes = [
+            ['cd-rom',1],
+            ['cd-audio',2],
+            ['dvd-rom',3],
+            ['dvd-video',4]
+        ]
+        
         # Build GUI
         self.root.title('iromlab')
         self.root.option_add('*tearOff', 'FALSE')
@@ -161,15 +190,7 @@ class carrierEntry(tk.Frame):
         
         tk.Label(self, text='Carrier type').grid(column=0, row=5,
                 sticky='w', columnspan=4)
-        
-        # List with all possible carrier types + corresponding button codes
-        self.carrierTypes = [
-            ['cd-rom',1],
-            ['cd-audio',2],
-            ['dvd-rom',3],
-            ['dvd-video',4]
-        ]
-        
+                
         rowValue = 5
         
         for carrierType in self.carrierTypes:
@@ -181,8 +202,8 @@ class carrierEntry(tk.Frame):
                 command=self.submit)
         self.submit_button.grid(column=0, row=11,  columnspan=3)
         
-        self.submit_button = tk.Button(self, text='Quit',
-                command=self.on_quit)
+        self.submit_button = tk.Button(self, text='Finalise batch',
+                command=self.on_finalise)
         self.submit_button.grid(column=2, row=11,  columnspan=3)
         
         """
@@ -204,3 +225,4 @@ if __name__ == '__main__':
     t1 = threading.Thread(target=workerTest, args=[])
     t1.start()
     root.mainloop()
+    t1.join()
