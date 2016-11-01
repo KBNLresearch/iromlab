@@ -201,11 +201,11 @@ class carrierEntry(tk.Frame):
         
         self.submit_button = tk.Button(self, text='Submit',
                 command=self.submit)
-        self.submit_button.grid(column=0, row=11,  columnspan=3)
+        self.submit_button.grid(column=0, row=11,  columnspan=4)
         
         self.submit_button = tk.Button(self, text='Finalise batch',
                 command=self.on_finalise)
-        self.submit_button.grid(column=2, row=11,  columnspan=3)
+        self.submit_button.grid(column=3, row=11,  columnspan=4)
         
         
         for child in self.winfo_children():
