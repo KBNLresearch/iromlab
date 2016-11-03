@@ -41,10 +41,10 @@ def workerTest():
     # Flag that marks end of batch (main processing loop keeps running while False)
     endOfBatchFlag = False
     
-    while endOfBatchFlag == False:
+    while endOfBatchFlag == False and config.quitFlag == False:
         time.sleep(10)
         # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(config.batchFolder + '*'))
+        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
         files.sort(key=lambda x: os.path.getctime(x))
         
         noFiles = len(files)
@@ -81,9 +81,12 @@ class carrierEntry(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
         self.init_gui()
+        self.jobsFolder = ''
          
     def on_quit(self):
-        # Exits program.
+        # Wait until the disc that is currently being pocessed has 
+        # finished, and quit (batch can be resumed by opening it in the File dialog)
+        config.quitFlag = True
         quit()
     
     def on_create(self):
@@ -103,8 +106,19 @@ class carrierEntry(tk.Frame):
                 os.makedirs(config.batchFolder)
             except IOError:
                 msg = 'Cannot create batch folder ' + config.batchFolder
-                tkMessageBox.showerror("Error",msg)
-               
+                tkMessageBox.showerror("Error", msg)
+
+        # Create jobs folder
+        config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
+        
+        if not os.path.exists(config.jobsFolder):
+      
+            try:
+                os.makedirs(config.jobsFolder)
+            except IOError:
+                msg = 'Cannot create jobs folder ' + config.jobsFolder
+                tkMessageBox.showerror("Error", msg)
+             
     def on_open(self):
         # Open existing batch
         
@@ -115,6 +129,7 @@ class carrierEntry(tk.Frame):
         options['parent'] = root
         options['title'] = 'Select batch directory'
         config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
+        config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
         
     def on_finalise(self):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
@@ -122,20 +137,16 @@ class carrierEntry(tk.Frame):
         if tkMessageBox.askyesno("Confirm", msg):
             # Create End Of Batch job file; this will tell the main worker processing 
             # loop to stop
-            
-            if not os.path.exists(jobsFolder):
-                os.makedirs(jobsFolder)
-            
+                        
             jobFile = 'eob.txt' 
-            fJob = open(os.path.join(jobsFolder, jobFile), "w")
+            fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
             lineOut = 'EOB\n'
             fJob.write(lineOut)
             quit()
  
     def submit(self):
             
-        # Fetch entered values (strip any leading / tralue whitespace characters)
-        
+        # Fetch entered values (strip any leading / tralue whitespace characters)   
         catid = self.catid_entry.get().strip()
         volumeNo = self.volumeNo_entry.get().strip()
         noVolumes = self.noVolumes_entry.get().strip()
@@ -146,7 +157,7 @@ class carrierEntry(tk.Frame):
             if i[1] == carrierTypeCode:
                 carrierType = i[0]
         
-         # Lookup catalog identifier
+        # Lookup catalog identifier
         sruSearchString = '"PPN=' + str(catid) + '"'
         response = sru.search(sruSearchString,"GGC")
         noGGCRecords = response.sru.nr_of_records
@@ -175,12 +186,9 @@ class carrierEntry(tk.Frame):
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
                 # Job file
-                
-                if not os.path.exists(jobsFolder):
-                    os.makedirs(jobsFolder)
-                
+                               
                 jobFile = ''.join([shared.randomString(12),".txt"])
-                fJob = open(os.path.join(jobsFolder, jobFile), "w")
+                fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
                 lineOut = ','.join([catid, volumeNo, noVolumes, carrierType]) + '\n'
                 fJob.write(lineOut)
                         
@@ -211,7 +219,7 @@ class carrierEntry(tk.Frame):
         self.menu_file.add_command(label='New batch ...', command=self.on_create)
         self.menu_file.add_command(label='Open batch ...', command=self.on_open)
         self.menu_file.add_command(label='Finalise batch ...', command=self.on_finalise)
-        #self.menu_file.add_command(label='Exit', command=self.on_quit)
+        self.menu_file.add_command(label='Exit', command=self.on_quit)
 
         self.menu_edit = tk.Menu(self.menubar)
 

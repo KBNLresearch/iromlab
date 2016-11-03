@@ -14,4 +14,7 @@ cdrdaoExe = ""
 shnToolExe = ""
 tempDir = ""
 batchFolder = ""
+jobsFolder = ""
+rootFolder= ""
 secondsToTimeout = ""
+quitFlag = False
