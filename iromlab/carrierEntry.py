@@ -1,15 +1,6 @@
-"""
-Adapted from: http://www.datadependence.com/2016/04/how-to-build-gui-in-python-3/
-"""
-import sys
-import os
-import time
-import threading
-import shared
-import glob
-import config
-import logging
+#! /usr/bin/env python
 
+import os
 try:
     import tkinter as tk #Python 3.x
     from tkinter import ttk as ttk
@@ -18,62 +9,17 @@ except ImportError:
     import Tkinter as tk # Python 2.x
     import ttk as ttk
     import tkFileDialog
-
 import tkMessageBox
+import logging
+
+from kbapi import sru
+import config
 
 
-def workerTest():
-
-    preBatch = True
-
-    # Loop periodically scans value of config.batchFolder
-    while preBatch == True:
-        
-        if config.batchFolder != '': 
-            preBatch = False
-            print('batchFolder set to ' + config.batchFolder)
-        else:
-            time.sleep(2)
-            print('waiting for batchFolder to be set ...')
-    
-    # Flag that marks end of batch (main processing loop keeps running while False)
-    endOfBatchFlag = False
-    
-    while endOfBatchFlag == False and config.quitFlag == False:
-        time.sleep(10)
-        # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
-        files.sort(key=lambda x: os.path.getctime(x))
-        
-        noFiles = len(files)
-        print(noFiles)
-
-        if noFiles > 0:
-            # Identify oldest file
-            fileOldest = files[0]
-            
-            # Open file and read contents 
-            fOldest = open(fileOldest, "r")
-            lines = fOldest.readlines()
-            fOldest.close()
-            print(lines)
-            # Remove file
-            os.remove(fileOldest)
-            
-            if lines[0] == 'EOB\n':
-                # End of current batch
-                endOfBatchFlag = True
-                quit()
-                 
-def representsInt(s):
-    # Source: http://stackoverflow.com/a/1267145
-    try: 
-        int(s)
-        return True
-    except ValueError:
-        return False
-    
 class carrierEntry(tk.Frame):
+
+    # This class defines the graphical user interface + associated functions
+    # for associated actions
     
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
@@ -94,7 +40,7 @@ class carrierEntry(tk.Frame):
         self.dir_opt = options = {}
         options['initialdir'] = 'E:\\'
         options['mustexist'] = False
-        options['parent'] = root
+        options['parent'] = self.root
         options['title'] = 'Select batch directory'
         config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
         
@@ -286,13 +232,3 @@ class carrierEntry(tk.Frame):
                 
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
- 
-if __name__ == '__main__':
-
-    root = tk.Tk()
-    carrierEntry(root)
-    
-    t1 = threading.Thread(target=workerTest, args=[])
-    t1.start()
-    root.mainloop()
-    t1.join()
