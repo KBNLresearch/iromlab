@@ -21,14 +21,11 @@ except ImportError:
 import tkMessageBox
 from kbapi import sru
 
-#global batchFolder
-#batchFolder = ''
-#workspace = 'E:/workspace'
-
 def workerTest():
 
     preBatch = True
 
+    # Loop periodically scans value of config.batchFolder
     while preBatch == True:
         
         if config.batchFolder != '': 
@@ -81,7 +78,7 @@ class carrierEntry(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
         self.init_gui()
-        self.jobsFolder = ''
+        self.readyToStart = False
          
     def on_quit(self):
         # Wait until the disc that is currently being pocessed has 
@@ -118,7 +115,8 @@ class carrierEntry(tk.Frame):
             except IOError:
                 msg = 'Cannot create jobs folder ' + config.jobsFolder
                 tkMessageBox.showerror("Error", msg)
-             
+        self.readyToStart = True
+        
     def on_open(self):
         # Open existing batch
         
@@ -130,6 +128,7 @@ class carrierEntry(tk.Frame):
         options['title'] = 'Select batch directory'
         config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
         config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
+        self.readyToStart = True
         
     def on_finalise(self):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
@@ -162,7 +161,10 @@ class carrierEntry(tk.Frame):
         response = sru.search(sruSearchString,"GGC")
         noGGCRecords = response.sru.nr_of_records
         
-        if representsInt(volumeNo) == False:
+        if self.readyToStart == False:
+            msg = "You must first create a batch or open an existing batch"
+            tkMessageBox.showerror("Not ready", msg)
+        elif representsInt(volumeNo) == False:
             msg = "Volume number must be integer value"
             tkMessageBox.showerror("Type mismatch", msg)
         elif representsInt(noVolumes) == False:
