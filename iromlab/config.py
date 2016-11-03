@@ -15,4 +15,3 @@ shnToolExe = ""
 tempDir = ""
 batchFolder = ""
 secondsToTimeout = ""
-

@@ -7,30 +7,44 @@ import time
 import threading
 import shared
 import glob
+import config
 
 try:
     import tkinter as tk #Python 3.x
     from tkinter import ttk as ttk
+    import filedialog as tkFileDialog
 except ImportError:
     import Tkinter as tk # Python 2.x
     import ttk as ttk
+    import tkFileDialog
 
 import tkMessageBox
 from kbapi import sru
 
-global jobsFolder
-jobsFolder = 'E:/nimbietest/jobs/'
+#global batchFolder
+#batchFolder = ''
+#workspace = 'E:/workspace'
 
 def workerTest():
 
+    preBatch = True
+
+    while preBatch == True:
+        
+        if config.batchFolder != '': 
+            preBatch = False
+            print('batchFolder set to ' + config.batchFolder)
+        else:
+            time.sleep(2)
+            print('waiting for batchFolder to be set ...')
+    
     # Flag that marks end of batch (main processing loop keeps running while False)
     endOfBatchFlag = False
     
     while endOfBatchFlag == False:
         time.sleep(10)
         # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(jobsFolder + '*'))
-        #files.sort(key=lambda x: os.path.getmtime(x))
+        files = filter(os.path.isfile, glob.glob(config.batchFolder + '*'))
         files.sort(key=lambda x: os.path.getctime(x))
         
         noFiles = len(files)
@@ -67,11 +81,41 @@ class carrierEntry(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
         self.init_gui()
- 
+         
     def on_quit(self):
         # Exits program.
         quit()
     
+    def on_create(self):
+        # Create new batch
+        
+        # defining options for opening a directory
+        self.dir_opt = options = {}
+        options['initialdir'] = 'E:\\'
+        options['mustexist'] = False
+        options['parent'] = root
+        options['title'] = 'Select batch directory'
+        config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
+        
+        # Create batch folder if it doesn't exist already
+        if not os.path.exists(config.batchFolder):
+            try:
+                os.makedirs(config.batchFolder)
+            except IOError:
+                msg = 'Cannot create batch folder ' + config.batchFolder
+                tkMessageBox.showerror("Error",msg)
+               
+    def on_open(self):
+        # Open existing batch
+        
+        # defining options for opening a directory
+        self.dir_opt = options = {}
+        options['initialdir'] = 'E:\\'
+        options['mustexist'] = True
+        options['parent'] = root
+        options['title'] = 'Select batch directory'
+        config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
+        
     def on_finalise(self):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
         added. Are you really sure you want to do this?"
@@ -160,6 +204,21 @@ class carrierEntry(tk.Frame):
         self.root.option_add('*tearOff', 'FALSE')
  
         self.grid(column=0, row=0, sticky='nsew')
+        
+        self.menubar = tk.Menu(self.root)
+ 
+        self.menu_file = tk.Menu(self.menubar)
+        self.menu_file.add_command(label='New batch ...', command=self.on_create)
+        self.menu_file.add_command(label='Open batch ...', command=self.on_open)
+        self.menu_file.add_command(label='Finalise batch ...', command=self.on_finalise)
+        #self.menu_file.add_command(label='Exit', command=self.on_quit)
+
+        self.menu_edit = tk.Menu(self.menubar)
+
+        self.menubar.add_cascade(menu=self.menu_file, label='File')
+        self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
+
+        self.root.config(menu=self.menubar)
  
         tk.Label(self, text='Enter carrier details').grid(column=0, row=0,
                 columnspan=4)
@@ -202,16 +261,12 @@ class carrierEntry(tk.Frame):
         self.submit_button = tk.Button(self, text='Submit',
                 command=self.submit)
         self.submit_button.grid(column=0, row=11,  columnspan=4)
-        
-        self.submit_button = tk.Button(self, text='Finalise batch',
-                command=self.on_finalise)
-        self.submit_button.grid(column=3, row=11,  columnspan=4)
-        
-        
+                
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
  
 if __name__ == '__main__':
+
     root = tk.Tk()
     carrierEntry(root)
     
