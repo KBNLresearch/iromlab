@@ -197,7 +197,7 @@ class carrierEntry(tk.Frame):
         self.root.option_add('*tearOff', 'FALSE')
  
         self.grid(column=0, row=0, sticky='nsew')
-        
+        """
         self.menubar = tk.Menu(self.root)
  
         self.menu_file = tk.Menu(self.menubar)
@@ -212,39 +212,45 @@ class carrierEntry(tk.Frame):
         self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
 
         self.root.config(menu=self.menubar)
+        """
+             
+        b1 = tk.Button(self, text="New", height=2, width=6, padx=2, pady=2, command=self.on_create).grid(column=0, row=1, sticky='w')
+        b2 = tk.Button(self, text="Open", height=2, width=6, padx=2, pady=2, command=self.on_open).grid(column=1, row=1, sticky='w')
+        b3 = tk.Button(self, text="Finalize", height=2, width=6, padx=2, pady=2, command=self.on_finalise).grid(column=2, row=1, sticky='w')
+        b4 = tk.Button(self, text="Exit", height=2, width=6, padx=2, pady=2, command=self.on_quit).grid(column=3, row=1, sticky='w')
  
-        tk.Label(self, text='Enter carrier details').grid(column=0, row=0,
-                columnspan=4)
+        #tk.Label(self, text='Enter carrier details').grid(column=0, row=0,
+        #        columnspan=4)
        
-        ttk.Separator(self, orient='horizontal').grid(column=0,
-                row=1, columnspan=4, sticky='ew')
+        #ttk.Separator(self, orient='horizontal').grid(column=0,
+        #        row=1, columnspan=4, sticky='ew')
                 
         # Catalog ID        
-        tk.Label(self, text='PPN').grid(column=0, row=2,
+        tk.Label(self, text='PPN').grid(column=0, row=4,
                 sticky='w')
         self.catid_entry = tk.Entry(self, width=12)
-        self.catid_entry.grid(column=2, row = 2)
+        self.catid_entry.grid(column=2, row = 4)
 
         # Volume number
-        tk.Label(self, text='Volume number').grid(column=0, row=3,
+        tk.Label(self, text='Volume number').grid(column=0, row=5,
                 sticky='w')
         self.volumeNo_entry = tk.Entry(self, width=5)
-        self.volumeNo_entry.grid(column=2, row=3)
+        self.volumeNo_entry.grid(column=2, row=5)
 
         # Number of volumes
-        tk.Label(self, text='Number of volumes').grid(column=0, row=4,
+        tk.Label(self, text='Number of volumes').grid(column=0, row=6,
                 sticky='w')
         self.noVolumes_entry = tk.Entry(self, width=5)
-        self.noVolumes_entry.grid(column=2, row=4)
+        self.noVolumes_entry.grid(column=2, row=6)
  
         # Carrier type (radio button select)
         self.v = tk.IntVar()
         self.v.set(1)
         
-        tk.Label(self, text='Carrier type').grid(column=0, row=5,
+        tk.Label(self, text='Carrier type').grid(column=0, row=7,
                 sticky='w', columnspan=4)
                 
-        rowValue = 5
+        rowValue = 8
         
         for carrierType in self.carrierTypes:
             self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1]).grid(column=2, row=rowValue, 
@@ -253,7 +259,7 @@ class carrierEntry(tk.Frame):
         
         self.submit_button = tk.Button(self, text='Submit',
                 command=self.submit)
-        self.submit_button.grid(column=0, row=11,  columnspan=4)
+        self.submit_button.grid(column=1, row=13,  columnspan=4)
                 
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
