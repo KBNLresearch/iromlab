@@ -56,6 +56,7 @@ class carrierEntry(tk.Frame):
         # Wait until the disc that is currently being pocessed has 
         # finished, and quit (batch can be resumed by opening it in the File dialog)
         config.quitFlag = True
+        self.bExit.config(state = 'disabled')
         quit()
     
     def on_create(self):
@@ -94,9 +95,9 @@ class carrierEntry(tk.Frame):
             format='%(asctime)s - %(levelname)s - %(message)s')
             
         # Update state of buttons
-        self.b1.config(state = 'disabled')
-        self.b2.config(state = 'disabled')
-        self.submit_button.config(state = 'active')
+        self.bNew.config(state = 'disabled')
+        self.bOpen.config(state = 'disabled')
+        self.submit_button.config(state = 'normal')
         self.readyToStart = True
         
     def on_open(self):
@@ -116,9 +117,9 @@ class carrierEntry(tk.Frame):
             format='%(asctime)s - %(levelname)s - %(message)s')
         
         # Update state of buttons
-        self.b1.config(state = 'disabled')
-        self.b2.config(state = 'disabled')
-        self.submit_button.config(state = 'active')
+        self.bNew.config(state = 'disabled')
+        self.bOpen.config(state = 'disabled')
+        self.submit_button.config(state = 'normal')
         self.readyToStart = True
            
     def on_finalise(self):
@@ -132,6 +133,7 @@ class carrierEntry(tk.Frame):
             fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
             lineOut = 'EOB\n'
             fJob.write(lineOut)
+            self.bFinalise.config(state = 'disabled')
             quit()
  
     def submit(self):
@@ -212,14 +214,14 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(3, weight=1, uniform='a')
        
         # Batch toolbar     
-        self.b1 = tk.Button(self, text="New", height=2, width=4, command=self.on_create)
-        self.b1.grid(column=0, row=1, sticky='ew')
-        self.b2 = tk.Button(self, text="Open", height=2, width=4, command=self.on_open)
-        self.b2.grid(column=1, row=1, sticky='ew')
-        self.b3 = tk.Button(self, text="Finalize", height=2, width=4, command=self.on_finalise)
-        self.b3.grid(column=2, row=1, sticky='ew')
-        self.b4 = tk.Button(self, text="Exit", height=2, width=4, command=self.on_quit)
-        self.b4.grid(column=3, row=1, sticky='ew')
+        self.bNew = tk.Button(self, text="New", height=2, width=4, command=self.on_create)
+        self.bNew.grid(column=0, row=1, sticky='ew')
+        self.bOpen = tk.Button(self, text="Open", height=2, width=4, command=self.on_open)
+        self.bOpen.grid(column=1, row=1, sticky='ew')
+        self.bFinalise = tk.Button(self, text="Finalize", height=2, width=4, command=self.on_finalise)
+        self.bFinalise.grid(column=2, row=1, sticky='ew')
+        self.bExit = tk.Button(self, text="Exit", height=2, width=4, command=self.on_quit)
+        self.bExit.grid(column=3, row=1, sticky='ew')
                  
         # Entry elements for each carrier
    
