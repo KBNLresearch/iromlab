@@ -49,9 +49,9 @@ class carrierEntry(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
-        self.init_gui()
         self.readyToStart = False
-         
+        self.init_gui()
+                 
     def on_quit(self):
         # Wait until the disc that is currently being pocessed has 
         # finished, and quit (batch can be resumed by opening it in the File dialog)
@@ -92,7 +92,11 @@ class carrierEntry(tk.Frame):
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
-
+            
+        # Update state of buttons
+        self.b1.config(state = 'disabled')
+        self.b2.config(state = 'disabled')
+        self.submit_button.config(state = 'active')
         self.readyToStart = True
         
     def on_open(self):
@@ -100,7 +104,7 @@ class carrierEntry(tk.Frame):
         
         # defining options for opening a directory
         self.dir_opt = options = {}
-        options['initialdir'] = 'E:\\'
+        options['initialdir'] = 'E:\\nimbieTest'
         options['mustexist'] = True
         options['parent'] = self.root
         options['title'] = 'Select batch directory'
@@ -111,8 +115,12 @@ class carrierEntry(tk.Frame):
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
         
+        # Update state of buttons
+        self.b1.config(state = 'disabled')
+        self.b2.config(state = 'disabled')
+        self.submit_button.config(state = 'active')
         self.readyToStart = True
-        
+           
     def on_finalise(self):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
         added. Are you really sure you want to do this?"
@@ -203,34 +211,18 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(2, weight=1, uniform='a')
         self.grid_columnconfigure(3, weight=1, uniform='a')
        
-        """
-        self.menubar = tk.Menu(self.root)
- 
-        self.menu_file = tk.Menu(self.menubar)
-        self.menu_file.add_command(label='New batch ...', command=self.on_create)
-        self.menu_file.add_command(label='Open batch ...', command=self.on_open)
-        self.menu_file.add_command(label='Finalise batch ...', command=self.on_finalise)
-        self.menu_file.add_command(label='Exit', command=self.on_quit)
-
-        self.menu_edit = tk.Menu(self.menubar)
-
-        self.menubar.add_cascade(menu=self.menu_file, label='File')
-        self.menubar.add_cascade(menu=self.menu_edit, label='Edit')
-
-        self.root.config(menu=self.menubar)
-        """
-             
-        b1 = tk.Button(self, text="New", height=2, width=4, command=self.on_create).grid(column=0, row=1, sticky='ew')
-        b2 = tk.Button(self, text="Open", height=2, width=4, command=self.on_open).grid(column=1, row=1, sticky='ew')
-        b3 = tk.Button(self, text="Finalize", height=2, width=4, command=self.on_finalise).grid(column=2, row=1, sticky='ew')
-        b4 = tk.Button(self, text="Exit", height=2, width=4, command=self.on_quit).grid(column=3, row=1, sticky='ew')
- 
-        #tk.Label(self, text='Enter carrier details').grid(column=0, row=0,
-        #        columnspan=4)
-       
-        #ttk.Separator(self, orient='horizontal').grid(column=0,
-        #        row=1, columnspan=4, sticky='ew')
-                
+        # Batch toolbar     
+        self.b1 = tk.Button(self, text="New", height=2, width=4, command=self.on_create)
+        self.b1.grid(column=0, row=1, sticky='ew')
+        self.b2 = tk.Button(self, text="Open", height=2, width=4, command=self.on_open)
+        self.b2.grid(column=1, row=1, sticky='ew')
+        self.b3 = tk.Button(self, text="Finalize", height=2, width=4, command=self.on_finalise)
+        self.b3.grid(column=2, row=1, sticky='ew')
+        self.b4 = tk.Button(self, text="Exit", height=2, width=4, command=self.on_quit)
+        self.b4.grid(column=3, row=1, sticky='ew')
+                 
+        # Entry elements for each carrier
+   
         # Catalog ID        
         tk.Label(self, text='PPN').grid(column=0, row=4,
                 sticky='w')
@@ -263,7 +255,7 @@ class carrierEntry(tk.Frame):
             sticky='w')
             rowValue += 1
         
-        self.submit_button = tk.Button(self, text='Submit', height=2, width=4, bg = '#ded4db',
+        self.submit_button = tk.Button(self, text='Submit', height=2, width=4, bg = '#ded4db', state = 'disabled',
                 command=self.submit)
         self.submit_button.grid(column=1, row=13, sticky='ew')
                 
