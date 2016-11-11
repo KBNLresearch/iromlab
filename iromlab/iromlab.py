@@ -52,14 +52,14 @@ class carrierEntry(tk.Frame):
         self.readyToStart = False
         self.init_gui()
                  
-    def on_quit(self):
+    def on_quit(self, event=None):
         # Wait until the disc that is currently being pocessed has 
         # finished, and quit (batch can be resumed by opening it in the File dialog)
         config.quitFlag = True
         self.bExit.config(state = 'disabled')
         quit()
     
-    def on_create(self):
+    def on_create(self, event=None):
         # Create new batch
         
         # defining options for opening a directory
@@ -100,7 +100,7 @@ class carrierEntry(tk.Frame):
         self.submit_button.config(state = 'normal')
         self.readyToStart = True
         
-    def on_open(self):
+    def on_open(self, event=None):
         # Open existing batch
         
         # defining options for opening a directory
@@ -122,7 +122,7 @@ class carrierEntry(tk.Frame):
         self.submit_button.config(state = 'normal')
         self.readyToStart = True
            
-    def on_finalise(self):
+    def on_finalise(self, event=None):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
         added. Are you really sure you want to do this?"
         if tkMessageBox.askyesno("Confirm", msg):
@@ -136,7 +136,7 @@ class carrierEntry(tk.Frame):
             self.bFinalise.config(state = 'disabled')
             quit()
  
-    def submit(self):
+    def on_submit(self, event=None):
             
         # Fetch entered values (strip any leading / tralue whitespace characters)   
         catid = self.catid_entry.get().strip()
@@ -201,10 +201,17 @@ class carrierEntry(tk.Frame):
             ['dvd-rom',3],
             ['dvd-video',4]
         ]
-        
+                
         # Build GUI
         self.root.title('iromlab')
         self.root.option_add('*tearOff', 'FALSE')
+        
+        # Define bindings for keyboard shortcuts
+        self.root.bind_all('<Control-Key-n>', self.on_create)
+        self.root.bind_all('<Control-Key-o>', self.on_open)
+        self.root.bind_all('<Control-Key-f>', self.on_finalise)
+        self.root.bind_all('<Control-Key-e>', self.on_quit)
+        self.root.bind_all('<Control-Key-s>', self.on_submit)
  
         #self.grid(column=0, row=0, sticky='nsew')
         self.grid(column=0, row=0, sticky='ew')
@@ -214,13 +221,13 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(3, weight=1, uniform='a')
        
         # Batch toolbar     
-        self.bNew = tk.Button(self, text="New", height=2, width=4, command=self.on_create)
+        self.bNew = tk.Button(self, text="New", height=2, width=4, underline=0, command=self.on_create)
         self.bNew.grid(column=0, row=1, sticky='ew')
-        self.bOpen = tk.Button(self, text="Open", height=2, width=4, command=self.on_open)
+        self.bOpen = tk.Button(self, text="Open", height=2, width=4, underline=0, command=self.on_open)
         self.bOpen.grid(column=1, row=1, sticky='ew')
-        self.bFinalise = tk.Button(self, text="Finalize", height=2, width=4, command=self.on_finalise)
+        self.bFinalise = tk.Button(self, text="Finalize", height=2, width=4, underline=0, command=self.on_finalise)
         self.bFinalise.grid(column=2, row=1, sticky='ew')
-        self.bExit = tk.Button(self, text="Exit", height=2, width=4, command=self.on_quit)
+        self.bExit = tk.Button(self, text="Exit", height=2, width=4, underline=0, command=self.on_quit)
         self.bExit.grid(column=3, row=1, sticky='ew')
                  
         # Entry elements for each carrier
@@ -257,8 +264,8 @@ class carrierEntry(tk.Frame):
             sticky='w')
             rowValue += 1
         
-        self.submit_button = tk.Button(self, text='Submit', height=2, width=4, bg = '#ded4db', state = 'disabled',
-                command=self.submit)
+        self.submit_button = tk.Button(self, text='Submit', height=2, width=4, underline=0, bg = '#ded4db', state = 'disabled',
+                command=self.on_submit)
         self.submit_button.grid(column=1, row=13, sticky='ew')
                 
         for child in self.winfo_children():
