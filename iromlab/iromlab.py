@@ -134,6 +134,7 @@ class carrierEntry(tk.Frame):
             lineOut = 'EOB\n'
             fJob.write(lineOut)
             self.bFinalise.config(state = 'disabled')
+            self.submit_button.config(state = 'disabled')
             quit()
  
     def on_submit(self, event=None):
@@ -278,13 +279,13 @@ class carrierEntry(tk.Frame):
 
 def workerTest():
 
-    preBatch = True
+    waitingForBatchDir = True
 
     # Loop periodically scans value of config.batchFolder
-    while preBatch == True:
+    while waitingForBatchDir == True:
         
         if config.batchFolder != '': 
-            preBatch = False
+            waitingForBatchDir = False
             print('batchFolder set to ' + config.batchFolder)
         else:
             time.sleep(2)
@@ -452,33 +453,39 @@ def isoBusterExtract(writeDirectory, session):
     dictOut["stderr"] = err
     dictOut["log"] = log
         
-    return(dictOut)    
+    return(dictOut)
 
-def paranoiaRip(writeDirectory):
-
+def isoBusterRipAudio(writeDirectory, session):
+    # Rip audio to WAV (to be replaced by dBPoweramp wrapper in final version)
+    # IsoBuster /d:i /ei:"E:\nimbieTest\" /et:wav /ep:oea /ep:npc /c /m /nosplash /s:1 /t:all /l:"E:\nimbieTest\ib.log"
+    # Goes wrong for enhanced audio CDs: data track in 2nd session is mistakenly extracted as WAV! 
+    
     logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
 
-    args = [config.cdParanoiaExe]
-    args.append("-d")
-    args.append("".join([config.cdDriveLetter, ":"]))
-    args.append("-B")
-    args.append("-l")
-    args.append(logFile)
+    args = [config.isoBusterExe]
+    args.append("".join(["/d:", config.cdDriveLetter, ":"]))
+    args.append("".join(["/ei:", writeDirectory]))
+    args.append("/et:u")
+    args.append("/ep:oea")
+    args.append("/ep:npc")
+    args.append("/c")
+    args.append("/m")
+    args.append("/nosplash")
+    args.append("".join(["/s:",str(session)]))
+    args.append("/t:all")
+    args.append("".join(["/l:", logFile]))
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
 
-    # Not possible to define output path, so we have to temporarily
-    # go to the write directory
-    with shared.cd(writeDirectory):
-        status, out, err = shared.launchSubProcess(args)
+    status, out, err = shared.launchSubProcess(args)
 
     fLog = open(logFile, 'r')
     log = fLog.read()
 
     fLog.close()
     os.remove(logFile)
-        
+
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -486,44 +493,9 @@ def paranoiaRip(writeDirectory):
     dictOut["stdout"] = out
     dictOut["stderr"] = err
     dictOut["log"] = log
-    
-    return(dictOut)  
+        
+    return(dictOut)    
 
-def cdrdaoExtract(writeDirectory, session):
-    # Extracts selected session to a single bin/toc file
-    
-    binFile = os.path.join(writeDirectory, "image.bin")
-    tocFile = os.path.join(writeDirectory, "image.toc")
-
-    args = [config.cdrdaoExe]
-    args.append("read-cd")
-    args.append("--read-raw")
-    args.append("--device")
-    args.append(config.cdDeviceName)
-    args.append("--datafile")
-    args.append(binFile)
-    args.append("--driver")
-    args.append("generic-mmc-raw")
-    args.append("--session")
-    args.append(str(session))
-    args.append(tocFile)
-
-    # Command line as string (used for logging purposes only)
-    cmdStr = " ".join(args)
-    
-    # Not possible to define output path, so we have to temporarily
-    # go to the write directory
-    with shared.cd(writeDirectory):
-        status, out, err = shared.launchSubProcess(args)
-    
-    # All results to dictionary
-    dictOut = {}
-    dictOut["cmdStr"] = cmdStr
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    
-    return(dictOut)  
 
 def generate_file_md5(fileIn):
     # Generate MD5 hash of file
@@ -720,10 +692,6 @@ def mainOld():
     unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
     rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
     isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
-    cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
-    cdParanoiaExe = "C:/cdio/cd-paranoia.exe"
-    cdrdaoExe = "C:/cdrdao/cdrdao.exe"
-    shnToolExe = "C:/shntool/shntool.exe"
     tempDir = "C:/Temp/"
     # Following args to be given from command line
     batchFolder = "E:/nimbietest/"
@@ -738,10 +706,6 @@ def mainOld():
     config.unloadExe = unloadExe
     config.rejectExe = rejectExe
     config.isoBusterExe = isoBusterExe
-    config.cueRipperExe = cueRipperExe
-    config.cdParanoiaExe = cdParanoiaExe
-    config.cdrdaoExe = cdrdaoExe
-    config.shnToolExe = shnToolExe
     config.tempDir = os.path.normpath(tempDir)
     config.batchFolder = os.path.normpath(batchFolder)
     config.secondsToTimeout = secondsToTimeout
