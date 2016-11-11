@@ -64,7 +64,7 @@ class carrierEntry(tk.Frame):
         
         # defining options for opening a directory
         self.dir_opt = options = {}
-        options['initialdir'] = 'E:\\'
+        options['initialdir'] = config.rootDir
         options['mustexist'] = False
         options['parent'] = self.root
         options['title'] = 'Select batch directory'
@@ -105,7 +105,7 @@ class carrierEntry(tk.Frame):
         
         # defining options for opening a directory
         self.dir_opt = options = {}
-        options['initialdir'] = 'E:\\nimbieTest'
+        options['initialdir'] = config.rootDir
         options['mustexist'] = True
         options['parent'] = self.root
         options['title'] = 'Select batch directory'
@@ -193,26 +193,11 @@ class carrierEntry(tk.Frame):
                 self.noVolumes_entry.delete(0, tk.END)
         
     def init_gui(self):
-        
-        # List with all possible carrier types + corresponding button codes
-        self.carrierTypes = [
-            ['cd-rom',1],
-            ['cd-audio',2],
-            ['dvd-rom',3],
-            ['dvd-video',4]
-        ]
-                
+                        
         # Build GUI
         self.root.title('iromlab')
         self.root.option_add('*tearOff', 'FALSE')
-        
-        # Define bindings for keyboard shortcuts
-        self.root.bind_all('<Control-Key-n>', self.on_create)
-        self.root.bind_all('<Control-Key-o>', self.on_open)
-        self.root.bind_all('<Control-Key-f>', self.on_finalise)
-        self.root.bind_all('<Control-Key-e>', self.on_quit)
-        self.root.bind_all('<Control-Key-s>', self.on_submit)
- 
+             
         #self.grid(column=0, row=0, sticky='nsew')
         self.grid(column=0, row=0, sticky='ew')
         self.grid_columnconfigure(0, weight=1, uniform='a')
@@ -253,6 +238,15 @@ class carrierEntry(tk.Frame):
         # Carrier type (radio button select)
         self.v = tk.IntVar()
         self.v.set(1)
+
+        # List with all possible carrier types, corresponding button codes, keyboard shortcut character
+        # (keyboard shortcuts not actually used yet)
+        self.carrierTypes = [
+            ['cd-rom',1,0],
+            ['cd-audio',2,3],
+            ['dvd-rom',3,0],
+            ['dvd-video',4,4]
+        ]        
         
         tk.Label(self, text='Carrier type').grid(column=0, row=7,
                 sticky='w', columnspan=4)
@@ -260,13 +254,23 @@ class carrierEntry(tk.Frame):
         rowValue = 7
         
         for carrierType in self.carrierTypes:
-            self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1]).grid(column=1, row=rowValue, 
-            sticky='w')
+            #self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1], underline=carrierType[2])
+            self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1])
+            self.rb.grid(column=1, row=rowValue, sticky='w')
             rowValue += 1
         
         self.submit_button = tk.Button(self, text='Submit', height=2, width=4, underline=0, bg = '#ded4db', state = 'disabled',
                 command=self.on_submit)
         self.submit_button.grid(column=1, row=13, sticky='ew')
+        
+        # Define bindings for keyboard shortcuts: buttons
+        self.root.bind_all('<Control-Key-n>', self.on_create)
+        self.root.bind_all('<Control-Key-o>', self.on_open)
+        self.root.bind_all('<Control-Key-f>', self.on_finalise)
+        self.root.bind_all('<Control-Key-e>', self.on_quit)
+        self.root.bind_all('<Control-Key-s>', self.on_submit)
+        
+        # TODO keyboard shortcuts for Radiobox selections: couldn't find ANY info on how to do this!
                 
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
@@ -738,7 +742,7 @@ def mainOld():
     config.cdParanoiaExe = cdParanoiaExe
     config.cdrdaoExe = cdrdaoExe
     config.shnToolExe = shnToolExe
-    config.tempDir = tempDir
+    config.tempDir = os.path.normpath(tempDir)
     config.batchFolder = os.path.normpath(batchFolder)
     config.secondsToTimeout = secondsToTimeout
 
@@ -798,6 +802,7 @@ def main():
     cdrdaoExe = "C:/cdrdao/cdrdao.exe"
     shnToolExe = "C:/shntool/shntool.exe"
     tempDir = "C:/Temp/"
+    rootDir = "E:/nimbieTest"
     secondsToTimeout = "20"
     
     # Make configuration available to any module that imports 'config.py'
@@ -813,7 +818,8 @@ def main():
     config.cdParanoiaExe = cdParanoiaExe
     config.cdrdaoExe = cdrdaoExe
     config.shnToolExe = shnToolExe
-    config.tempDir = tempDir
+    config.tempDir = os.path.normpath(tempDir)
+    config.rootDir = os.path.normpath(rootDir)
     config.secondsToTimeout = secondsToTimeout
     
     # Make logger variable global
