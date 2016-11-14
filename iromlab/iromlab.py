@@ -761,10 +761,6 @@ def main():
     unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
     rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
     isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
-    cueRipperExe = "C:/CUETools/CUETools.ConsoleRipper.exe"
-    cdParanoiaExe = "C:/cdio/cd-paranoia.exe"
-    cdrdaoExe = "C:/cdrdao/cdrdao.exe"
-    shnToolExe = "C:/shntool/shntool.exe"
     tempDir = "C:/Temp/"
     rootDir = "E:/nimbieTest"
     secondsToTimeout = "20"
@@ -778,10 +774,6 @@ def main():
     config.unloadExe = unloadExe
     config.rejectExe = rejectExe
     config.isoBusterExe = isoBusterExe
-    config.cueRipperExe = cueRipperExe
-    config.cdParanoiaExe = cdParanoiaExe
-    config.cdrdaoExe = cdrdaoExe
-    config.shnToolExe = shnToolExe
     config.tempDir = os.path.normpath(tempDir)
     config.rootDir = os.path.normpath(rootDir)
     config.secondsToTimeout = secondsToTimeout
