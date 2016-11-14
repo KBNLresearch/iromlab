@@ -319,7 +319,53 @@ def workerTest():
                 # End of current batch
                 endOfBatchFlag = True
                 quit()
-                 
+
+def cdWorker():
+
+    # Worker function that monitors the job queue and processes the discs in FIFO order 
+
+    # Flag is True while batchFolder is undefined (variable set by user in GUI)
+    waitingForBatchDir = True
+
+    # Loop periodically scans value of config.batchFolder
+    while waitingForBatchDir == True:
+        
+        if config.batchFolder != '': 
+            waitingForBatchDir = False
+            logging.info(''.join(['batchFolder set to ', config.batchFolder]))
+        else:
+            time.sleep(2)
+            #print('waiting for batchFolder to be set ...')
+    
+    # Flag that marks end of batch (main processing loop keeps running while False)
+    endOfBatchFlag = False
+    
+    while endOfBatchFlag == False and config.quitFlag == False:
+        time.sleep(10)
+        # Get directory listing, sorted by creation time
+        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
+        files.sort(key=lambda x: os.path.getctime(x))
+        
+        noFiles = len(files)
+        print(noFiles)
+
+        if noFiles > 0:
+            # Identify oldest file
+            fileOldest = files[0]
+            
+            # Open file and read contents 
+            fOldest = open(fileOldest, "r")
+            lines = fOldest.readlines()
+            fOldest.close()
+            print(lines)
+            # Remove file
+            os.remove(fileOldest)
+            
+            if lines[0] == 'EOB\n':
+                # End of current batch
+                endOfBatchFlag = True
+                quit()
+                
 def representsInt(s):
     # Source: http://stackoverflow.com/a/1267145
     try: 
@@ -465,7 +511,7 @@ def isoBusterRipAudio(writeDirectory, session):
     args = [config.isoBusterExe]
     args.append("".join(["/d:", config.cdDriveLetter, ":"]))
     args.append("".join(["/ei:", writeDirectory]))
-    args.append("/et:u")
+    args.append("/et:wav")
     args.append("/ep:oea")
     args.append("/ep:npc")
     args.append("/c")
@@ -615,22 +661,26 @@ def processDisc(id):
         if carrierInfo["containsAudio"] == True:
             logging.info('*** Ripping audio ***')
             # Rip audio to WAV
-            # TODO:
-            # - dBpoweramp doesn't have command line interface
-            # - CueRipper fails on Nimbie drive
-            # - cdparanoia 10.2 (Windows) cannot extract audio from enhanced CDs
-            # - cdrdao works, but only only produces bin/ toc files
+            # TODO: replace by dBpoweramp wrapper in  production version
+            # Also IsoBuster (3.8.0) erroneously extracts data from any data sessions here as well
+            # (and saves file with .wav file extension!)
             dirOut = os.path.join(dirDisc, "audio")
             if not os.path.exists(dirOut):
                 os.makedirs(dirOut)
                 
-            resultCdrdao = cdrdaoExtract(dirOut, 1)
-            resultShnTool = cdrdaoExtract(dirOut, 1)
-            logging.info(''.join(['cdrdao command: ', resultCdrdao['cmdStr']]))
-            logging.info(''.join(['cdrdao-status: ', str(resultCdrdao['status'])]))
-            # TODO: maybe include full cdrdao output?
+            resultIsoBuster = isoBusterRipAudio(dirOut, 1)
             checksumDirectory(dirOut)
-                        
+            
+            statusIsoBuster = resultIsoBuster["log"].strip()
+              
+            if statusIsoBuster != "0":
+                reject = True
+                logging.error("Isobuster exited with error(s)")
+
+            logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
+            logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
+            logging.info(''.join(['isobuster-log: ', str(resultIsoBuster[statusIsoBuster])]))
+                
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 print("--- Extract data session of cdExtra to ISO")
@@ -641,7 +691,10 @@ def processDisc(id):
                 
                 resultIsoBuster = isoBusterExtract(dirOut, 2)
                 checksumDirectory(dirOut)
-                if resultIsoBuster["log"].strip() != "0":
+                
+                statusIsoBuster = resultIsoBuster["log"].strip()
+                
+                if statusIsoBuster != "0":
                     reject = True
                     logging.error("Isobuster exited with error(s)")
                 
@@ -658,13 +711,15 @@ def processDisc(id):
                 
             resultIsoBuster = isoBusterExtract(dirOut, 1)
             checksumDirectory(dirOut)
+            statusIsoBuster = resultIsoBuster["log"].strip()
+            
             if resultIsoBuster["log"].strip() != "0":
                 reject = True
                 logging.error("Isobuster exited with error(s)")
             
             logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
             logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
-            logging.info(''.join(['isobuster-log: ', resultIsoBuster['log'].strip()]))
+            logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
 
         print("--- Entering  unload")
 
