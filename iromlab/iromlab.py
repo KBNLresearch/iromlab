@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ETree
 import drivers
 import win32api
 import threading
+import uuid
 import wmi # Dependency: python -m pip install wmi
 import pprint
 import hashlib
@@ -181,12 +182,14 @@ class carrierEntry(tk.Frame):
             title = record.titles[0]
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
-                # Job file
-                               
-                jobFile = ''.join([shared.randomString(12),".txt"])
+                # Create unique identifier for this job (UUID, based on host ID and current time)
+                jobID = str(uuid.uuid1())
+                # Create and populate Job file                      
+                jobFile = ''.join([jobID,".txt"])
                 fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
-                lineOut = ','.join([catid, volumeNo, noVolumes, carrierType]) + '\n'
+                lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, noVolumes, carrierType]) + '\n'
                 fJob.write(lineOut)
+                fJob.close()
                         
                 # Reset entry fields        
                 self.catid_entry.delete(0, tk.END)
@@ -275,96 +278,6 @@ class carrierEntry(tk.Frame):
                 
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
-
-
-def workerTest():
-
-    waitingForBatchDir = True
-
-    # Loop periodically scans value of config.batchFolder
-    while waitingForBatchDir == True:
-        
-        if config.batchFolder != '': 
-            waitingForBatchDir = False
-            print('batchFolder set to ' + config.batchFolder)
-        else:
-            time.sleep(2)
-            print('waiting for batchFolder to be set ...')
-    
-    # Flag that marks end of batch (main processing loop keeps running while False)
-    endOfBatchFlag = False
-    
-    while endOfBatchFlag == False and config.quitFlag == False:
-        time.sleep(10)
-        # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
-        files.sort(key=lambda x: os.path.getctime(x))
-        
-        noFiles = len(files)
-        print(noFiles)
-
-        if noFiles > 0:
-            # Identify oldest file
-            fileOldest = files[0]
-            
-            # Open file and read contents 
-            fOldest = open(fileOldest, "r")
-            lines = fOldest.readlines()
-            fOldest.close()
-            print(lines)
-            # Remove file
-            os.remove(fileOldest)
-            
-            if lines[0] == 'EOB\n':
-                # End of current batch
-                endOfBatchFlag = True
-                quit()
-
-def cdWorker():
-
-    # Worker function that monitors the job queue and processes the discs in FIFO order 
-
-    # Flag is True while batchFolder is undefined (variable set by user in GUI)
-    waitingForBatchDir = True
-
-    # Loop periodically scans value of config.batchFolder
-    while waitingForBatchDir == True:
-        
-        if config.batchFolder != '': 
-            waitingForBatchDir = False
-            logging.info(''.join(['batchFolder set to ', config.batchFolder]))
-        else:
-            time.sleep(2)
-            #print('waiting for batchFolder to be set ...')
-    
-    # Flag that marks end of batch (main processing loop keeps running while False)
-    endOfBatchFlag = False
-    
-    while endOfBatchFlag == False and config.quitFlag == False:
-        time.sleep(10)
-        # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
-        files.sort(key=lambda x: os.path.getctime(x))
-        
-        noFiles = len(files)
-        print(noFiles)
-
-        if noFiles > 0:
-            # Identify oldest file
-            fileOldest = files[0]
-            
-            # Open file and read contents 
-            fOldest = open(fileOldest, "r")
-            lines = fOldest.readlines()
-            fOldest.close()
-            print(lines)
-            # Remove file
-            os.remove(fileOldest)
-            
-            if lines[0] == 'EOB\n':
-                # End of current batch
-                endOfBatchFlag = True
-                quit()
                 
 def representsInt(s):
     # Source: http://stackoverflow.com/a/1267145
@@ -579,9 +492,15 @@ def checksumDirectory(directory):
     except IOError:
         errorExit("Cannot write " + fChecksum, err)
 
-def processDisc(id):
+def processDisc(carrierData):
+
+    jobID = carrierData['jobID']
     
-    logging.info(''.join(['### Disc identifier: ',id]))
+    logging.info(''.join(['### Job identifier: ', jobID]))
+    logging.info(''.join(['PPN: ',carrierData['PPN']]))
+    logging.info(''.join(['Title: ',carrierData['title']]))
+    logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
+    
         
     # Initialise reject status
     reject = False
@@ -637,7 +556,7 @@ def processDisc(id):
         # this is an edge case)
     else:
         # Create output folder for this disc
-        dirDisc = os.path.join(config.batchFolder, id)
+        dirDisc = os.path.join(config.batchFolder, jobID)
         logging.info(''.join(['disc directory: ',dirDisc]))
     
         if not os.path.exists(dirDisc):
@@ -679,7 +598,7 @@ def processDisc(id):
 
             logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
             logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
-            logging.info(''.join(['isobuster-log: ', str(resultIsoBuster[statusIsoBuster])]))
+            logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
                 
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
@@ -700,7 +619,7 @@ def processDisc(id):
                 
                 logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
                 logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
-                logging.info(''.join(['isobuster-log: ', resultIsoBuster['log'].strip()]))
+                logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
                 
         elif carrierInfo["containsData"] == True:
             logging.info('*** Extract data session to ISO ***')
@@ -805,6 +724,118 @@ def mainOld():
         # Process disc
         processDisc(q.get())
 
+def workerTest():
+
+    waitingForBatchDir = True
+
+    # Loop periodically scans value of config.batchFolder
+    while waitingForBatchDir == True:
+        
+        if config.batchFolder != '': 
+            waitingForBatchDir = False
+            logging.info(''.join(['batch folder set to ', config.batchFolder]))
+        else:
+            time.sleep(2)
+            print('waiting for batchFolder to be set ...')
+        
+    # Flag that marks end of batch (main processing loop keeps running while False)
+    endOfBatchFlag = False
+    
+    while endOfBatchFlag == False and config.quitFlag == False:
+        time.sleep(10)
+        # Get directory listing, sorted by creation time
+        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
+        files.sort(key=lambda x: os.path.getctime(x))
+        
+        noFiles = len(files)
+        print(noFiles)
+
+        if noFiles > 0:
+            # Identify oldest file
+            fileOldest = files[0]
+            
+            # Open file and read contents 
+            fOldest = open(fileOldest, "r")
+            lines = fOldest.readlines()
+            fOldest.close()
+            print(lines)
+            # Remove file
+            os.remove(fileOldest)
+            
+            if lines[0] == 'EOB\n':
+                # End of current batch
+                endOfBatchFlag = True
+                quit()
+
+def cdWorker():
+
+    # Worker function that monitors the job queue and processes the discs in FIFO order 
+
+    # Flag is True while batchFolder is undefined (variable set by user in GUI)
+    waitingForBatchDir = True
+
+    # Loop periodically scans value of config.batchFolder
+    while waitingForBatchDir == True:
+        
+        if config.batchFolder != '': 
+            waitingForBatchDir = False
+            logging.info(''.join(['batchFolder set to ', config.batchFolder]))
+        else:
+            time.sleep(2)
+            #print('waiting for batchFolder to be set ...')
+    
+    # Initialise batch
+    logging.info('*** Initialising batch ***')
+    resultPrebatch = drivers.prebatch()
+    logging.info(''.join(['prebatch command: ', resultPrebatch['cmdStr']]))
+    logging.info(''.join(['prebatch command output: ',resultPrebatch['log'].strip()]))
+    
+    # Flag that marks end of batch (main processing loop keeps running while False)
+    endOfBatchFlag = False
+    
+    while endOfBatchFlag == False and config.quitFlag == False:
+        time.sleep(2)
+        # Get directory listing, sorted by creation time
+        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
+        files.sort(key=lambda x: os.path.getctime(x))
+        
+        noFiles = len(files)
+        #print(noFiles)
+
+        if noFiles > 0:
+            # Identify oldest job file
+            jobOldest = files[0]
+            
+            # Open job file and read contents 
+            fj = open(jobOldest, "r")
+            lines = fj.readlines()
+            fj.close()
+            if lines[0] == 'EOB\n':
+                # End of current batch
+                endOfBatchFlag = True
+                quit()
+            else:
+                # Split items in job file to list
+                jobList = lines[0].split(",")
+                # Set up dictionary that holds carrier data
+                carrierData = {}
+                carrierData['jobID'] = jobList[0]
+                carrierData['PPN'] = jobList[1]
+                carrierData['title'] = jobList[2]
+                carrierData['volumeNo'] = jobList[3]
+                carrierData['noVolumes'] = jobList[4]
+                carrierData['carrierType'] = jobList[5]
+                
+                # Process the carrier
+                processDisc(carrierData)
+
+            
+            # Remove job file
+            # TODO: if job resulted in errors it may be better to move the job file to an 'error'
+            # folder instead of removing it altogether!
+            os.remove(jobOldest)
+
+
 def main():
 
     # Configuration (move to config file later)
@@ -835,11 +866,11 @@ def main():
     
     # Make logger variable global
     global logging
-
+    
     root = tk.Tk()
     carrierEntry(root)
     
-    t1 = threading.Thread(target=workerTest, args=[])
+    t1 = threading.Thread(target=cdWorker, args=[])
     t1.start()
     root.mainloop()
     t1.join()
