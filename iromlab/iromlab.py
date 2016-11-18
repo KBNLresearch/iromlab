@@ -655,76 +655,10 @@ def processDisc(carrierData):
             logging.info(''.join(['reject command output: ', resultReject['log'].strip()]))
 
         
-def mainOld():
-
-    # Configuration (move to config file later)
-    cdDriveLetter = "J"
-    cdDeviceName = "5,0,0" # only needed by cdrdao, remove later! 
-    cdInfoExe = "C:/cdio/cd-info.exe"
-    prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
-    loadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe" 
-    unloadExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe"
-    rejectExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe"
-    isoBusterExe = "C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe"
-    tempDir = "C:/Temp/"
-    # Following args to be given from command line
-    batchFolder = "E:/nimbietest/"
-    secondsToTimeout = "20"
-    
-    # Make configuration available to any module that imports 'config.py'
-    config.cdDriveLetter = cdDriveLetter
-    config.cdDeviceName = cdDeviceName
-    config.cdInfoExe = cdInfoExe
-    config.prebatchExe = prebatchExe
-    config.loadExe = loadExe
-    config.unloadExe = unloadExe
-    config.rejectExe = rejectExe
-    config.isoBusterExe = isoBusterExe
-    config.tempDir = os.path.normpath(tempDir)
-    config.batchFolder = os.path.normpath(batchFolder)
-    config.secondsToTimeout = secondsToTimeout
-
-    # Set up log file
-    logFile = os.path.join(batchFolder, "batch.log")
-    global logging
-    logging.basicConfig(filename=logFile, 
-                            level=logging.DEBUG, 
-                            format='%(asctime)s - %(levelname)s - %(message)s')
-    
-    # Setup output terminal
-    global out
-    global err
-       
-    # Set encoding of the terminal to UTF-8
-    if sys.version.startswith("2"):
-        out = codecs.getwriter("UTF-8")(sys.stdout)
-        err = codecs.getwriter("UTF-8")(sys.stderr)
-    elif sys.version.startswith("3"):
-        out = codecs.getwriter("UTF-8")(sys.stdout.buffer)
-        err = codecs.getwriter("UTF-8")(sys.stderr.buffer)
-            
-    # Initialise batch
-    logging.info('*** Initialising batch ***')
-    resultPrebatch = drivers.prebatch()
-    logging.info(''.join(['prebatch command: ', resultPrebatch['cmdStr']]))
-    logging.info(''.join(['prebatch command output: ',resultPrebatch['log'].strip()]))
-    
-    
-    # Internal identifier for this disc
-    ids = ["001", "002", "003"]
-    
-    # Set up queue
-    q = queue.Queue()
-    
-    # Fill the queue
-    for id in ids:
-        q.put(id)
-    
-    for id in ids:
-        # Process disc
-        processDisc(q.get())
-
 def workerTest():
+
+    # Dummy version of cdWorker function that doesn't do any actual imaging
+    # used for testing only
 
     waitingForBatchDir = True
 
