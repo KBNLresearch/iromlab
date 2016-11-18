@@ -503,8 +503,8 @@ def isoBusterExtract(writeDirectory, session):
 
 def isoBusterRipAudio(writeDirectory, session):
     # Rip audio to WAV (to be replaced by dBPoweramp wrapper in final version)
-    # IsoBuster /d:i /ei:"E:\nimbieTest\" /et:wav /ep:oea /ep:npc /c /m /nosplash /s:1 /t:all /l:"E:\nimbieTest\ib.log"
-    # Goes wrong for enhanced audio CDs: data track in 2nd session is mistakenly extracted as WAV! 
+    # IsoBuster /d:i /ei:"E:\nimbieTest\" /et:wav /ep:oea /ep:npc /c /m /nosplash /s:1 /t:audio /l:"E:\nimbieTest\ib.log"
+    # IMPORTANT: the /t:audio switch requires IsoBuster 3.9 (currently in beta) or above!    
     
     logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
 
@@ -518,7 +518,7 @@ def isoBusterRipAudio(writeDirectory, session):
     args.append("/m")
     args.append("/nosplash")
     args.append("".join(["/s:",str(session)]))
-    args.append("/t:all")
+    args.append("/t:audio")
     args.append("".join(["/l:", logFile]))
 
     # Command line as string (used for logging purposes only)
