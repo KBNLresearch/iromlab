@@ -5,4 +5,3 @@ __author__ = 'Johan van der Knijff <johan.vanderknijff@kb.nl'
 
 from .isolyzer import *
 
-#isolyzer = isolyzer()
