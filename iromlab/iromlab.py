@@ -95,7 +95,10 @@ class carrierEntry(tk.Frame):
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
-            
+        
+        # Define batch manifest (CSV file with minimal metadata on each carrier)
+        config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
+        
         # Update state of buttons
         self.bNew.config(state = 'disabled')
         self.bOpen.config(state = 'disabled')
@@ -664,6 +667,21 @@ def processDisc(carrierData):
             logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
             logging.info(''.join(['reject command output: ', resultReject['log'].strip()]))
 
+        # Create comma-delimited batch manifest entry for this carrier
+        
+        # VolumeIdentifier only defined for ISOs 
+        try:
+            volumeID = resultIsoBuster['volumeIdentifier']
+        except KeyError:
+            volumeID = ''
+        
+        myCSVRow = ','.join([jobID, carrierData['PPN'], dirDisc,carrierData['volumeNo'], carrierData['volumeNo'], carrierData['carrierType'],'"' + carrierData['title'] + '"', volumeID])
+        # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
+            
+        # Append entry to batch manifest
+        bm = open(config.batchManifest,'a')
+        bm.write(myCSVRow)
+        bm.close()
         
 def workerTest():
 
@@ -744,7 +762,6 @@ def cdWorker():
         files.sort(key=lambda x: os.path.getctime(x))
         
         noFiles = len(files)
-        #print(noFiles)
 
         if noFiles > 0:
             # Identify oldest job file
@@ -772,7 +789,6 @@ def cdWorker():
                 
                 # Process the carrier
                 processDisc(carrierData)
-
             
             # Remove job file
             # TODO: if job resulted in errors it may be better to move the job file to an 'error'

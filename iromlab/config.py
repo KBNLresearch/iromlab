@@ -11,6 +11,7 @@ isoBusterExe = ""
 tempDir = ""
 rootDir= ""
 batchFolder = ""
+batchManifest = ""
 jobsFolder = ""
 secondsToTimeout = ""
 quitFlag = False
