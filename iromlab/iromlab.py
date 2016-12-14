@@ -26,6 +26,7 @@ import tkMessageBox
 import config
 import shared
 from kbapi import sru
+import isolyzer
 
 
 """
@@ -403,6 +404,13 @@ def isoBusterExtract(writeDirectory, session):
 
     fLog.close()
     os.remove(logFile)
+    
+    # extract volume identifier from ISO's Primary Volume Descriptor
+    try:
+        isolyzerResult = isolyzer.processImage(isoFile)
+        volumeIdentifier = isolyzerResult.findtext('properties/primaryVolumeDescriptor/volumeIdentifier')
+    except IOError:
+        volumeIdentifier = ''
 
     # All results to dictionary
     dictOut = {}
@@ -411,6 +419,7 @@ def isoBusterExtract(writeDirectory, session):
     dictOut["stdout"] = out
     dictOut["stderr"] = err
     dictOut["log"] = log
+    dictOut["volumeIdentifier"] = volumeIdentifier
         
     return(dictOut)
 
@@ -639,6 +648,7 @@ def processDisc(carrierData):
             logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
             logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
             logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
+            logging.info(''.join(['volumeIdentifier: ', str(resultIsoBuster['volumeIdentifier'])]))
 
         print("--- Entering  unload")
 
@@ -773,7 +783,7 @@ def cdWorker():
 def main():
 
     # Configuration (move to config file later)
-    cdDriveLetter = "J"
+    cdDriveLetter = "I"
     cdDeviceName = "5,0,0" # only needed by cdrdao, remove later! 
     cdInfoExe = "C:/cdio/cd-info.exe"
     prebatchExe = "C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe"
