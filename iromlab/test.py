@@ -2,7 +2,8 @@ import sys
 import os
 import isolyzer
 
-isoFile = 'E:/nimbieTest/crap02/8d9f05ae-adaf-11e6-80e8-00237d497a29/data/disc.iso'
-isolyzerResult = isolyzer.processImage(isoFile)
-volumeIdentifier = isolyzerResult.findtext('properties/primaryVolumeDescriptor/volumeIdentifier')
-print(volumeIdentifier)
+dirDisc = 'E:\nimbieTest\crap03\a21ad540-c2dc-11e6-a89d-00237d497a29'
+batchFolder = 'E:\nimbieTest\crap03'
+dirDiscRel = os.path.relpath(dirDisc, os.path.commonprefix([dirDisc, batchFolder]))[1:] 
+
+print(dirDiscRel)

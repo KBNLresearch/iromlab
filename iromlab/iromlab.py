@@ -70,7 +70,7 @@ class carrierEntry(tk.Frame):
         options['mustexist'] = False
         options['parent'] = self.root
         options['title'] = 'Select batch directory'
-        config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
+        config.batchFolder = os.path.normpath(tkFileDialog.askdirectory(**self.dir_opt))
         
         # Create batch folder if it doesn't exist already
         if not os.path.exists(config.batchFolder):
@@ -95,10 +95,7 @@ class carrierEntry(tk.Frame):
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
-        
-        # Define batch manifest (CSV file with minimal metadata on each carrier)
-        config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
-        
+                
         # Update state of buttons
         self.bNew.config(state = 'disabled')
         self.bOpen.config(state = 'disabled')
@@ -674,13 +671,23 @@ def processDisc(carrierData):
             volumeID = resultIsoBuster['volumeIdentifier']
         except KeyError:
             volumeID = ''
+            
+        # Path to dirDisc, relative to batchFolder
+        dirDiscRel = os.path.relpath(dirDisc, os.path.commonprefix([dirDisc, config.batchFolder])) 
         
-        myCSVRow = ','.join([jobID, carrierData['PPN'], dirDisc,carrierData['volumeNo'], carrierData['volumeNo'], carrierData['carrierType'],'"' + carrierData['title'] + '"', volumeID])
+        myCSVRow = ','.join([jobID, 
+                            carrierData['PPN'], 
+                            dirDiscRel,
+                            carrierData['volumeNo'], 
+                            carrierData['carrierType'],
+                            carrierData['title'], 
+                            '"' + volumeID + '"'])
+                            
         # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
             
         # Append entry to batch manifest
         bm = open(config.batchManifest,'a')
-        bm.write(myCSVRow)
+        bm.write(myCSVRow + '\n')
         bm.close()
         
 def workerTest():
@@ -746,6 +753,24 @@ def cdWorker():
             time.sleep(2)
             #print('waiting for batchFolder to be set ...')
     
+    # Define batch manifest (CSV file with minimal metadata on each carrier)
+    config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
+    
+    # Write header row if batch manifest doesn't exist already
+    if os.path.isfile(config.batchManifest) == False:
+        myCSVRow = ','.join(['jobID', 
+                            'PPN', 
+                            'dirDisc',
+                            'volumeNo', 
+                            'carrierType',
+                            'title', 
+                            'volumeID'])
+                                       
+        # Write header to batch manifest
+        bm = open(config.batchManifest,'a')
+        bm.write(myCSVRow + '\n')
+        bm.close()
+        
     # Initialise batch
     logging.info('*** Initialising batch ***')
     resultPrebatch = drivers.prebatch()
@@ -777,7 +802,7 @@ def cdWorker():
                 quit()
             else:
                 # Split items in job file to list
-                jobList = lines[0].split(",")
+                jobList = lines[0].strip().split(",")
                 # Set up dictionary that holds carrier data
                 carrierData = {}
                 carrierData['jobID'] = jobList[0]
