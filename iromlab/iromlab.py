@@ -11,6 +11,7 @@ import win32api
 import threading
 import uuid
 import wmi # Dependency: python -m pip install wmi
+import pythoncom
 import pprint
 import hashlib
 import logging
@@ -294,6 +295,10 @@ def errorExit(error, terminal):
 
 def mediumLoaded(driveName):
     # Returns True if medium is loaded (also if blank/unredable), False if not
+    
+    # Use CoInitialize to avoid errors like this:
+    #    http://stackoverflow.com/questions/14428707/python-function-is-unable-to-run-in-new-thread
+    pythoncom.CoInitialize()
     c = wmi.WMI()
     foundDriveName = False
     loaded = False
