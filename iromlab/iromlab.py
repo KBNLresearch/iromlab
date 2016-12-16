@@ -516,9 +516,10 @@ def processDisc(carrierData):
     logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
     
         
-    # Initialise reject status
+    # Initialise reject and success status
     reject = False
-            
+    success = True
+    
     print("--- Starting load command")     
     # Load disc
     logging.info('*** Loading disc ***')
@@ -539,10 +540,12 @@ def processDisc(carrierData):
         foundDrive, discLoaded = mediumLoaded(config.cdDriveLetter + ":")
 
     if foundDrive == False:
+        success = False
         logging.error(''.join(['drive ', config.cdDriveLetter, ' does not exist']))
-    
+            
     if discLoaded == False:
         print("--- Entering  reject")
+        success = False
         resultReject = drivers.reject()
         logging.error('no disc loaded')
         logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
@@ -607,6 +610,7 @@ def processDisc(carrierData):
             statusIsoBuster = resultIsoBuster["log"].strip()
               
             if statusIsoBuster != "0":
+                success = False
                 reject = True
                 logging.error("Isobuster exited with error(s)")
 
@@ -628,6 +632,7 @@ def processDisc(carrierData):
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 
                 if statusIsoBuster != "0":
+                    success = False
                     reject = True
                     logging.error("Isobuster exited with error(s)")
                 
@@ -647,6 +652,7 @@ def processDisc(carrierData):
             statusIsoBuster = resultIsoBuster["log"].strip()
             
             if resultIsoBuster["log"].strip() != "0":
+                success = False
                 reject = True
                 logging.error("Isobuster exited with error(s)")
             
@@ -686,7 +692,8 @@ def processDisc(carrierData):
                             carrierData['volumeNo'], 
                             carrierData['carrierType'],
                             carrierData['title'], 
-                            '"' + volumeID + '"'])
+                            '"' + volumeID + '"',
+                            str(success)])
                             
         # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
             
@@ -769,7 +776,8 @@ def cdWorker():
                             'volumeNo', 
                             'carrierType',
                             'title', 
-                            'volumeID'])
+                            'volumeID',
+                            'success'])
                                        
         # Write header to batch manifest
         bm = open(config.batchManifest,'a')
