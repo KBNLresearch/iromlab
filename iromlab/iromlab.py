@@ -189,7 +189,8 @@ class carrierEntry(tk.Frame):
                 # Create and populate Job file                      
                 jobFile = ''.join([jobID,".txt"])
                 fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
-                lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, noVolumes, carrierType]) + '\n'
+                #lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, noVolumes, carrierType]) + '\n'
+                lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, carrierType]) + '\n'
                 fJob.write(lineOut)
                 fJob.close()
                         
