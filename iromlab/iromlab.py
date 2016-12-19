@@ -679,7 +679,7 @@ def processDisc(carrierData):
         
         # VolumeIdentifier only defined for ISOs 
         try:
-            volumeID = resultIsoBuster['volumeIdentifier']
+            volumeID = resultIsoBuster['volumeIdentifier'].strip()
         except KeyError:
             volumeID = ''
             
