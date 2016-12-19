@@ -145,7 +145,7 @@ class carrierEntry(tk.Frame):
         # Fetch entered values (strip any leading / tralue whitespace characters)   
         catid = self.catid_entry.get().strip()
         volumeNo = self.volumeNo_entry.get().strip()
-        noVolumes = self.noVolumes_entry.get().strip()
+        # noVolumes = self.noVolumes_entry.get().strip()
         carrierTypeCode = self.v.get()
         
         # Lookup carrierType for carrierTypeCode value
@@ -164,15 +164,15 @@ class carrierEntry(tk.Frame):
         elif representsInt(volumeNo) == False:
             msg = "Volume number must be integer value"
             tkMessageBox.showerror("Type mismatch", msg)
-        elif representsInt(noVolumes) == False:
-            msg = "Number of volumes must be integer value"
-            tkMessageBox.showerror("Type mismatch", msg)
+        #elif representsInt(noVolumes) == False:
+        #    msg = "Number of volumes must be integer value"
+        #    tkMessageBox.showerror("Type mismatch", msg)
         elif int(volumeNo) < 1:
             msg = "Volume number must be greater than or equal to 1"
             tkMessageBox.showerror("Value error", msg)
-        elif int(volumeNo) > int(noVolumes):
-            msg = "Volume number cannot be larger than number of volumes"
-            tkMessageBox.showerror("Value error", msg)
+        #elif int(volumeNo) > int(noVolumes):
+        #    msg = "Volume number cannot be larger than number of volumes"
+        #    tkMessageBox.showerror("Value error", msg)
         elif noGGCRecords == 0:
             # No matching record found
             msg = ("Search for PPN=" + str(catid) + " returned " + \
@@ -196,7 +196,7 @@ class carrierEntry(tk.Frame):
                 # Reset entry fields        
                 self.catid_entry.delete(0, tk.END)
                 self.volumeNo_entry.delete(0, tk.END)
-                self.noVolumes_entry.delete(0, tk.END)
+                #self.noVolumes_entry.delete(0, tk.END)
         
     def init_gui(self):
                         
@@ -235,12 +235,14 @@ class carrierEntry(tk.Frame):
         self.volumeNo_entry = tk.Entry(self, width=5)
         self.volumeNo_entry.grid(column=1, row=5, sticky='w')
 
+        """
         # Number of volumes
         tk.Label(self, text='Number of volumes').grid(column=0, row=6,
                 sticky='w')
         self.noVolumes_entry = tk.Entry(self, width=5)
         self.noVolumes_entry.grid(column=1, row=6, sticky='w')
- 
+        """
+        
         # Carrier type (radio button select)
         self.v = tk.IntVar()
         self.v.set(1)
@@ -254,10 +256,10 @@ class carrierEntry(tk.Frame):
             ['dvd-video',4,4]
         ]        
         
-        tk.Label(self, text='Carrier type').grid(column=0, row=7,
+        tk.Label(self, text='Carrier type').grid(column=0, row=6,
                 sticky='w', columnspan=4)
                 
-        rowValue = 7
+        rowValue = 6
         
         for carrierType in self.carrierTypes:
             #self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1], underline=carrierType[2])
@@ -822,8 +824,8 @@ def cdWorker():
                 carrierData['PPN'] = jobList[1]
                 carrierData['title'] = jobList[2]
                 carrierData['volumeNo'] = jobList[3]
-                carrierData['noVolumes'] = jobList[4]
-                carrierData['carrierType'] = jobList[5]
+                #carrierData['noVolumes'] = jobList[4]
+                carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
                 processDisc(carrierData)
