@@ -83,7 +83,7 @@ class carrierEntry(tk.Frame):
 
         # Create jobs folder
         config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
-        
+               
         if not os.path.exists(config.jobsFolder):
       
             try:
@@ -91,7 +91,17 @@ class carrierEntry(tk.Frame):
             except IOError:
                 msg = 'Cannot create jobs folder ' + config.jobsFolder
                 tkMessageBox.showerror("Error", msg)
-                
+
+        # Create failed jobs folder (if a job fails it will be moved here)
+        config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
+        
+        if not os.path.exists(config.jobsFailedFolder):
+            try:
+                os.makedirs(config.jobsFailedFolder)
+            except IOError:
+                msg = 'Cannot create failed jobs folder ' + config.jobsFailedFolder
+                tkMessageBox.showerror("Error", msg)
+        
         logFile = os.path.join(config.batchFolder, "batch.log")
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
@@ -114,6 +124,7 @@ class carrierEntry(tk.Frame):
         options['title'] = 'Select batch directory'
         config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
         config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
+        config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
         logFile = os.path.join(config.batchFolder, "batch.log")
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
@@ -806,6 +817,7 @@ def processDisc(carrierData):
         bm = open(config.batchManifest,'a')
         bm.write(myCSVRow + '\n')
         bm.close()
+        return(success)
         
 def workerTest():
 
@@ -927,17 +939,18 @@ def cdWorker():
                 carrierData['PPN'] = jobList[1]
                 carrierData['title'] = jobList[2]
                 carrierData['volumeNo'] = jobList[3]
-                #carrierData['noVolumes'] = jobList[4]
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                processDisc(carrierData)
+                success = processDisc(carrierData)
             
-            # Remove job file
-            # TODO: if job resulted in errors it may be better to move the job file to an 'error'
-            # folder instead of removing it altogether!
-            os.remove(jobOldest)
-
+            if success == True:
+                # Remove job file
+                os.remove(jobOldest)
+            else:
+                # Move job file to failed jobs folder
+                baseName = os.path.basename(jobOldest)
+                os.rename(jobOldest, os.path.join(config.jobsFailedFolder, baseName))
 
 def main():
     # Read configuration file
