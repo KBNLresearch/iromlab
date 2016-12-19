@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!-- iromlab configuration file. This file MUST be in the same directory 
+as iromlab.py/ iromlab.exe! 
+-->
+
+<config>
+
+<!-- IMPORTANT: do not wrap any of the file paths below in quotes, even if they contain
+spaces (the Python os.path libs don't seem to like this!)
+-->
+
+<!-- CD drive letter -->
+<cdDriveLetter>I</cdDriveLetter>
+
+<!-- root directory - this is the default search path for creating / opening batches -->
+<rootDir>E:\nimbieTest</rootDir>
+
+<!-- directory for storing temporary files -->
+<tempDir>C:\Temp</tempDir>
+
+<!-- maximum number of seconds that iromlab will wait while trying to load a new disc 
+this will prevent iromlab from entering an infinite loop if e.g. a disc cannot be loaded
+properly because its is badly damaged
+-->
+<secondsToTimeout>20</secondsToTimeout>
+
+<!-- Below items point to the locations of all executables that are wrapped by Iromlab
+-->
+
+<!-- location of Nimbie drivers -->
+<prebatchExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Pre-Batch\Pre-Batch.exe</prebatchExe>
+<loadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load.exe</loadExe>
+<unloadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload.exe</unloadExe>
+<rejectExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Reject\Reject.exe</rejectExe>
+
+<!-- location of cd-info -->
+<cdInfoExe>C:\cdio\cd-info.exe</cdInfoExe>
+<!-- location of isoBuster -->
+<isoBusterExe>C:\Program Files (x86)\Smart Projects\IsoBuster\IsoBuster.exe</isoBusterExe>
+
+</config>
