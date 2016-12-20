@@ -538,8 +538,8 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                success = processDisc(carrierData)
-                #success = processDiscTest(carrierData)
+                #success = processDisc(carrierData)
+                success = processDiscTest(carrierData)
             
             if success == True:
                 # Remove job file
