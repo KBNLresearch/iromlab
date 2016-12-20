@@ -1,19 +1,10 @@
 #! /usr/bin/env python
 import sys
 import os
-import time
 import imp
-import glob
-import codecs
 import xml.etree.ElementTree as ETree
-import drivers
-import win32api
 import threading
 import uuid
-import wmi # Dependency: python -m pip install wmi
-import pythoncom
-import pprint
-import hashlib
 import logging
 try:
     import tkinter as tk #Python 3.x
@@ -25,11 +16,8 @@ except ImportError:
     import tkFileDialog
 import tkMessageBox
 import config
-import shared
 from kbapi import sru
 import cdworker
-import isolyzer
-
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.

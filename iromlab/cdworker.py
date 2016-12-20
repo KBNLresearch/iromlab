@@ -2,24 +2,18 @@
 import sys
 import os
 import time
-import imp
 import glob
-import codecs
-import xml.etree.ElementTree as ETree
 import drivers
-import win32api
-import threading
-import uuid
 import wmi # Dependency: python -m pip install wmi
 import pythoncom
-import pprint
 import hashlib
 import logging
 import config
-import shared
-from kbapi import sru
 import isolyzer
+import shared
 
+# This module contains iromlab's cdWorker code, i.e. the code that monitors
+# the list of jobs (submitted from the GUI) and does the actual imaging and ripping  
 
 def mediumLoaded(driveName):
     # Returns True if medium is loaded (also if blank/unredable), False if not
@@ -544,8 +538,8 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                #success = processDisc(carrierData)
-                success = processDiscTest(carrierData)
+                success = processDisc(carrierData)
+                #success = processDiscTest(carrierData)
             
             if success == True:
                 # Remove job file
@@ -554,3 +548,4 @@ def cdWorker():
                 # Move job file to failed jobs folder
                 baseName = os.path.basename(jobOldest)
                 os.rename(jobOldest, os.path.join(config.jobsFailedFolder, baseName))
+                
