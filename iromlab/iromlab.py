@@ -96,13 +96,14 @@ class carrierEntry(tk.Frame):
         config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
         
         if not os.path.exists(config.jobsFailedFolder):
+
             try:
                 os.makedirs(config.jobsFailedFolder)
             except IOError:
                 msg = 'Cannot create failed jobs folder ' + config.jobsFailedFolder
                 tkMessageBox.showerror("Error", msg)
         
-        logFile = os.path.join(config.batchFolder, "batch.log")
+        logFile = os.path.join(config.batchFolder, 'batch.log')
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
@@ -125,7 +126,7 @@ class carrierEntry(tk.Frame):
         config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
         config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
         config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
-        logFile = os.path.join(config.batchFolder, "batch.log")
+        logFile = os.path.join(config.batchFolder, 'batch.log')
         logging.basicConfig(filename=logFile, 
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
@@ -819,52 +820,42 @@ def processDisc(carrierData):
         bm.close()
         return(success)
         
-def workerTest():
-
-    # Dummy version of cdWorker function that doesn't do any actual imaging
+def processDiscTest(carrierData):
+    # Dummy version of processDisc function that doesn't do any actual imaging
     # used for testing only
-
-    waitingForBatchDir = True
-
-    # Loop periodically scans value of config.batchFolder
-    while waitingForBatchDir == True:
-        
-        if config.batchFolder != '': 
-            waitingForBatchDir = False
-            logging.info(''.join(['batch folder set to ', config.batchFolder]))
-        else:
-            time.sleep(2)
-            print('waiting for batchFolder to be set ...')
-        
-    # Flag that marks end of batch (main processing loop keeps running while False)
-    endOfBatchFlag = False
+    jobID = carrierData['jobID']
+    logging.info(''.join(['### Job identifier: ', jobID]))
+    logging.info(''.join(['PPN: ',carrierData['PPN']]))
+    logging.info(''.join(['Title: ',carrierData['title']]))
+    logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
     
-    while endOfBatchFlag == False and config.quitFlag == False:
-        time.sleep(10)
-        # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
-        files.sort(key=lambda x: os.path.getctime(x))
+    dirDisc = os.path.join(config.batchFolder, jobID)
+    
+    success = False
+    
+    # Create comma-delimited batch manifest entry for this carrier
+    
+    # Dummy value for VolumeIdentifier 
+    volumeID = 'DUMMY'
         
-        noFiles = len(files)
-        print(noFiles)
-
-        if noFiles > 0:
-            # Identify oldest file
-            fileOldest = files[0]
-            
-            # Open file and read contents 
-            fOldest = open(fileOldest, "r")
-            lines = fOldest.readlines()
-            fOldest.close()
-            print(lines)
-            # Remove file
-            os.remove(fileOldest)
-            
-            if lines[0] == 'EOB\n':
-                # End of current batch
-                endOfBatchFlag = True
-                quit()
-
+    # Path to dirDisc, relative to batchFolder
+    dirDiscRel = os.path.relpath(dirDisc, os.path.commonprefix([dirDisc, config.batchFolder])) 
+    
+    myCSVRow = ','.join([jobID, 
+                        carrierData['PPN'], 
+                        dirDiscRel,
+                        carrierData['volumeNo'], 
+                        carrierData['carrierType'],
+                        carrierData['title'], 
+                        '"' + volumeID + '"',
+                        str(success)])
+    # Append entry to batch manifest
+    bm = open(config.batchManifest,'a')
+    bm.write(myCSVRow + '\n')
+    bm.close()
+    
+    return(success)
+        
 def cdWorker():
 
     # Worker function that monitors the job queue and processes the discs in FIFO order 
@@ -943,6 +934,7 @@ def cdWorker():
                 
                 # Process the carrier
                 success = processDisc(carrierData)
+                #success = processDiscTest(carrierData)
             
             if success == True:
                 # Remove job file
