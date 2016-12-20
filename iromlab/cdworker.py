@@ -436,7 +436,7 @@ def processDiscTest(carrierData):
     
     dirDisc = os.path.join(config.batchFolder, jobID)
     
-    success = False
+    success = True
     
     # Create comma-delimited batch manifest entry for this carrier
     
@@ -525,7 +525,8 @@ def cdWorker():
             if lines[0] == 'EOB\n':
                 # End of current batch
                 endOfBatchFlag = True
-                quit()
+                #os.remove(jobOldest)
+                #quit()
             else:
                 # Split items in job file to list
                 jobList = lines[0].strip().split(",")
