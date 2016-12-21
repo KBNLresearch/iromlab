@@ -41,15 +41,15 @@ class carrierEntry(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
-        self.readyToStart = False
+        config.readyToStart = False
         self.init_gui()
-                         
+    
     def on_quit(self, event=None):
         # Wait until the disc that is currently being pocessed has 
         # finished, and quit (batch can be resumed by opening it in the File dialog)
         config.quitFlag = True
         self.bExit.config(state = 'disabled')
-        if self.readyToStart == False:
+        if config.readyToStart == False:
             os._exit(0)
         else:
             quit()
@@ -104,7 +104,7 @@ class carrierEntry(tk.Frame):
         self.bNew.config(state = 'disabled')
         self.bOpen.config(state = 'disabled')
         self.submit_button.config(state = 'normal')
-        self.readyToStart = True
+        config.readyToStart = True
         
     def on_open(self, event=None):
         # Open existing batch
@@ -127,7 +127,7 @@ class carrierEntry(tk.Frame):
         self.bNew.config(state = 'disabled')
         self.bOpen.config(state = 'disabled')
         self.submit_button.config(state = 'normal')
-        self.readyToStart = True
+        config.readyToStart = True
            
     def on_finalise(self, event=None):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
@@ -149,7 +149,6 @@ class carrierEntry(tk.Frame):
         # Fetch entered values (strip any leading / tralue whitespace characters)   
         catid = self.catid_entry.get().strip()
         volumeNo = self.volumeNo_entry.get().strip()
-        # noVolumes = self.noVolumes_entry.get().strip()
         carrierTypeCode = self.v.get()
         
         # Lookup carrierType for carrierTypeCode value
@@ -162,21 +161,15 @@ class carrierEntry(tk.Frame):
         response = sru.search(sruSearchString,"GGC")
         noGGCRecords = response.sru.nr_of_records
         
-        if self.readyToStart == False:
+        if config.readyToStart == False:
             msg = "You must first create a batch or open an existing batch"
             tkMessageBox.showerror("Not ready", msg)
         elif representsInt(volumeNo) == False:
             msg = "Volume number must be integer value"
             tkMessageBox.showerror("Type mismatch", msg)
-        #elif representsInt(noVolumes) == False:
-        #    msg = "Number of volumes must be integer value"
-        #    tkMessageBox.showerror("Type mismatch", msg)
         elif int(volumeNo) < 1:
             msg = "Volume number must be greater than or equal to 1"
             tkMessageBox.showerror("Value error", msg)
-        #elif int(volumeNo) > int(noVolumes):
-        #    msg = "Volume number cannot be larger than number of volumes"
-        #    tkMessageBox.showerror("Value error", msg)
         elif noGGCRecords == 0:
             # No matching record found
             msg = ("Search for PPN=" + str(catid) + " returned " + \
@@ -239,14 +232,6 @@ class carrierEntry(tk.Frame):
                 sticky='w')
         self.volumeNo_entry = tk.Entry(self, width=5)
         self.volumeNo_entry.grid(column=1, row=5, sticky='w')
-
-        """
-        # Number of volumes
-        tk.Label(self, text='Number of volumes').grid(column=0, row=6,
-                sticky='w')
-        self.noVolumes_entry = tk.Entry(self, width=5)
-        self.noVolumes_entry.grid(column=1, row=6, sticky='w')
-        """
         
         # Carrier type (radio button select)
         self.v = tk.IntVar()
@@ -267,7 +252,6 @@ class carrierEntry(tk.Frame):
         rowValue = 6
         
         for carrierType in self.carrierTypes:
-            #self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1], underline=carrierType[2])
             self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1])
             self.rb.grid(column=1, row=rowValue, sticky='w')
             rowValue += 1
