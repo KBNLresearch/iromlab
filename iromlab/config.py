@@ -16,3 +16,4 @@ jobsFolder = ""
 secondsToTimeout = ""
 quitFlag = False
 readyToStart = False
+finishedBatch = False

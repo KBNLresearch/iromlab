@@ -465,18 +465,11 @@ def cdWorker():
 
     # Worker function that monitors the job queue and processes the discs in FIFO order 
 
-    # Flag is True while batchFolder is undefined (variable set by user in GUI)
-    waitingForBatchDir = True
-
     # Loop periodically scans value of config.batchFolder
-    while waitingForBatchDir == True:
-        
-        if config.batchFolder != '': 
-            waitingForBatchDir = False
-            logging.info(''.join(['batchFolder set to ', config.batchFolder]))
-        else:
-            time.sleep(2)
-            #print('waiting for batchFolder to be set ...')
+    while config.readyToStart == False:
+        time.sleep(2)
+     
+    logging.info(''.join(['batchFolder set to ', config.batchFolder])) 
     
     # Define batch manifest (CSV file with minimal metadata on each carrier)
     config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
@@ -526,8 +519,10 @@ def cdWorker():
                 # End of current batch
                 endOfBatchFlag = True
                 config.readyToStart = False
+                config.finishedBatch = True
                 os.remove(jobOldest)
-                quit()
+                os._exit(0)
+                #quit()
             else:
                 # Split items in job file to list
                 jobList = lines[0].strip().split(",")
