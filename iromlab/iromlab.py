@@ -132,11 +132,12 @@ class carrierEntry(tk.Frame):
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')
         
-        # Update state of buttons
-        self.bNew.config(state = 'disabled')
-        self.bOpen.config(state = 'disabled')
-        self.submit_button.config(state = 'normal')
-        config.readyToStart = True
+        if config.batchFolder != '':
+            # Update state of buttons
+            self.bNew.config(state = 'disabled')
+            self.bOpen.config(state = 'disabled')
+            self.submit_button.config(state = 'normal')
+            config.readyToStart = True
            
     def on_finalise(self, event=None):
         msg = "This will finalise the current batch.\n After finalising no further carriers can be \n \
