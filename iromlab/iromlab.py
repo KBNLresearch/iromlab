@@ -66,7 +66,7 @@ class carrierEntry(tk.Frame):
         batchID = str(uuid.uuid1())
         
         # Construct batch name
-        batchName = config.prefixBatch + '_' + batchID
+        batchName = config.prefixBatch + '-' + batchID
         config.batchFolder = os.path.join(config.rootDir, batchName)
         try:
             os.makedirs(config.batchFolder)
