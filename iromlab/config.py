@@ -14,6 +14,7 @@ batchFolder = ""
 batchManifest = ""
 jobsFolder = ""
 secondsToTimeout = ""
+prefixBatch = ""
 quitFlag = False
 readyToStart = False
 finishedBatch = False

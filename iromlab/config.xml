@@ -18,6 +18,9 @@ spaces (the Python os.path libs don't seem to like this!)
 <!-- directory for storing temporary files -->
 <tempDir>C:\Temp</tempDir>
 
+<!-- prefix that is used to create batch names -->
+<prefixBatch>kb</prefixBatch>
+
 <!-- maximum number of seconds that iromlab will wait while trying to load a new disc 
 this will prevent iromlab from entering an infinite loop if e.g. a disc cannot be loaded
 properly because its is badly damaged

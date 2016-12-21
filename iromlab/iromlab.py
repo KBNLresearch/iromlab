@@ -2,6 +2,7 @@
 import sys
 import os
 import imp
+import glob
 import time
 import xml.etree.ElementTree as ETree
 import threading
@@ -55,66 +56,56 @@ class carrierEntry(tk.Frame):
             os._exit(0)
         else:
             quit()
-    
+  
     def on_create(self, event=None):
-        # Create new batch
-        batchExists = False
+        # Create new batch in rootDir
         
-        # defining options for opening a directory
-        self.dir_opt = options = {}
-        options['initialdir'] = config.rootDir
-        options['mustexist'] = False
-        options['parent'] = self.root
-        options['title'] = 'Select batch directory'
-        config.batchFolder = os.path.normpath(tkFileDialog.askdirectory(**self.dir_opt))
+        # Create unique batch identifier (UUID, based on host ID and current time)
+        # this ensures that if the software is run in parallel on different machines
+        # the batch identifiers will always be unique
+        batchID = str(uuid.uuid1())
         
-        # Report error if batch folder already exists
-        if os.path.exists(config.batchFolder):
-            batchExists = True
-            msg = 'Folder already exists!'
-            tkMessageBox.showinfo("Error", msg)
-        
-        if batchExists == False:
-            try:
-                os.makedirs(config.batchFolder)
-            except IOError:
-                msg = 'Cannot create batch folder ' + config.batchFolder
-                tkMessageBox.showerror("Error", msg)
+        # Construct batch name
+        batchName = config.prefixBatch + '_' + batchID
+        config.batchFolder = os.path.join(config.rootDir, batchName)
+        try:
+            os.makedirs(config.batchFolder)
+        except IOError:
+            msg = 'Cannot create batch folder ' + config.batchFolder
+            tkMessageBox.showerror("Error", msg)
 
-            # Create jobs folder
-            config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
-               
-            if not os.path.exists(config.jobsFolder):
-      
-                try:
-                    os.makedirs(config.jobsFolder)
-                except IOError:
-                    msg = 'Cannot create jobs folder ' + config.jobsFolder
-                    tkMessageBox.showerror("Error", msg)
+        # Create jobs folder
+        config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
+        try:
+            os.makedirs(config.jobsFolder)
+        except IOError:
+            msg = 'Cannot create jobs folder ' + config.jobsFolder
+            tkMessageBox.showerror("Error", msg)
 
-            # Create failed jobs folder (if a job fails it will be moved here)
-            config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
+        # Create failed jobs folder (if a job fails it will be moved here)
+        config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
+        try:
+            os.makedirs(config.jobsFailedFolder)
+        except IOError:
+            msg = 'Cannot create failed jobs folder ' + config.jobsFailedFolder
+            tkMessageBox.showerror("Error", msg)
         
-            if not os.path.exists(config.jobsFailedFolder):
-
-                try:
-                    os.makedirs(config.jobsFailedFolder)
-                except IOError:
-                    msg = 'Cannot create failed jobs folder ' + config.jobsFailedFolder
-                    tkMessageBox.showerror("Error", msg)
+        # Set up log file 
+        logFile = os.path.join(config.batchFolder, 'batch.log')
+        logging.basicConfig(filename=logFile, 
+            level=logging.DEBUG, 
+            format='%(asctime)s - %(levelname)s - %(message)s')
+        
+        # Notify user
+        msg = 'Created batch ' + batchName
+        tkMessageBox.showinfo("Created batch", msg)
             
-            # Set up log file 
-            logFile = os.path.join(config.batchFolder, 'batch.log')
-            logging.basicConfig(filename=logFile, 
-                level=logging.DEBUG, 
-                format='%(asctime)s - %(levelname)s - %(message)s')
-                
-            # Update state of buttons
-            self.bNew.config(state = 'disabled')
-            self.bOpen.config(state = 'disabled')
-            self.submit_button.config(state = 'normal')
-            config.readyToStart = True
-        
+        # Update state of buttons
+        self.bNew.config(state = 'disabled')
+        self.bOpen.config(state = 'disabled')
+        self.submit_button.config(state = 'normal')
+        config.readyToStart = True
+         
     def on_open(self, event=None):
         # Open existing batch
         
@@ -376,6 +367,7 @@ def getConfiguration():
     config.rootDir = findElementText(configElt, './config/rootDir')
     config.tempDir = findElementText(configElt, './config/tempDir')
     config.secondsToTimeout = findElementText(configElt, './config/secondsToTimeout')
+    config.prefixBatch = findElementText(configElt, './config/prefixBatch')
     config.prebatchExe = findElementText(configElt, './config/prebatchExe')
     config.loadExe = findElementText(configElt, './config/loadExe')
     config.unloadExe = findElementText(configElt, './config/unloadExe')
