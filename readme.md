@@ -19,7 +19,7 @@ Written by Johan van der Knijff, except *sru.py* which was adapted from the [KB 
 
 ## IsoBuster configuration
 
-Before using Iromlab, it is necessary to change some of IsoBuster's default settings. Below instructions apply to IsoBuster 3.9 (Professional license).
+Before using Iromlab, it is necessary to change some of IsoBuster's default settings. This is mainly to avoid pop-up dialogs during that need user input during the imaging process. You only need to do this once; the changes will persist after upgrading IsoBuster to a newer version. Below instructions apply to IsoBuster 3.9 (Professional license).
 
 ### Disable all devices that are not optical drives 
 
@@ -27,7 +27,7 @@ From the IsoBuster GUI, go to the *Options* menu and then select *Communication*
 
 ![](./findingDevices.png)
 
-**Why:** by default IsoBuster tries to find and access all storage devices that are conmected to the machine it runs on. This triggers a Windows "User Account Control" notification popup window (which needs manual intervention) every time IsoBuster is called from Iromlab. This can be prevented by disabling all devices except optical drives.
+**Why:** by default IsoBuster tries to find and access all storage devices that are connected to the machine it runs on. This triggers a Windows "User Account Control" notification popup window (which needs manual intervention) every time IsoBuster is called from Iromlab. This can be prevented by disabling all devices except optical drives.
 
 ### Disable cue sheet and checksum creation
 
