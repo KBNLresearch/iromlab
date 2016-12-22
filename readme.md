@@ -23,7 +23,7 @@ Before using Iromlab, it is necessary to change some of IsoBuster's default sett
 
 ### Disable all devices that are not optical drives 
 
-From the IsoBuster GUI, go to the *Options* menu and then select *Communication*. From there select the *Finding Devices* tab, and uncheck the "Find and list other devices (HD, Flash, USB etc)" checkbox. Also make sure that the "Store this setting and use it always" checkbox at the bottom of the tab is checked. See screensshot below:
+From the IsoBuster GUI, go to the *Options* menu and then select *Communication*. From there select the *Finding Devices* tab, and uncheck the "Find and list other devices (HD, Flash, USB etc)" checkbox. Also make sure that the "Store this setting and use it always" checkbox at the bottom of the tab is checked. See screenshot below:
 
 ![](./findingDevices.png)
 
@@ -31,7 +31,7 @@ From the IsoBuster GUI, go to the *Options* menu and then select *Communication*
 
 ### Disable cue sheet and checksum creation
 
-From the IsoBuster GUI, go to *Options* / *Image Files*, and then select the *General* tab. Locate the option "select when a cue sheet file will be created", and select "Never". Likewise, set the "Select when an MD5 checksum file will be created" setting to "Never".
+From the IsoBuster GUI, go to *Options* / *Image Files*, and then select the *General* tab. Locate the option "select when a cue sheet file will be created", and select "Never". Likewise, set the "Select when an MD5 checksum file will be created" setting to "Never". See screenshot:
 
 ![](cuesheetOption.png) 
 
