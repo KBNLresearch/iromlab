@@ -10,9 +10,11 @@ Iromlab was created to be used in conjuction with Acronova Nimbie disc autoloade
 ## Wrapped software
 
 * [IsoBuster](https://www.isobuster.com/)
-* cd-info - part of [libcdio](https://www.gnu.org/software/libcdio/),  the "GNU Compact Disc Input and Control Library".
+* [cd-info](https://linux.die.net/man/1/cd-info) - this tool is part of [libcdio](https://www.gnu.org/software/libcdio/),  the "GNU Compact Disc Input and Control Library".
+* dBpoweramp, dBpoweramp Batch Ripper and Nimbie Batch Ripper Driver; all available [from the dBpoweramp website](https://www.dbpoweramp.com/batch-ripper.htm). (Note: Iromlab wraps dBpoweramp's Nimbie driver binaries to control the disc loading / unloading process)
 
-### Obtaining and installing *cd-info* binaries
+ 
+## Obtaining and installing *cd-info* binaries
 
 The installation of *cd-info* on windows is a bit tricky, mainly for 2 reasons:
 
