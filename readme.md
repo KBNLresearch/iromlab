@@ -92,11 +92,6 @@ Iromlab uses a number of modules that are not part of Python's standard library,
 
 Finally Iromlab uses [tkInter](https://wiki.python.org/moin/TkInter), but this is included by default in the Python 2.7 / 3.x Windows installers.
         
-## Contributors
-
-Written by Johan van der Knijff, except *sru.py* which was adapted from the [KB Python API](https://github.com/KBNLresearch/KB-python-API) which is written by WillemJan Faber. The KB Python API is released under the GNU GENERAL PUBLIC LICENSE.
-
-
 ## IsoBuster configuration
 
 Before using Iromlab, it is necessary to change some of IsoBuster's default settings. This is mainly to avoid pop-up dialogs during that need user input during the imaging process. You only need to do this once; the changes will persist after upgrading IsoBuster to a newer version. Below instructions apply to IsoBuster 3.9 (Professional license).
@@ -116,3 +111,57 @@ From the IsoBuster GUI, go to *Options* / *Image Files*, and then select the *Ge
 ![](cuesheetOption.png) 
 
 **Why:** cue sheets aren't needed for ISO images, and we don't want IsoBuster to prompt for anything either. Iromlab already has built-in checksum creation functionality, so we don't need IsoBuster for this.
+
+## Iromlab configuration
+
+Example:
+
+    <?xml version="1.0"?>
+    <!-- iromlab configuration file. This file MUST be in the same directory 
+    as iromlab.py/ iromlab.exe! 
+    -->
+
+    <config>
+
+    <!-- IMPORTANT: do not wrap any of the file paths below in quotes, even if they contain
+    spaces (the Python os.path libs don't seem to like this!)
+    -->
+
+    <!-- CD drive letter -->
+    <cdDriveLetter>I</cdDriveLetter>
+
+    <!-- root directory - this is the default search path for creating / opening batches -->
+    <rootDir>E:\nimbieTest</rootDir>
+
+    <!-- directory for storing temporary files -->
+    <tempDir>C:\Temp</tempDir>
+
+    <!-- prefix that is used to create batch names -->
+    <prefixBatch>kb</prefixBatch>
+
+    <!-- maximum number of seconds that iromlab will wait while trying to load a new disc 
+    this will prevent iromlab from entering an infinite loop if e.g. a disc cannot be loaded
+    properly because its is badly damaged
+    -->
+    <secondsToTimeout>20</secondsToTimeout>
+
+    <!-- Below items point to the locations of all executables that are wrapped by Iromlab
+    -->
+
+    <!-- location of Nimbie drivers -->
+    <prebatchExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Pre-Batch\Pre-Batch.exe</prebatchExe>
+    <loadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load.exe</loadExe>
+    <unloadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload.exe</unloadExe>
+    <rejectExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Reject\Reject.exe</rejectExe>
+
+    <!-- location of cd-info -->
+    <cdInfoExe>C:\cdio\cd-info.exe</cdInfoExe>
+    <!-- location of isoBuster -->
+    <isoBusterExe>C:\Program Files (x86)\Smart Projects\IsoBuster\IsoBuster.exe</isoBusterExe>
+
+    </config>
+
+
+## Contributors
+
+Written by Johan van der Knijff, except *sru.py* which was adapted from the [KB Python API](https://github.com/KBNLresearch/KB-python-API) which is written by WillemJan Faber. The KB Python API is released under the GNU GENERAL PUBLIC LICENSE.
