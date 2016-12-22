@@ -359,6 +359,7 @@ def cdWorker():
                 config.readyToStart = False
                 config.finishedBatch = True
                 os.remove(jobOldest)
+                logging.info('*** End Of Batch job found, closing batch ***')
                 os._exit(0)
                 #quit()
             else:
@@ -383,4 +384,6 @@ def cdWorker():
                 # Move job file to failed jobs folder
                 baseName = os.path.basename(jobOldest)
                 os.rename(jobOldest, os.path.join(config.jobsFailedFolder, baseName))
-                
+        if config.quitFlag == True:
+            logging.info('*** Quitting because user pressed Exit ***')
+            
