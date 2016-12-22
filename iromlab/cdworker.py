@@ -3,15 +3,14 @@ import sys
 import os
 import time
 import glob
-import drivers
 import wmi # Dependency: python -m pip install wmi
 import pythoncom
 import hashlib
 import logging
 import config
-import isolyzer
+import drivers
 import cdinfo
-import shared
+import isobuster
 
 # This module contains iromlab's cdWorker code, i.e. the code that monitors
 # the list of jobs (submitted from the GUI) and does the actual imaging and ripping  
@@ -31,95 +30,6 @@ def mediumLoaded(driveName):
             loaded = cdrom.MediaLoaded       
     
     return(foundDriveName, loaded)
-    
-def isoBusterExtract(writeDirectory, session):
-    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /s:1 /l:"E:\nimbieTest\ib.log"
-    
-    isoFile = os.path.join(writeDirectory, "disc.iso")
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-
-    args = [config.isoBusterExe]
-    args.append("".join(["/d:", config.cdDriveLetter, ":"]))
-    args.append("".join(["/ei:", isoFile]))
-    args.append("/et:u")
-    args.append("/ep:oea")
-    args.append("/ep:npc")
-    args.append("/c")
-    args.append("/m")
-    args.append("/nosplash")
-    args.append("".join(["/s:",str(session)]))
-    args.append("".join(["/l:", logFile]))
-
-    # Command line as string (used for logging purposes only)
-    cmdStr = " ".join(args)
-
-    status, out, err = shared.launchSubProcess(args)
-
-    fLog = open(logFile, 'r')
-    log = fLog.read()
-
-    fLog.close()
-    os.remove(logFile)
-    
-    # extract volume identifier from ISO's Primary Volume Descriptor
-    try:
-        isolyzerResult = isolyzer.processImage(isoFile)
-        volumeIdentifier = isolyzerResult.findtext('properties/primaryVolumeDescriptor/volumeIdentifier')
-    except IOError:
-        volumeIdentifier = ''
-
-    # All results to dictionary
-    dictOut = {}
-    dictOut["cmdStr"] = cmdStr
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-    dictOut["volumeIdentifier"] = volumeIdentifier
-        
-    return(dictOut)
-
-def isoBusterRipAudio(writeDirectory, session):
-    # Rip audio to WAV (to be replaced by dBPoweramp wrapper in final version)
-    # IsoBuster /d:i /ei:"E:\nimbieTest\" /et:wav /ep:oea /ep:npc /c /m /nosplash /s:1 /t:audio /l:"E:\nimbieTest\ib.log"
-    # IMPORTANT: the /t:audio switch requires IsoBuster 3.9 (currently in beta) or above!    
-    
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-
-    args = [config.isoBusterExe]
-    args.append("".join(["/d:", config.cdDriveLetter, ":"]))
-    args.append("".join(["/ei:", writeDirectory]))
-    args.append("/et:wav")
-    args.append("/ep:oea")
-    args.append("/ep:npc")
-    args.append("/c")
-    args.append("/m")
-    args.append("/nosplash")
-    args.append("".join(["/s:",str(session)]))
-    args.append("/t:audio")
-    args.append("".join(["/l:", logFile]))
-
-    # Command line as string (used for logging purposes only)
-    cmdStr = " ".join(args)
-
-    status, out, err = shared.launchSubProcess(args)
-
-    fLog = open(logFile, 'r')
-    log = fLog.read()
-
-    fLog.close()
-    os.remove(logFile)
-
-    # All results to dictionary
-    dictOut = {}
-    dictOut["cmdStr"] = cmdStr
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-        
-    return(dictOut)    
-
 
 def generate_file_md5(fileIn):
     # Generate MD5 hash of file
@@ -165,8 +75,7 @@ def processDisc(carrierData):
     logging.info(''.join(['PPN: ',carrierData['PPN']]))
     logging.info(''.join(['Title: ',carrierData['title']]))
     logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
-    
-        
+            
     # Initialise reject and success status
     reject = False
     success = True
@@ -255,7 +164,7 @@ def processDisc(carrierData):
             if not os.path.exists(dirOut):
                 os.makedirs(dirOut)
                 
-            resultIsoBuster = isoBusterRipAudio(dirOut, 1)
+            resultIsoBuster = isobuster.ripAudio(dirOut, 1)
             checksumDirectory(dirOut)
             
             statusIsoBuster = resultIsoBuster["log"].strip()
@@ -277,7 +186,7 @@ def processDisc(carrierData):
                 if not os.path.exists(dirOut):
                     os.makedirs(dirOut)
                 
-                resultIsoBuster = isoBusterExtract(dirOut, 2)
+                resultIsoBuster = isobuster.extractData(dirOut, 2)
                 checksumDirectory(dirOut)
                 
                 statusIsoBuster = resultIsoBuster["log"].strip()
@@ -298,7 +207,7 @@ def processDisc(carrierData):
             if not os.path.exists(dirOut):
                 os.makedirs(dirOut)
                 
-            resultIsoBuster = isoBusterExtract(dirOut, 1)
+            resultIsoBuster = isobuster.extractData(dirOut, 1)
             checksumDirectory(dirOut)
             statusIsoBuster = resultIsoBuster["log"].strip()
             
