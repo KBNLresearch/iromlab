@@ -90,6 +90,10 @@ Iromlab uses a number of modules that are not part of Python's standard library,
 
         (python -m) pip install wmi
 
+* [isolyzer](https://github.com/KBNLresearch/verifyISOSize). Installation:
+
+        (python -m) pip install isolyzer
+        
 Finally Iromlab uses [tkInter](https://wiki.python.org/moin/TkInter), but this is included by default in the Python 2.7 / 3.x Windows installers.
         
 ## IsoBuster configuration

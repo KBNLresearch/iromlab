@@ -3,7 +3,7 @@
 import os
 import config
 import shared
-import isolyzer
+from isolyzer import isolyzer
 
 # Wrapper module for IsoBuster
 
