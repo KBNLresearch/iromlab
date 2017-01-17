@@ -190,15 +190,29 @@ def processDisc(carrierData):
                 checksumDirectory(dirOut)
                 
                 statusIsoBuster = resultIsoBuster["log"].strip()
+                isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
+                imageTruncated = resultIsoBuster['imageTruncated']
                 
                 if statusIsoBuster != "0":
                     success = False
                     reject = True
                     logging.error("Isobuster exited with error(s)")
+                              
+                elif isolyzerSuccess == False:
+                    success = False
+                    reject = True
+                    logging.error("Isolyzer exited with error(s)")
+                
+                elif imageTruncated == True:
+                    success = False
+                    reject = True
+                    logging.error("Isolyzer detected truncated ISO image")
                 
                 logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
                 logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
                 logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
+                logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
+                logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
                 
         elif carrierInfo["containsData"] == True:
             logging.info('*** Extract data session to ISO ***')
@@ -210,16 +224,30 @@ def processDisc(carrierData):
             resultIsoBuster = isobuster.extractData(dirOut, 1)
             checksumDirectory(dirOut)
             statusIsoBuster = resultIsoBuster["log"].strip()
-            
-            if resultIsoBuster["log"].strip() != "0":
+            isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
+            imageTruncated = resultIsoBuster['imageTruncated']
+                        
+            if statusIsoBuster != "0":
                 success = False
                 reject = True
                 logging.error("Isobuster exited with error(s)")
+                
+            elif isolyzerSuccess == False:
+                success = False
+                reject = True
+                logging.error("Isolyzer exited with error(s)")
+            
+            elif imageTruncated == True:
+                success = False
+                reject = True
+                logging.error("Isolyzer detected truncated ISO image")
             
             logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
             logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
             logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
             logging.info(''.join(['volumeIdentifier: ', str(resultIsoBuster['volumeIdentifier'])]))
+            logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
+            logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
         print("--- Entering  unload")
 

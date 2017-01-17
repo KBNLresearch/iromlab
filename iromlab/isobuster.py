@@ -36,12 +36,23 @@ def extractData(writeDirectory, session):
     fLog.close()
     os.remove(logFile)
     
-    # extract volume identifier from ISO's Primary Volume Descriptor
+    # Run isolyzer ISO
     try:
         isolyzerResult = isolyzer.processImage(isoFile)
+        
+        # Isolyzer status
+        isolyzerSuccess = isolyzerResult.findtext('statusInfo/success')
+        
+        # Is ISO image smaller than expected (if True, this indicates the image may be truncated)
+        imageTruncated = isolyzerResult.findtext('tests/smallerThanExpected')
+        
+        # Volume identifier from ISO's Primary Volume Descriptor 
         volumeIdentifier = isolyzerResult.findtext('properties/primaryVolumeDescriptor/volumeIdentifier')
     except IOError:
         volumeIdentifier = ''
+        isolyzerSuccess = False
+        imageTruncated = True
+        
 
     # All results to dictionary
     dictOut = {}
@@ -51,6 +62,8 @@ def extractData(writeDirectory, session):
     dictOut["stderr"] = err
     dictOut["log"] = log
     dictOut["volumeIdentifier"] = volumeIdentifier
+    dictOut["isolyzerSuccess"] = isolyzerSuccess
+    dictOut["imageTruncated"] = imageTruncated
         
     return(dictOut)
 
