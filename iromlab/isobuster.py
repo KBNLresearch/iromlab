@@ -39,16 +39,13 @@ def extractData(writeDirectory, session):
     # Run isolyzer ISO
     try:
         isolyzerResult = isolyzer.processImage(isoFile)
-        
         # Isolyzer status
-        isolyzerSuccess = isolyzerResult.find('statusInfo/success').text
-        
+        isolyzerSuccess = isolyzerResult.find('statusInfo/success').text       
         # Is ISO image smaller than expected (if True, this indicates the image may be truncated)
-        imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text
-                
+        imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text               
         # Volume identifier from ISO's Primary Volume Descriptor 
-        volumeIdentifier = isolyzerResult.findtext('properties/primaryVolumeDescriptor/volumeIdentifier')
-    except IOError:
+        volumeIdentifier = isolyzerResult.find('properties/primaryVolumeDescriptor/volumeIdentifier').text
+    except IOError or AttributeError:
         volumeIdentifier = ''
         isolyzerSuccess = False
         imageTruncated = True
