@@ -49,8 +49,11 @@ def extractData(writeDirectory, session):
         volumeIdentifier = ''
         isolyzerSuccess = False
         imageTruncated = True
-        
-
+    
+    # TODO: for added security we could also verify the ISO's MD5 against MD5 of physical disc. But this 
+    # is slow + implementation under Windows will be ugly (with possible dependency on Cygwin because
+    # not clear if Windows supports Unix-syle device paths)
+    
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
