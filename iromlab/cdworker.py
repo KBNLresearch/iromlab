@@ -211,6 +211,7 @@ def processDisc(carrierData):
                 logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
                 logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
                 logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
+                logging.info(''.join(['volumeIdentifier: ', str(resultIsoBuster['volumeIdentifier'])]))
                 logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
                 logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
                 
@@ -223,10 +224,11 @@ def processDisc(carrierData):
                 
             resultIsoBuster = isobuster.extractData(dirOut, 1)
             checksumDirectory(dirOut)
+            
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
             imageTruncated = resultIsoBuster['imageTruncated']
-                        
+                                    
             if statusIsoBuster != "0":
                 success = False
                 reject = True
