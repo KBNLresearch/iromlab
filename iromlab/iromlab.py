@@ -263,7 +263,7 @@ class carrierEntry(tk.Frame):
 
         # Add text widget to display logging info
         self.logWindow = tk.Text(self, state="disabled")
-        self.logWindow.grid(column=0, row=15)
+        self.logWindow.grid(column=0, row=15, sticky='w', columnspan=4)
         
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
