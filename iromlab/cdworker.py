@@ -160,12 +160,9 @@ def processDisc(carrierData):
             # TODO: replace by dBpoweramp wrapper in  production version
             # Also IsoBuster (3.8.0) erroneously extracts data from any data sessions here as well
             # (and saves file with .wav file extension!)
-            dirOut = os.path.join(dirDisc, "audio")
-            if not os.path.exists(dirOut):
-                os.makedirs(dirOut)
+            dirOut = dirDisc
                 
             resultIsoBuster = isobuster.ripAudio(dirOut, 1)
-            checksumDirectory(dirOut)
             
             statusIsoBuster = resultIsoBuster["log"].strip()
               
@@ -182,12 +179,9 @@ def processDisc(carrierData):
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 print("--- Extract data session of cdExtra to ISO")
                 # Create ISO file from data on 2nd session
-                dirOut = os.path.join(dirDisc, "data")
-                if not os.path.exists(dirOut):
-                    os.makedirs(dirOut)
+                dirOut = dirDisc
                 
                 resultIsoBuster = isobuster.extractData(dirOut, 2)
-                checksumDirectory(dirOut)
                 
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
@@ -218,12 +212,9 @@ def processDisc(carrierData):
         elif carrierInfo["containsData"] == True:
             logging.info('*** Extract data session to ISO ***')
             # Create ISO image of first session
-            dirOut = os.path.join(dirDisc, "data")
-            if not os.path.exists(dirOut):
-                os.makedirs(dirOut)
+            dirOut = dirDisc
                 
             resultIsoBuster = isobuster.extractData(dirOut, 1)
-            checksumDirectory(dirOut)
             
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
@@ -251,6 +242,8 @@ def processDisc(carrierData):
             logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
+        # Generate MD5 checksum file
+        checksumDirectory(dirOut)
         print("--- Entering  unload")
 
         # Unload or reject disc
