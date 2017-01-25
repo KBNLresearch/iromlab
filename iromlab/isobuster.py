@@ -10,12 +10,14 @@ from isolyzer import isolyzer
 def extractData(writeDirectory, session):
     # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /s:1 /l:"E:\nimbieTest\ib.log"
     
-    isoFile = os.path.join(writeDirectory, "disc.iso")
+    # Temporary name for ISO file; base name 
+    isoFileTemp = os.path.join(writeDirectory, "disc.iso")
+    #isoFile = os.path.join(writeDirectory, isoName)
     logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
 
     args = [config.isoBusterExe]
     args.append("".join(["/d:", config.cdDriveLetter, ":"]))
-    args.append("".join(["/ei:", isoFile]))
+    args.append("".join(["/ei:", isoFileTemp]))
     args.append("/et:u")
     args.append("/ep:oea")
     args.append("/ep:npc")
@@ -38,13 +40,18 @@ def extractData(writeDirectory, session):
     
     # Run isolyzer ISO
     try:
-        isolyzerResult = isolyzer.processImage(isoFile)
+        isolyzerResult = isolyzer.processImage(isoFileTemp)
         # Isolyzer status
         isolyzerSuccess = isolyzerResult.find('statusInfo/success').text       
         # Is ISO image smaller than expected (if True, this indicates the image may be truncated)
         imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text               
         # Volume identifier from ISO's Primary Volume Descriptor 
-        volumeIdentifier = isolyzerResult.find('properties/primaryVolumeDescriptor/volumeIdentifier').text
+        volumeIdentifier = isolyzerResult.find('properties/primaryVolumeDescriptor/volumeIdentifier').text.strip()
+        if volumeIdentifier != '':
+            # Rename ISO image using volumeIdentifier as a base name
+            isoFile = os.path.join(writeDirectory, volumeIdentifier + '.iso')
+            os.rename(isoFileTemp, isoFile)
+            
     except IOError or AttributeError:
         volumeIdentifier = ''
         isolyzerSuccess = False

@@ -68,7 +68,7 @@ def checksumDirectory(directory):
         errorExit("Cannot write " + fChecksum)
 
 def processDisc(carrierData):
-
+    
     jobID = carrierData['jobID']
     
     logging.info(''.join(['### Job identifier: ', jobID]))
@@ -180,7 +180,7 @@ def processDisc(carrierData):
                 print("--- Extract data session of cdExtra to ISO")
                 # Create ISO file from data on 2nd session
                 dirOut = dirDisc
-                
+                                
                 resultIsoBuster = isobuster.extractData(dirOut, 2)
                 
                 statusIsoBuster = resultIsoBuster["log"].strip()
