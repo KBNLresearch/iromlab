@@ -260,6 +260,10 @@ class carrierEntry(tk.Frame):
         self.submit_button = tk.Button(self, text='Submit', height=2, width=4, underline=0, bg = '#ded4db', state = 'disabled',
                 command=self.on_submit)
         self.submit_button.grid(column=1, row=13, sticky='ew')
+
+        # Add text widget to display logging info
+        self.logWindow = tk.Text(self, state="disabled")
+        self.logWindow.grid(column=0, row=15)
         
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
@@ -269,7 +273,7 @@ class carrierEntry(tk.Frame):
         self.root.bind_all('<Control-Key-s>', self.on_submit)
         
         # TODO keyboard shortcuts for Radiobox selections: couldn't find ANY info on how to do this!
-                
+
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
         
