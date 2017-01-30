@@ -276,6 +276,7 @@ class carrierEntry(tk.Frame):
         # Add the handler to logger
         logger = logging.getLogger()
         logger.addHandler(text_handler)
+        logger.addHandler(text_handler)
 
         # Log some messages
         logger.debug('debug message')
@@ -445,7 +446,7 @@ def main():
     
     # Make logger variable global
     global logging
-    
+        
     root = tk.Tk()
     carrierEntry(root)
     

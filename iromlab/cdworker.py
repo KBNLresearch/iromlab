@@ -295,6 +295,14 @@ def processDiscTest(carrierData):
     logging.info(''.join(['Title: ',carrierData['title']]))
     logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
     
+    ## TEST 
+    logger.info(''.join(['### Job identifier: ', jobID]))
+    logger.info(''.join(['PPN: ',carrierData['PPN']]))
+    logger.info(''.join(['Title: ',carrierData['title']]))
+    logger.info(''.join(['Volume number: ',carrierData['volumeNo']]))
+    logger.info(''.join(['Volume number: ',carrierData['volumeNo']]))
+    ## TEST
+    
     dirDisc = os.path.join(config.batchFolder, jobID)
     
     success = True
@@ -397,8 +405,8 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                success = processDisc(carrierData)
-                #success = processDiscTest(carrierData)
+                #success = processDisc(carrierData)
+                success = processDiscTest(carrierData)
             
             if success == True:
                 # Remove job file
