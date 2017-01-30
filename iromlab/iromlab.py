@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ETree
 import threading
 import uuid
 import logging
+import ScrolledText
 try:
     import tkinter as tk #Python 3.x
     from tkinter import ttk as ttk
@@ -262,9 +263,28 @@ class carrierEntry(tk.Frame):
         self.submit_button.grid(column=1, row=13, sticky='ew')
 
         # Add text widget to display logging info
-        self.logWindow = tk.Text(self, state="disabled")
-        self.logWindow.grid(column=0, row=15, sticky='w', columnspan=4)
+        #self.logWindow = tk.Text(self, state="disabled")
+        #self.logWindow.grid(column=0, row=15, sticky='w', columnspan=4)
         
+        st = ScrolledText.ScrolledText(self, state='disabled')
+        st.configure(font='TkFixedFont')
+        st.grid(column=0, row=15, sticky='w', columnspan=4)
+
+        # Create textLogger
+        text_handler = TextHandler(st)
+
+        # Add the handler to logger
+        logger = logging.getLogger()
+        logger.addHandler(text_handler)
+
+        # Log some messages
+        logger.debug('debug message')
+        logger.info('info message')
+        logger.warn('warn message')
+        logger.error('error message')
+        logger.critical('critical message')
+        
+                        
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
         self.root.bind_all('<Control-Key-o>', self.on_open)
@@ -279,7 +299,28 @@ class carrierEntry(tk.Frame):
         
         # Read configuration file
         getConfiguration()
-        
+
+class TextHandler(logging.Handler):
+    # This class allows you to log to a Tkinter Text or ScrolledText widget
+    # Adapted from: https://gist.github.com/moshekaplan/c425f861de7bbf28ef06
+    
+    def __init__(self, text):
+        # run the regular Handler __init__
+        logging.Handler.__init__(self)
+        # Store a reference to the Text it will log to
+        self.text = text
+
+    def emit(self, record):
+        msg = self.format(record)
+        def append():
+            self.text.configure(state='normal')
+            self.text.insert(tk.END, msg + '\n')
+            self.text.configure(state='disabled')
+            # Autoscroll to the bottom
+            self.text.yview(tk.END)
+        # This is necessary because we can't modify the Text from other threads
+        self.text.after(0, append)
+
 def representsInt(s):
     # Source: http://stackoverflow.com/a/1267145
     try: 
@@ -410,6 +451,7 @@ def main():
     
     t1 = threading.Thread(target=cdworker.cdWorker, args=[])
     t1.start()
+        
     root.mainloop()
     t1.join()
         
