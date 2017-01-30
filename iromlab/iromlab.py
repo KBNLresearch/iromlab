@@ -272,20 +272,18 @@ class carrierEntry(tk.Frame):
 
         # Create textLogger
         text_handler = TextHandler(st)
+        
+        # Set up log file + settings 
+        logFile = os.path.join(config.batchFolder, 'batch.log')
+        logging.basicConfig(filename=logFile, 
+            level=logging.DEBUG, 
+            format='%(asctime)s - %(levelname)s - %(message)s')
 
         # Add the handler to logger
         logger = logging.getLogger()
         logger.addHandler(text_handler)
         logger.addHandler(text_handler)
-
-        # Log some messages
-        logger.debug('debug message')
-        logger.info('info message')
-        logger.warn('warn message')
-        logger.error('error message')
-        logger.critical('critical message')
-        
-                        
+                             
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
         self.root.bind_all('<Control-Key-o>', self.on_open)

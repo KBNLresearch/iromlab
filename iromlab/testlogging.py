@@ -58,7 +58,7 @@ class myGUI(tk.Frame):
         text_handler = TextHandler(st)
         
         # Logging configuration
-        logging.basicConfig(
+        logging.basicConfig(filename='test.log',
             level=logging.DEBUG, 
             format='%(asctime)s - %(levelname)s - %(message)s')        
         
