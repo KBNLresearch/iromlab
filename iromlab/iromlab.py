@@ -199,7 +199,7 @@ class carrierEntry(tk.Frame):
         # Set up log-related settings 
         logFile = os.path.join(config.batchFolder, 'batch.log')
         logging.basicConfig(filename=logFile, 
-            level=logging.DEBUG, 
+            level=logging.INFO, 
             format='%(asctime)s - %(levelname)s - %(message)s')
         # Add the handler to logger
         logger = logging.getLogger()
@@ -434,10 +434,7 @@ def getConfiguration():
 
 
 def main():
-    
-    # Make logger variable global
-    #global logging
-        
+           
     root = tk.Tk()
     carrierEntry(root)
     
