@@ -63,32 +63,24 @@ class myGUI(tk.Frame):
             format='%(asctime)s - %(levelname)s - %(message)s')        
         
         # Add the handler to logger
-        logger = logging.getLogger()
-              
+        logger = logging.getLogger()        
         logger.addHandler(text_handler)
-
-        # Log some messages
-        logger.debug('debug message')
-        logger.info('info message')
-        logger.warn('warn message')
-        logger.error('error message')
-        logger.critical('critical message')
-        
-        
+              
 def worker():
 
     # Skeleton worker function
     
     while True:
+        # Report time / date at 2-second intervals
         time.sleep(2)
-        msg = 'Waking up!'
-        print(msg)
-        logging.error(msg) 
+        timeStr = time.asctime()
+        msg = 'Current time: ' + timeStr
+        logging.info(msg) 
         
 def main():
     
     # Make logger variable global
-    global logger
+    #global logger
     
     root = tk.Tk()
     myGUI(root)

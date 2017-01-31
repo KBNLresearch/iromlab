@@ -91,11 +91,8 @@ class carrierEntry(tk.Frame):
             msg = 'Cannot create failed jobs folder ' + config.jobsFailedFolder
             tkMessageBox.showerror("Error", msg)
         
-        # Set up log file 
-        logFile = os.path.join(config.batchFolder, 'batch.log')
-        logging.basicConfig(filename=logFile, 
-            level=logging.DEBUG, 
-            format='%(asctime)s - %(levelname)s - %(message)s')
+        # Set up logging
+        self.setupLogging(self.text_handler)
         
         # Notify user
         msg = 'Created batch ' + batchName
@@ -119,10 +116,9 @@ class carrierEntry(tk.Frame):
         config.batchFolder = tkFileDialog.askdirectory(**self.dir_opt)
         config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
         config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
-        logFile = os.path.join(config.batchFolder, 'batch.log')
-        logging.basicConfig(filename=logFile, 
-            level=logging.DEBUG, 
-            format='%(asctime)s - %(levelname)s - %(message)s')
+
+        # Set up logging
+        self.setupLogging(self.text_handler)
         
         if config.batchFolder != '':
             # Update state of buttons
@@ -197,7 +193,18 @@ class carrierEntry(tk.Frame):
                 self.catid_entry.delete(0, tk.END)
                 self.volumeNo_entry.delete(0, tk.END)
                 #self.noVolumes_entry.delete(0, tk.END)
-        
+    
+    def setupLogging(self, handler):
+          
+        # Set up log-related settings 
+        logFile = os.path.join(config.batchFolder, 'batch.log')
+        logging.basicConfig(filename=logFile, 
+            level=logging.DEBUG, 
+            format='%(asctime)s - %(levelname)s - %(message)s')
+        # Add the handler to logger
+        logger = logging.getLogger()
+        logger.addHandler(handler)
+    
     def build_gui(self):
                         
         # Build GUI
@@ -262,28 +269,14 @@ class carrierEntry(tk.Frame):
                 command=self.on_submit)
         self.submit_button.grid(column=1, row=13, sticky='ew')
 
-        # Add text widget to display logging info
-        #self.logWindow = tk.Text(self, state="disabled")
-        #self.logWindow.grid(column=0, row=15, sticky='w', columnspan=4)
-        
+        # Add ScrolledText widget to display logging info
         st = ScrolledText.ScrolledText(self, state='disabled')
         st.configure(font='TkFixedFont')
         st.grid(column=0, row=15, sticky='w', columnspan=4)
 
         # Create textLogger
-        text_handler = TextHandler(st)
-        
-        # Set up log file + settings 
-        logFile = os.path.join(config.batchFolder, 'batch.log')
-        logging.basicConfig(filename=logFile, 
-            level=logging.DEBUG, 
-            format='%(asctime)s - %(levelname)s - %(message)s')
-
-        # Add the handler to logger
-        logger = logging.getLogger()
-        logger.addHandler(text_handler)
-        logger.addHandler(text_handler)
-                             
+        self.text_handler = TextHandler(st)
+                                     
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
         self.root.bind_all('<Control-Key-o>', self.on_open)
@@ -443,7 +436,7 @@ def getConfiguration():
 def main():
     
     # Make logger variable global
-    global logging
+    #global logging
         
     root = tk.Tk()
     carrierEntry(root)
