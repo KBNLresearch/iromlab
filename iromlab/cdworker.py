@@ -7,10 +7,15 @@ import wmi # Dependency: python -m pip install wmi
 import pythoncom
 import hashlib
 import logging
+import tkMessageBox
 import config
 import drivers
 import cdinfo
 import isobuster
+try:
+    import thread # Python 2.x
+except ImportError:
+    import _thread as thread # Python 3.x
 
 # This module contains iromlab's cdWorker code, i.e. the code that monitors
 # the list of jobs (submitted from the GUI) and does the actual imaging and ripping  
@@ -375,8 +380,8 @@ def cdWorker():
                 config.finishedBatch = True
                 os.remove(jobOldest)
                 logging.info('*** End Of Batch job found, closing batch ***')
-                os._exit(0)
-                #quit()
+                # This triggers a KeyboardInterrupt in the main thread
+                thread.interrupt_main()
             else:
                 # Split items in job file to list
                 jobList = lines[0].strip().split(",")
@@ -389,13 +394,13 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                #success = processDisc(carrierData)
-                success = processDiscTest(carrierData)
+                success = processDisc(carrierData)
+                #success = processDiscTest(carrierData)
             
-            if success == True:
+            if success == True and endOfBatchFlag == False:
                 # Remove job file
                 os.remove(jobOldest)
-            else:
+            elif endOfBatchFlag == False:
                 # Move job file to failed jobs folder
                 baseName = os.path.basename(jobOldest)
                 os.rename(jobOldest, os.path.join(config.jobsFailedFolder, baseName))

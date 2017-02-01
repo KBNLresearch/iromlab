@@ -54,6 +54,8 @@ class carrierEntry(tk.Frame):
         # finished, and quit (batch can be resumed by opening it in the File dialog)
         config.quitFlag = True
         self.bExit.config(state = 'disabled')
+        msg = 'Quitting because user pressed Exit!'
+        tkMessageBox.showinfo("Finished", msg)
         if config.readyToStart == False:
             os._exit(0)
         else:
@@ -442,14 +444,20 @@ def getConfiguration():
         sys.exit()
 
 def main():
-           
-    root = tk.Tk()
-    carrierEntry(root)
-    
-    t1 = threading.Thread(target=cdworker.cdWorker, args=[])
-    t1.start()
+
+    try:           
+        root = tk.Tk()
+        carrierEntry(root)
         
-    root.mainloop()
-    t1.join()
-        
+        t1 = threading.Thread(target=cdworker.cdWorker, args=[])
+        t1.start()
+            
+        root.mainloop()
+        t1.join()
+    except KeyboardInterrupt:
+        if config.finishedBatch == True:
+            # Batch finished: notify user
+            msg = 'Completed processing this batch, click OK to exit'
+            tkMessageBox.showinfo("Finished", msg)
+        os._exit(0)
 main()
