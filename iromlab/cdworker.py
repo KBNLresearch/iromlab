@@ -79,8 +79,7 @@ def processDisc(carrierData):
     # Initialise reject and success status
     reject = False
     success = True
-    
-    print("--- Starting load command")     
+   
     # Load disc
     logging.info('*** Loading disc ***')
     resultLoad = drivers.load()
@@ -89,8 +88,6 @@ def processDisc(carrierData):
     
     # Test if disc is loaded
     discLoaded = False
-    
-    print("--- Entering  driveIsReady loop")
     
     # Reject if no CD is found after 20 s
     timeout = time.time() + int(config.secondsToTimeout)
@@ -104,7 +101,6 @@ def processDisc(carrierData):
         logging.error(''.join(['drive ', config.cdDriveLetter, ' does not exist']))
             
     if discLoaded == False:
-        print("--- Entering  reject")
         success = False
         resultReject = drivers.reject()
         logging.error('no disc loaded')
@@ -139,7 +135,6 @@ def processDisc(carrierData):
         if not os.path.exists(dirDisc):
             os.makedirs(dirDisc)
 
-        print("--- Entering  cd-info")
         # Get disc info
         logging.info('*** Running cd-info ***')
         carrierInfo = cdinfo.getCarrierInfo()
@@ -177,12 +172,10 @@ def processDisc(carrierData):
                 
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
-                print("--- Extract data session of cdExtra to ISO")
                 # Create ISO file from data on 2nd session
                 dirOut = dirDisc
                                 
-                resultIsoBuster = isobuster.extractData(dirOut, 2)
-                
+                resultIsoBuster = isobuster.extractData(dirOut, 2)                
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
                 imageTruncated = resultIsoBuster['imageTruncated']
@@ -244,7 +237,6 @@ def processDisc(carrierData):
 
         # Generate MD5 checksum file
         checksumDirectory(dirOut)
-        print("--- Entering  unload")
 
         # Unload or reject disc
         if reject == False:
@@ -397,8 +389,8 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                success = processDisc(carrierData)
-                #success = processDiscTest(carrierData)
+                #success = processDisc(carrierData)
+                success = processDiscTest(carrierData)
             
             if success == True:
                 # Remove job file

@@ -21,6 +21,7 @@ import tkMessageBox
 import config
 from kbapi import sru
 import cdworker
+import cdinfo
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -270,7 +271,7 @@ class carrierEntry(tk.Frame):
         self.submit_button.grid(column=1, row=13, sticky='ew')
 
         # Add ScrolledText widget to display logging info
-        st = ScrolledText.ScrolledText(self, state='disabled')
+        st = ScrolledText.ScrolledText(self, state='disabled', height = 15)
         st.configure(font='TkFixedFont')
         st.grid(column=0, row=15, sticky='w', columnspan=4)
 
@@ -431,7 +432,14 @@ def getConfiguration():
     checkFileExists(config.rejectExe)
     checkFileExists(config.cdInfoExe)
     checkFileExists(config.isoBusterExe)
-
+    
+    # Check that cdDriveLetter points to an existing optical drive  
+    resultGetDrives = cdinfo.getDrives()
+    cdDrives = resultGetDrives["drives"]
+    if config.cdDriveLetter not in cdDrives:
+        msg = '"' + config.cdDriveLetter + '" is not a valid optical drive!'
+        tkMessageBox.showerror("Error", msg)
+        sys.exit()
 
 def main():
            

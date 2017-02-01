@@ -76,3 +76,43 @@ def getCarrierInfo():
     dictOut["stderr"] = err
     
     return(dictOut)   
+
+def getDrives():
+    # Returns list of all optical drives
+    # cd-info command line:
+    # cd-info -l
+    
+    args = [config.cdInfoExe]
+    args.append( "-l")
+    
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
+     
+    status, out, err = shared.launchSubProcess(args)
+
+    # Output lines to list
+    outAsList = out.splitlines()
+   
+    # Set up list for storing identified drives
+    drives = []
+    
+    # Locate track list and analysis report in cd-info output
+    startIndexDevicesList = shared.index_startswith_substring(outAsList, "list of devices found:")
+
+    # Parse devices list and store Drive entries to list 
+    for i in range(startIndexDevicesList + 1, len(outAsList), 1):
+        thisLine = outAsList[i]
+        if thisLine.startswith("Drive") == True:
+            thisDrive = thisLine.split("\\\\.\\")
+            driveLetter = thisDrive[1].strip(":\n")
+            drives.append(driveLetter)
+        
+    # Main results to dictionary
+    dictOut = {}
+    dictOut["cmdStr"] = cmdStr
+    dictOut["drives"] = drives
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+    
+    return(dictOut)    
