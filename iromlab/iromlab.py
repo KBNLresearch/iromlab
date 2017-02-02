@@ -386,7 +386,7 @@ def getConfiguration():
     rootPath = os.path.abspath(get_main_dir())
         
     # Configuration file
-    configFile =  os.path.join(rootPath,'config.xml')
+    configFile =  os.path.join(rootPath,'conf','config.xml')
 
     # Check if config file exists and exit if not
     if os.path.isfile(configFile) == False:

@@ -19,10 +19,18 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+install_requires = [
+    'requests',
+    'setuptools',
+    'wmi',
+    'isolyzer'
+]
+
 setup(name='iromlab',
       packages=find_packages(),
       version=find_version('iromlab', 'iromlab.py'),
       license='Apache License 2.0',
+      install_requires=install_requires,
       platforms=['Windows'],
       description='Image and Rip Optical Media Like A Boss',
       long_description='Loader software for automated imaging of optical media with Nimbie disc robot ',
@@ -32,9 +40,7 @@ setup(name='iromlab',
       maintainer_email = 'johan.vanderknijff@kb.nl',
       url = 'https://github.com/KBNLresearch/iromlab',
       download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
-      package_data={'iromlab': ['*.*']},
-      include_package_data=True,
-      data_files=[('', ['iromlab/config.xml'])],
+      package_data={'iromlab': ['*.*', 'conf/*.*']},
       entry_points={'console_scripts': [
         'iromlab = iromlab.iromlab:main',
       ]},
