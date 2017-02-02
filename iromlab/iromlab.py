@@ -182,20 +182,23 @@ class carrierEntry(tk.Frame):
             title = record.titles[0]
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
+                # Prompt operator to insert carrier in disc robot
+                msg = "Please load disc ('" + title + "', volume " + str(volumeNo) + \
+                    ") into the disc loader, then press 'OK'"
+                tkMessageBox.showinfo("Load disc", msg)
+                
                 # Create unique identifier for this job (UUID, based on host ID and current time)
                 jobID = str(uuid.uuid1())
                 # Create and populate Job file                      
                 jobFile = ''.join([jobID,".txt"])
                 fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
-                #lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, noVolumes, carrierType]) + '\n'
                 lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, carrierType]) + '\n'
                 fJob.write(lineOut)
                 fJob.close()
-                        
+                                
                 # Reset entry fields        
                 self.catid_entry.delete(0, tk.END)
                 self.volumeNo_entry.delete(0, tk.END)
-                #self.noVolumes_entry.delete(0, tk.END)
     
     def setupLogging(self, handler):
           
