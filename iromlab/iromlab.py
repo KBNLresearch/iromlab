@@ -1,6 +1,8 @@
 #! /usr/bin/env python
+from pkg_resources import Requirement, resource_filename
 import sys
 import os
+from shutil import copyfile
 import imp
 import glob
 import time
@@ -378,15 +380,46 @@ def findElementText(elt, elementPath):
     
 def getConfiguration():
 
+    # Install configuration file to user dir if it is not there already.
     # Read configuration file, make all config variables available via
     # config.py and check that all file paths / executables exist.
     # This assumes an non-frozen script (no Py2Exe)
 
     # From where is this script executed?)
     rootPath = os.path.abspath(get_main_dir())
+    # Locate Windows user directory
+    userDir = os.path.expanduser('~')
+    # Config directory
+    configDir = os.path.join(userDir,'iromlab')
+    
+    # Create config directory if it doesn't exist
+    if os.path.isdir(configDir) == False:
+        try:
+            os.makedirs(configDir)
+        except IOError:
+            msg = 'could not create configuration directory'
+            errorExit(msg)
+
+    # Config file name
+    configFile = os.path.join(configDir,'config.xml')
+    
+    if os.path.isfile(configFile) == False:
+        # No config file in user dir, so we copy it from the source. Location depends on whether
+        # iromlab is run from deployment or development location
+        try:
+            # Installed via setup.py / pip: need to extract config file from egg
+            configFileSource = resource_filename(Requirement.parse('iromlab'),'conf/config.xml')
+        except KeyError:
+            # We end up here  if iromlab is run from development location. In this  case
+            # the config file is located in /conf directory
+            configFileSource =  os.path.join(rootPath,'conf','config.xml')
         
-    # Configuration file
-    configFile =  os.path.join(rootPath,'conf','config.xml')
+        # Copy source config file to user dir 
+        try:
+            copyfile(configFileSource, configFile)
+        except IOError:
+            msg = 'could not copy configuration file to ' + configFile
+            errorExit(msg)
 
     # Check if config file exists and exit if not
     if os.path.isfile(configFile) == False:
