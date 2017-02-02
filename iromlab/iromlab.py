@@ -8,20 +8,24 @@ import xml.etree.ElementTree as ETree
 import threading
 import uuid
 import logging
-import ScrolledText
 try:
     import tkinter as tk #Python 3.x
     from tkinter import ttk as ttk
-    import filedialog as tkFileDialog
+    from tkinter import filedialog as tkFileDialog
+    from tkinter import scrolledtext as ScrolledText
+    from tkinter import messagebox as tkMessageBox
 except ImportError:
     import Tkinter as tk # Python 2.x
     import ttk as ttk
     import tkFileDialog
-import tkMessageBox
+    import ScrolledText
+    import tkMessageBox
 import config
 from kbapi import sru
 import cdworker
 import cdinfo
+
+__version__ = '0.1.0'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
