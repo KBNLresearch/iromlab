@@ -104,6 +104,7 @@ class carrierEntry(tk.Frame):
         # Update state of buttons
         self.bNew.config(state = 'disabled')
         self.bOpen.config(state = 'disabled')
+        self.bFinalise.config(state = 'normal')
         self.submit_button.config(state = 'normal')
         config.readyToStart = True
          
@@ -127,6 +128,7 @@ class carrierEntry(tk.Frame):
             # Update state of buttons
             self.bNew.config(state = 'disabled')
             self.bOpen.config(state = 'disabled')
+            self.bFinalise.config(state = 'normal')
             self.submit_button.config(state = 'normal')
             config.readyToStart = True
            
@@ -233,6 +235,9 @@ class carrierEntry(tk.Frame):
         self.bFinalise.grid(column=2, row=1, sticky='ew')
         self.bExit = tk.Button(self, text="Exit", height=2, width=4, underline=0, command=self.on_quit)
         self.bExit.grid(column=3, row=1, sticky='ew')
+        
+        # Disable finalise button on startup
+        self.bFinalise.config(state = 'disabled')
                  
         # Entry elements for each carrier
    
