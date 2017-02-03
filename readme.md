@@ -1,4 +1,8 @@
 
+## Installation
+    
+    (python -m) pip install iromlab
+
 ## Platform
 
 MS Windows only. It may be possible to adapt the software to other platforms.
@@ -11,9 +15,8 @@ Iromlab was created to be used in conjuction with Acronova Nimbie disc autoloade
 
 * [IsoBuster](https://www.isobuster.com/)
 * [cd-info](https://linux.die.net/man/1/cd-info) - this tool is part of [libcdio](https://www.gnu.org/software/libcdio/),  the "GNU Compact Disc Input and Control Library".
-* dBpoweramp, dBpoweramp Batch Ripper and Nimbie Batch Ripper Driver; all available [from the dBpoweramp website](https://www.dbpoweramp.com/batch-ripper.htm). (Note: Iromlab wraps dBpoweramp's Nimbie driver binaries to control the disc loading / unloading process)
+* dBpoweramp, dBpoweramp Batch Ripper and Nimbie Batch Ripper Driver; all available [from the dBpoweramp website](https://www.dbpoweramp.com/batch-ripper.htm). (Note: Iromlab wraps dBpoweramp's Nimbie driver binaries to control the disc loading / unloading process.
 
- 
 ## Obtaining and installing *cd-info* binaries
 
 The installation of *cd-info* on windows is a bit tricky, mainly for 2 reasons:
@@ -78,6 +81,8 @@ Step by step instructions:
 
      Copy all these files to same directory as *cd-info.exe*.
 
+<!-- This can probably be removed b/c the setup script takes care of this automatically ...
+
 ## External libraries
 
 Iromlab uses a number of modules that are not part of Python's standard library, and which need to be installed separately:
@@ -95,6 +100,7 @@ Iromlab uses a number of modules that are not part of Python's standard library,
         (python -m) pip install isolyzer
         
 Finally Iromlab uses [tkInter](https://wiki.python.org/moin/TkInter), but this is included by default in the Python 2.7 / 3.x Windows installers.
+-->
         
 ## IsoBuster configuration
 
