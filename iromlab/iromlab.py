@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from pkg_resources import Requirement, resource_filename
+import site
 import sys
 import os
 from shutil import copyfile
@@ -380,7 +380,7 @@ def findElementText(elt, elementPath):
     
 def getConfiguration():
 
-    # Install configuration file to user dir if it is not there already.
+    # Install configuration file to Windows user dir if it is not there already.
     # Read configuration file, make all config variables available via
     # config.py and check that all file paths / executables exist.
     # This assumes an non-frozen script (no Py2Exe)
@@ -390,46 +390,65 @@ def getConfiguration():
     # Locate Windows user directory
     userDir = os.path.expanduser('~')
     # Config directory
-    configDir = os.path.join(userDir,'iromlab')
+    configDirUser = os.path.join(userDir,'iromlab')
     
     # Create config directory if it doesn't exist
-    if os.path.isdir(configDir) == False:
+    if os.path.isdir(configDirUser) == False:
         try:
-            os.makedirs(configDir)
+            os.makedirs(configDirUser)
         except IOError:
             msg = 'could not create configuration directory'
             errorExit(msg)
 
     # Config file name
-    configFile = os.path.join(configDir,'config.xml')
+    configFileUser = os.path.join(configDirUser,'config.xml')
     
-    if os.path.isfile(configFile) == False:
-        # No config file in user dir, so we copy it from the source. Location depends on whether
-        # iromlab is run from deployment or development location
-        try:
-            # Installed via setup.py / pip: need to extract config file from egg
-            configFileSource = resource_filename(Requirement.parse('iromlab'),'conf/config.xml')
-            print(configFileSource)
-        except KeyError:
-            # We end up here  if iromlab is run from development location. In this  case
-            # the config file is located in /conf directory
-            configFileSource =  os.path.join(rootPath,'conf','config.xml')
-            print(configFileSource)
-        # Copy source config file to user dir 
-        try:
-            copyfile(configFileSource, configFile)
-        except IOError:
-            msg = 'could not copy configuration file to ' + configFile
+    if os.path.isfile(configFileUser) == False:
+        # No config file in user dir, so copy it from location in source or package. Location can be one of 
+        # the following:
+        # 1. /iromlab/conf/config.xml in source directory (if executed from source distribution)
+        # 2. /iromlab/conf/config.xml in 'site-packages' directory (if installed with pip)
+        
+        # Situation 1
+        configFileSource = os.path.join(rootPath,'conf','config.xml')
+        
+        # Situation 2: locate site-packages dir (this returns multiple entries)
+        sitePackageDirs = site.getsitepackages()
+        
+        # Assumptions: site package dir is called 'site-packages' and is unique (?)
+        for dir in sitePackageDirs:
+            if 'site-packages'in dir:
+                sitePackageDir = dir
+                
+        # Construct path to config file
+        configFilePackage = os.path.join(sitePackageDir,'iromlab', 'conf', 'config.xml')
+        
+        if os.path.isfile(configFileSource) == True:
+            try:
+                copyfile(configFileSource, configFileUser)
+            except IOError:
+                msg = 'could not copy configuration file to ' + configFileUser
+                errorExit(msg)
+                
+        elif os.path.isfile(configFilePackage) == True:
+            try:
+                copyfile(configFilePackage, configFileUser)
+            except IOError:
+                msg = 'could not copy configuration file to ' + configFileUser
+                errorExit(msg)
+        else:
+            # This should never happen but who knows ...
+            msg = 'no configuration file found in either source or package'
             errorExit(msg)
 
     # Check if config file exists and exit if not
-    if os.path.isfile(configFile) == False:
+    if os.path.isfile(configFileUser) == False:
         msg = 'configuration file not found'
         errorExit(msg)
     
     # Read contents to bytes object
     try:
-        fConfig = open(configFile,"rb")
+        fConfig = open(configFileUser,"rb")
         configBytes = fConfig.read()
         fConfig.close()
     except IOError:
