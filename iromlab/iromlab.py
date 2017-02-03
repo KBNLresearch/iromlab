@@ -354,10 +354,14 @@ def checkDirExists(dirIn):
         tkMessageBox.showerror("Error", msg)
         sys.exit()
         
-def errorExit(error):
+def errorExitOld(error):
     sys.stderr.write("Error - " + error + "\n")
     sys.exit()
 
+def errorExit(error):
+    tkMessageBox.showerror("Error", error)
+    sys.exit()
+    
 def main_is_frozen():
     return (hasattr(sys, "frozen") or # new py2exe
             hasattr(sys, "importers") # old py2exe
@@ -459,7 +463,7 @@ def getConfiguration():
     try:
         root = ETree.fromstring(configBytes)
     except Exception:
-        msg = 'error parsing ' + configFile
+        msg = 'error parsing ' + configFileUser
         errorExit(msg)
     
     # Create empty element object & add config contents to it
