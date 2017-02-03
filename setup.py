@@ -23,7 +23,8 @@ install_requires = [
     'requests',
     'setuptools',
     'wmi',
-    'isolyzer'
+    'isolyzer',
+    'lxml'
 ]
 
 setup(name='iromlab',
