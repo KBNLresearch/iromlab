@@ -509,9 +509,8 @@ def getConfiguration():
     cdDrives = resultGetDrives["drives"]
     if config.cdDriveLetter not in cdDrives:
         msg = '"' + config.cdDriveLetter + '" is not a valid optical drive!'
-        tkMessageBox.showerror("Error", msg)
-        sys.exit()
-    
+        errorExit(msg)
+
 def main():
 
     try:           
