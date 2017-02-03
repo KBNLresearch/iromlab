@@ -427,25 +427,26 @@ def getConfiguration():
         # Construct path to config file
         configFilePackage = os.path.join(sitePackageDir,'iromlab', 'conf', 'config.xml')
         
+        # If source config.xml exists, copy it to the user directory
         if os.path.isfile(configFileSource) == True:
             try:
                 copyfile(configFileSource, configFileUser)
             except IOError:
                 msg = 'could not copy configuration file to ' + configFileUser
                 errorExit(msg)
-                
+        # Otherwise if package config.xml exists, copy it to the user directory        
         elif os.path.isfile(configFilePackage) == True:
             try:
                 copyfile(configFilePackage, configFileUser)
             except IOError:
                 msg = 'could not copy configuration file to ' + configFileUser
                 errorExit(msg)
+        # This should never happen but who knows ...
         else:
-            # This should never happen but who knows ...
             msg = 'no configuration file found in either source or package'
             errorExit(msg)
 
-    # Check if config file exists and exit if not
+    # Check if user config file exists and exit if not
     if os.path.isfile(configFileUser) == False:
         msg = 'configuration file not found'
         errorExit(msg)
