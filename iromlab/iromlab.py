@@ -409,11 +409,12 @@ def getConfiguration():
         try:
             # Installed via setup.py / pip: need to extract config file from egg
             configFileSource = resource_filename(Requirement.parse('iromlab'),'conf/config.xml')
+            print(configFileSource)
         except KeyError:
             # We end up here  if iromlab is run from development location. In this  case
             # the config file is located in /conf directory
             configFileSource =  os.path.join(rootPath,'conf','config.xml')
-        
+            print(configFileSource)
         # Copy source config file to user dir 
         try:
             copyfile(configFileSource, configFile)
@@ -487,7 +488,7 @@ def getConfiguration():
         msg = '"' + config.cdDriveLetter + '" is not a valid optical drive!'
         tkMessageBox.showerror("Error", msg)
         sys.exit()
-
+    
 def main():
 
     try:           

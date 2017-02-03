@@ -37,8 +37,8 @@ setup(name='iromlab',
       author='Johan van der Knijff',
       author_email='johan.vanderknijff@kb.nl',
       maintainer='Johan van der Knijff',
-      maintainer_email = 'johan.vanderknijff@kb.nl',
-      url = 'https://github.com/KBNLresearch/iromlab',
+      maintainer_email='johan.vanderknijff@kb.nl',
+      url='https://github.com/KBNLresearch/iromlab',
       download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
       package_data={'iromlab': ['*.*', 'conf/*.*']},
       entry_points={'console_scripts': [
@@ -47,7 +47,7 @@ setup(name='iromlab',
       classifiers=[
         'Environment :: Console',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 2.7'
     ]
     )
 
