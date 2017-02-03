@@ -3,11 +3,10 @@ import sys
 import os
 import time
 import glob
-import wmi # Dependency: python -m pip install wmi
+import wmi
 import pythoncom
 import hashlib
 import logging
-import tkMessageBox
 import config
 import drivers
 import cdinfo

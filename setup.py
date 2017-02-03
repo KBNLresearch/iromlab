@@ -24,7 +24,8 @@ install_requires = [
     'setuptools',
     'wmi',
     'isolyzer',
-    'lxml'
+    'lxml',
+    'pypiwin32'
 ]
 
 setup(name='iromlab',

@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
 import os
+from isolyzer import isolyzer
 import config
 import shared
-from isolyzer import isolyzer
 
 # Wrapper module for IsoBuster
 
