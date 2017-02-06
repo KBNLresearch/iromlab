@@ -5,8 +5,12 @@
 # dBpoweramp
 
 import os
-import config
-import shared
+if __package__ is None:
+    import config
+    import shared
+else:
+    from . import config
+    from . import shared
 
 def prebatch():
     logFile = ''.join([config.tempDir,shared.randomString(12),".log"])

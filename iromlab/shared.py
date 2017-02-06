@@ -3,9 +3,12 @@
 import os
 import subprocess as sub
 import string
-import config
 from random import choice
-
+if __package__ is None:
+    import config
+else:
+    from . import config
+    
 def launchSubProcess(args):
     # Launch subprocess and return exit code, stdout and stderr
     try:

@@ -2,9 +2,13 @@
 
 import os
 from isolyzer import isolyzer
-import config
-import shared
-
+if __package__ is None:
+    import config
+    import shared
+else:
+    from . import config
+    from . import shared
+    
 # Wrapper module for IsoBuster
 
 def extractData(writeDirectory, session):

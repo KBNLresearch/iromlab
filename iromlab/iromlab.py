@@ -22,12 +22,18 @@ except ImportError:
     import tkFileDialog
     import ScrolledText
     import tkMessageBox
-import config
-from kbapi import sru
-import cdworker
-import cdinfo
+if __package__ is None:
+    import config
+    from kbapi import sru
+    import cdworker
+    import cdinfo
+else:    
+    from . import config
+    from .kbapi import sru
+    from . import cdworker
+    from . import cdinfo
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.

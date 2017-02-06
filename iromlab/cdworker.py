@@ -7,10 +7,16 @@ import wmi
 import pythoncom
 import hashlib
 import logging
-import config
-import drivers
-import cdinfo
-import isobuster
+if __package__ is None:
+    import config
+    import drivers
+    import cdinfo
+    import isobuster
+else:
+    from . import config
+    from . import drivers
+    from . import cdinfo
+    from . import isobuster
 try:
     import thread # Python 2.x
 except ImportError:
