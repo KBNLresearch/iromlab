@@ -239,7 +239,19 @@ class record():
     def __iter__(self):
         return self
 
+    # This works under Python 2.7
     def next(self):
+        if self.sru.nr_of_records == 0:
+            raise StopIteration
+        if self.sru.startrecord < self.sru.nr_of_records + 1:
+            record_data = self.sru.run_query()
+            self.sru.startrecord += 1
+            return response(record_data, self.sru)
+        else:
+            raise StopIteration
+            
+    # This works under Python 3
+    def __next__(self):
         if self.sru.nr_of_records == 0:
             raise StopIteration
         if self.sru.startrecord < self.sru.nr_of_records + 1:
@@ -264,7 +276,10 @@ class sru():
                startrecord=1, maximumrecords=1, recordschema=False):
 
         self.maximumrecords = maximumrecords
-        self.query = urllib.quote_plus(query)
+        if sys.version.startswith('3'):
+            self.query = urllib.parse.quote_plus(query)
+        elif sys.version.startswith('2'):
+            self.query = urllib.quote_plus(query)
         self.startrecord = startrecord
 
         if collection not in self.sru_collections:
@@ -287,7 +302,7 @@ class sru():
 
         self.nr_of_records = int(nr_of_records)
 
-        if nr_of_records > 0:
+        if self.nr_of_records > 0:
             return response(record_data, self)
 
         return False
@@ -304,6 +319,6 @@ class sru():
             raise Exception('Error while getting data from %s' % url)
 
         record_data = etree.fromstring(r.content)
-
+        
 
         return record_data

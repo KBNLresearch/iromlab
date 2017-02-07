@@ -175,7 +175,7 @@ class carrierEntry(tk.Frame):
         sruSearchString = '"PPN=' + str(catid) + '"'
         response = sru.search(sruSearchString,"GGC")
         noGGCRecords = response.sru.nr_of_records
-        
+                
         if config.readyToStart == False:
             msg = "You must first create a batch or open an existing batch"
             tkMessageBox.showerror("Not ready", msg)
