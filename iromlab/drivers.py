@@ -31,8 +31,8 @@ def prebatch():
     errors = fErr.read()
     
     # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.decode("utf-16le").encode("utf-8")
-    errorsUTF8 = errors.decode("utf-16le").encode("utf-8")
+    logUTF8 = log.encode('utf-8').decode('utf-16le')
+    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
     
     fLog.close()
     fErr.close()
@@ -70,8 +70,8 @@ def load():
     errors = fErr.read()
     
     # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.decode("utf-16le").encode("utf-8")
-    errorsUTF8 = errors.decode("utf-16le").encode("utf-8")
+    logUTF8 = log.encode('utf-8').decode('utf-16le')
+    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
     
     fLog.close()
     fErr.close()
@@ -108,8 +108,8 @@ def unload():
     errors = fErr.read()
     
     # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.decode("utf-16le").encode("utf-8")
-    errorsUTF8 = errors.decode("utf-16le").encode("utf-8")
+    logUTF8 = log.encode('utf-8').decode('utf-16le')
+    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
     
     fLog.close()
     fErr.close()
@@ -146,8 +146,8 @@ def reject():
     errors = fErr.read()
     
     # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.decode("utf-16le").encode("utf-8")
-    errorsUTF8 = errors.decode("utf-16le").encode("utf-8")
+    logUTF8 = log.encode('utf-8').decode('utf-16le')
+    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
     
     fLog.close()
     fErr.close()
