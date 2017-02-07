@@ -2,12 +2,13 @@
 
 import os
 from isolyzer import isolyzer
-if __package__ is None:
-    import config
-    import shared
-else:
+
+if __package__ == 'iromlab':
     from . import config
     from . import shared
+else:
+    import config
+    import shared
     
 # Wrapper module for IsoBuster
 

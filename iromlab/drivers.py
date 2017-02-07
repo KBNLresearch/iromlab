@@ -5,13 +5,13 @@
 # dBpoweramp
 
 import os
-if __package__ is None:
-    import config
-    import shared
-else:
+if __package__ == 'iromlab':
     from . import config
     from . import shared
-
+else:
+    import config
+    import shared
+    
 def prebatch():
     logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
     errorFile = ''.join([config.tempDir,shared.randomString(12),".err"])

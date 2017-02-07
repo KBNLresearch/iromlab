@@ -22,16 +22,16 @@ except ImportError:
     import tkFileDialog
     import ScrolledText
     import tkMessageBox
-if __package__ is None:
-    import config
-    from kbapi import sru
-    import cdworker
-    import cdinfo
-else:    
+if __package__ == 'iromlab':    
     from . import config
     from .kbapi import sru
     from . import cdworker
     from . import cdinfo
+else:
+    import config
+    from kbapi import sru
+    import cdworker
+    import cdinfo
 
 __version__ = '0.1.2'
 

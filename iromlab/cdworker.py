@@ -7,16 +7,16 @@ import wmi
 import pythoncom
 import hashlib
 import logging
-if __package__ is None:
-    import config
-    import drivers
-    import cdinfo
-    import isobuster
-else:
+if __package__ == 'iromlab':
     from . import config
     from . import drivers
     from . import cdinfo
     from . import isobuster
+else:
+    import config
+    import drivers
+    import cdinfo
+    import isobuster
 try:
     import thread # Python 2.x
 except ImportError:
