@@ -365,7 +365,8 @@ def cdWorker():
     while endOfBatchFlag == False and config.quitFlag == False:
         time.sleep(2)
         # Get directory listing, sorted by creation time
-        files = filter(os.path.isfile, glob.glob(config.jobsFolder + '/*'))
+        # List conversion because in Py3 a filter object is not a list!
+        files = list(filter(os.path.isfile, glob.glob(config.jobsFolder + '/*')))
         files.sort(key=lambda x: os.path.getctime(x))
         
         noFiles = len(files)
