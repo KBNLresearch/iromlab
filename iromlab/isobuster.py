@@ -54,7 +54,8 @@ def extractData(writeDirectory, session):
         volumeIdentifier = isolyzerResult.find('properties/primaryVolumeDescriptor/volumeIdentifier').text.strip()
         if volumeIdentifier != '':
             # Rename ISO image using volumeIdentifier as a base name
-            isoFile = os.path.join(writeDirectory, volumeIdentifier + '.iso')
+            # Any spaces in volumeIdentifier are replaced with dashes 
+            isoFile = os.path.join(writeDirectory, volumeIdentifier.replace(' ', '-') + '.iso')
             os.rename(isoFileTemp, isoFile)
             
     except IOError or AttributeError:
