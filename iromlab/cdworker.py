@@ -279,7 +279,7 @@ def processDisc(carrierData):
                             carrierData['volumeNo'], 
                             carrierData['carrierType'],
                             carrierData['title'], 
-                            '"' + volumeID + '"',
+                            volumeID,
                             str(success)])
                             
         # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.

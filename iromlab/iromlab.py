@@ -2,6 +2,7 @@
 import site
 import sys
 import os
+import csv
 from shutil import copyfile
 import imp
 import glob
@@ -208,10 +209,23 @@ class carrierEntry(tk.Frame):
                 # Create unique identifier for this job (UUID, based on host ID and current time)
                 jobID = str(uuid.uuid1())
                 # Create and populate Job file                      
-                jobFile = ''.join([jobID,".txt"])
-                fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
-                lineOut = ','.join([jobID, catid, '"' + title + '"', volumeNo, carrierType]) + '\n'
-                fJob.write(lineOut)
+                jobFile = os.path.join(config.jobsFolder, jobID + ".txt")
+                
+                if sys.version.startswith('3'):
+                    # Py3: csv.reader expects file opened in text mode
+                    fJob = open(config.batchManifest,"w")
+                elif sys.version.startswith('2'):
+                    # Py2: csv.reader expects file opened in binary mode
+                    fJob = open(config.batchManifest,"wb")
+       
+                # Create CSV writer object
+                jobCSV = csv.writer(fJob, lineterminator='\n')
+                
+                # Row items to list
+                rowItems = ([jobID, catid, title, volumeNo, carrierType])
+
+                # Write row to batch manifest and close file
+                jobCSV.writerow(rowItems)
                 fJob.close()
                                 
                 # Reset entry fields        
