@@ -443,8 +443,8 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                #success = processDisc(carrierData)
-                success = processDiscTest(carrierData)
+                success = processDisc(carrierData)
+                #success = processDiscTest(carrierData)
             
             if success == True and endOfBatchFlag == False:
                 # Remove job file
