@@ -321,17 +321,31 @@ def processDiscTest(carrierData):
     # Path to dirDisc, relative to batchFolder
     dirDiscRel = os.path.relpath(dirDisc, os.path.commonprefix([dirDisc, config.batchFolder])) 
     
-    myCSVRow = ','.join([jobID, 
+    # Put all items for batch manifest entry in a list
+    rowBatchManifest = ([jobID, 
                         carrierData['PPN'], 
                         dirDiscRel,
                         carrierData['volumeNo'], 
                         carrierData['carrierType'],
                         carrierData['title'], 
-                        '"' + volumeID + '"',
+                        volumeID,
                         str(success)])
-    # Append entry to batch manifest
-    bm = open(config.batchManifest,'a')
-    bm.write(myCSVRow + '\n')
+                        
+    # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
+    
+    # Open batch manifest in append mode
+    if sys.version.startswith('3'):
+        # Py3: csv.reader expects file opened in text mode
+        bm = open(config.batchManifest,"a")
+    elif sys.version.startswith('2'):
+        # Py2: csv.reader expects file opened in binary mode
+        bm = open(config.batchManifest,"ab")
+   
+    # Create CSV writer object
+    csvBm = csv.writer(bm, lineterminator='\n')
+    
+    # Write row to batch manifest and close file
+    csvBm.writerow(rowBatchManifest)
     bm.close()
     
     return(success)
