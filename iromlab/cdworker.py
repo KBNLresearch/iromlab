@@ -280,7 +280,9 @@ def processDisc(carrierData):
                             carrierData['carrierType'],
                             carrierData['title'], 
                             volumeID,
-                            str(success)])
+                            str(success),
+                            str(carrierInfo['containsAudio']),
+                            str(carrierInfo['containsData'])])
                             
         # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
         
@@ -329,7 +331,9 @@ def processDiscTest(carrierData):
                         carrierData['carrierType'],
                         carrierData['title'], 
                         volumeID,
-                        str(success)])
+                        str(success),
+                        str(carrierInfo['containsAudio']),
+                        str(carrierInfo['containsData'])])
                         
     # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
     
@@ -372,7 +376,9 @@ def cdWorker():
                             'carrierType',
                             'title', 
                             'volumeID',
-                            'success'])
+                            'success',
+                            'containsAudio',
+                            'containsData'])
                             
         # Open batch manifest in append mode
         if sys.version.startswith('3'):
