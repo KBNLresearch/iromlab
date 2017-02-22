@@ -224,7 +224,7 @@ class carrierEntry(tk.Frame):
                 # Row items to list
                 rowItems = ([jobID, catid, title, volumeNo, carrierType])
 
-                # Write row to batch manifest and close file
+                # Write row to job and close file
                 jobCSV.writerow(rowItems)
                 fJob.close()
                                 

@@ -365,7 +365,7 @@ def cdWorker():
     
     # Write header row if batch manifest doesn't exist already
     if os.path.isfile(config.batchManifest) == False:
-        myCSVRow = ','.join(['jobID', 
+        headerBatchManifest = (['jobID', 
                             'PPN', 
                             'dirDisc',
                             'volumeNo', 
@@ -373,10 +373,20 @@ def cdWorker():
                             'title', 
                             'volumeID',
                             'success'])
-                                       
-        # Write header to batch manifest
-        bm = open(config.batchManifest,'a')
-        bm.write(myCSVRow + '\n')
+                            
+        # Open batch manifest in append mode
+        if sys.version.startswith('3'):
+            # Py3: csv.reader expects file opened in text mode
+            bm = open(config.batchManifest,"a")
+        elif sys.version.startswith('2'):
+            # Py2: csv.reader expects file opened in binary mode
+            bm = open(config.batchManifest,"ab")
+       
+        # Create CSV writer object
+        csvBm = csv.writer(bm, lineterminator='\n')
+        
+        # Write header to batch manifest and close file
+        csvBm.writerow(headerBatchManifest)
         bm.close()
         
     # Initialise batch
@@ -433,8 +443,8 @@ def cdWorker():
                 carrierData['carrierType'] = jobList[4]
                 
                 # Process the carrier
-                success = processDisc(carrierData)
-                #success = processDiscTest(carrierData)
+                #success = processDisc(carrierData)
+                success = processDiscTest(carrierData)
             
             if success == True and endOfBatchFlag == False:
                 # Remove job file
