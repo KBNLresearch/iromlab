@@ -213,10 +213,10 @@ class carrierEntry(tk.Frame):
                 
                 if sys.version.startswith('3'):
                     # Py3: csv.reader expects file opened in text mode
-                    fJob = open(config.batchManifest,"w")
+                    fJob = open(jobFile,"w")
                 elif sys.version.startswith('2'):
                     # Py2: csv.reader expects file opened in binary mode
-                    fJob = open(config.batchManifest,"wb")
+                    fJob = open(jobFile,"wb")
        
                 # Create CSV writer object
                 jobCSV = csv.writer(fJob, lineterminator='\n')

@@ -387,11 +387,20 @@ def cdWorker():
             # Identify oldest job file
             jobOldest = files[0]
             
-            # Open job file and read contents 
-            fj = open(jobOldest, "r")
-            lines = fj.readlines()
+            # Open job file and read contents
+            
+            if sys.version.startswith('3'):
+                # Py3: csv.reader expects file opened in text mode
+                fj = open(jobOldest,"r")
+            elif sys.version.startswith('2'):
+                # Py2: csv.reader expects file opened in binary mode
+                fj = open(jobOldest,"rb")
+        
+            fjCSV = csv.reader(fj)
+            jobList = next(fjCSV)
             fj.close()
-            if lines[0] == 'EOB\n':
+            
+            if jobList[0] == 'EOB':
                 # End of current batch
                 endOfBatchFlag = True
                 config.readyToStart = False
@@ -401,8 +410,6 @@ def cdWorker():
                 # This triggers a KeyboardInterrupt in the main thread
                 thread.interrupt_main()
             else:
-                # Split items in job file to list
-                jobList = lines[0].strip().split(",")
                 # Set up dictionary that holds carrier data
                 carrierData = {}
                 carrierData['jobID'] = jobList[0]
