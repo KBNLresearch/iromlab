@@ -164,24 +164,21 @@ def processDisc(carrierData):
         # 2. If disc is of CD-Extra type, there's one data track on the 2nd session
         if carrierInfo["containsAudio"] == True:
             logging.info('*** Ripping audio ***')
-            # Rip audio to WAV
-            # TODO: replace by dBpoweramp wrapper in  production version
-            # Also IsoBuster (3.8.0) erroneously extracts data from any data sessions here as well
-            # (and saves file with .wav file extension!)
+            # Rip audio using dBpoweramp console ripper
             dirOut = dirDisc
                 
-            resultIsoBuster = isobuster.ripAudio(dirOut, 1)
-            
-            statusIsoBuster = resultIsoBuster["log"].strip()
+            resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
+            statusdBpoweramp = str(resultdBpoweramp["status"])
               
-            if statusIsoBuster != "0":
+            if statusdBpoweramp != "0":
                 success = False
                 reject = True
-                logging.error("Isobuster exited with error(s)")
+                logging.error("dBpoweramp exited with error(s)")
 
-            logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
-            logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
-            logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
+            logging.info(''.join(['dBpoweramp command: ', resultdBpoweramp['cmdStr']]))
+            logging.info(''.join(['dBpoweramp-status: ', str(resultdBpoweramp['status'])]))
+            
+            # TODO: parse dBpoweramp's log file line-by line and then report each line to logging.info 
                 
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
