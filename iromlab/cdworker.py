@@ -13,11 +13,13 @@ if __package__ == 'iromlab':
     from . import drivers
     from . import cdinfo
     from . import isobuster
+    from . import dbpoweramp
 else:
     import config
     import drivers
     import cdinfo
     import isobuster
+    import dbpoweramp
 try:
     import thread # Python 2.x
 except ImportError:

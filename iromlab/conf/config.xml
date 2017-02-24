@@ -38,7 +38,11 @@ properly because its is badly damaged
 
 <!-- location of cd-info -->
 <cdInfoExe>C:\cdio\cd-info.exe</cdInfoExe>
+
 <!-- location of isoBuster -->
 <isoBusterExe>C:\Program Files (x86)\Smart Projects\IsoBuster\IsoBuster.exe</isoBusterExe>
+
+<!-- location of dBpoweramp console ripper -->
+<dBpowerampConsoleRipExe>C:\Program Files\dBpoweramp\kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
 
 </config>
