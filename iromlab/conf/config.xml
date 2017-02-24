@@ -5,18 +5,22 @@ as iromlab.py/ iromlab.exe!
 
 <config>
 
-<!-- IMPORTANT: do not wrap any of the file paths below in quotes, even if they contain
-spaces (the Python os.path libs don't seem to like this!)
+<!-- IMPORTANT notes on file paths:
+
+1. Do not wrap any of the file paths below in quotes, even if they contain
+   spaces! (the Python os.path libs don't seem to like this!)
+2. Only use FORWARD SLASHES; backslashes can lead to unexpected behavior because
+   Python can see them as escape characters.
 -->
 
 <!-- CD drive letter -->
 <cdDriveLetter>I</cdDriveLetter>
 
 <!-- root directory - this is the default search path for creating / opening batches -->
-<rootDir>E:\nimbieTest</rootDir>
+<rootDir>E:/nimbieTest</rootDir>
 
 <!-- directory for storing temporary files -->
-<tempDir>C:\Temp</tempDir>
+<tempDir>C:/Temp</tempDir>
 
 <!-- prefix that is used to create batch names -->
 <prefixBatch>kb</prefixBatch>
@@ -31,18 +35,18 @@ properly because its is badly damaged
 -->
 
 <!-- location of Nimbie drivers -->
-<prebatchExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Pre-Batch\Pre-Batch.exe</prebatchExe>
-<loadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load.exe</loadExe>
-<unloadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload.exe</unloadExe>
-<rejectExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Reject\Reject.exe</rejectExe>
+<prebatchExe>C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Pre-Batch/Pre-Batch.exe</prebatchExe>
+<loadExe>C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Load/Load.exe</loadExe>
+<unloadExe>C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe</unloadExe>
+<rejectExe>C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe</rejectExe>
 
 <!-- location of cd-info -->
-<cdInfoExe>C:\cdio\cd-info.exe</cdInfoExe>
+<cdInfoExe>C:/cdio/cd-info.exe</cdInfoExe>
 
 <!-- location of isoBuster -->
-<isoBusterExe>C:\Program Files (x86)\Smart Projects\IsoBuster\IsoBuster.exe</isoBusterExe>
+<isoBusterExe>C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe</isoBusterExe>
 
 <!-- location of dBpoweramp console ripper -->
-<dBpowerampConsoleRipExe>C:\Program Files\dBpoweramp\kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
+<dBpowerampConsoleRipExe>C:/Program Files/dBpoweramp/kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
 
 </config>

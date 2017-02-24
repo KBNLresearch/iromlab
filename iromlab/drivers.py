@@ -13,8 +13,8 @@ else:
     import shared
     
 def prebatch():
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-    errorFile = ''.join([config.tempDir,shared.randomString(12),".err"])
+    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
     
     args = [config.prebatchExe]
     args.append("--drive=" + config.cdDriveLetter)
@@ -51,8 +51,8 @@ def prebatch():
     return(dictOut)
     
 def load():
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-    errorFile = ''.join([config.tempDir,shared.randomString(12),".err"])
+    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
     
     args = [config.loadExe]
     args.append("--drive=" + config.cdDriveLetter)
@@ -90,8 +90,8 @@ def load():
     return(dictOut)
 
 def unload():
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-    errorFile = ''.join([config.tempDir,shared.randomString(12),".err"])
+    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
     
     args = [config.unloadExe]
     args.append("--drive=" + config.cdDriveLetter)
@@ -128,8 +128,8 @@ def unload():
     return(dictOut)
 
 def reject():
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
-    errorFile = ''.join([config.tempDir,shared.randomString(12),".err"])
+    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
     
     args = [config.rejectExe]
     args.append("--drive=" + config.cdDriveLetter)

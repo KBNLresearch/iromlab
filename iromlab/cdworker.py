@@ -166,6 +166,10 @@ def processDisc(carrierData):
             logging.info('*** Ripping audio ***')
             # Rip audio using dBpoweramp console ripper
             dirOut = dirDisc
+            
+            ## TEST
+            print(dirOut)
+            ## TEST
                 
             resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
             statusdBpoweramp = str(resultdBpoweramp["status"])

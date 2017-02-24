@@ -18,7 +18,7 @@ def extractData(writeDirectory, session):
     # Temporary name for ISO file; base name 
     isoFileTemp = os.path.join(writeDirectory, "disc.iso")
     #isoFile = os.path.join(writeDirectory, isoName)
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
+    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
 
     args = [config.isoBusterExe]
     args.append("".join(["/d:", config.cdDriveLetter, ":"]))
@@ -85,7 +85,7 @@ def ripAudio(writeDirectory, session):
     # IsoBuster /d:i /ei:"E:\nimbieTest\" /et:wav /ep:oea /ep:npc /c /m /nosplash /s:1 /t:audio /l:"E:\nimbieTest\ib.log"
     # IMPORTANT: the /t:audio switch requires IsoBuster 3.9 (currently in beta) or above!    
     
-    logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
+    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
 
     args = [config.isoBusterExe]
     args.append("".join(["/d:", config.cdDriveLetter, ":"]))
@@ -120,3 +120,32 @@ def ripAudio(writeDirectory, session):
     dictOut["log"] = log
         
     return(dictOut)    
+
+def main():
+    config.tempDir = os.path.normpath("C:\Temp")
+    config.isoBusterExe = os.path.normpath("C:\Program Files (x86)\Smart Projects\IsoBuster\IsoBuster.exe")
+    config.cdDriveLetter = "D"
+    config.batchFolder = os.path.normpath("E:/nimbieTest/kb-585d6eb6-faa7-11e6-9104-00237d497a29")
+    jobID = "6bcca8be-faa7-11e6-ab7b-00237d497a29"
+    
+    
+    dirTest = 'E:\test'
+    print(dirTest)
+    print(os.path.normpath(dirTest))
+    
+    
+    #print(config.batchFolder)
+    
+    #dirDisc = os.path.join(config.batchFolder, jobID)
+    
+    #writeDirectory = dirDisc
+    
+    #writeDirectory = os.path.normpath("E:\nimbieTest\kb-59b99052-fa98-11e6-9df7-00237d497a29\600dbdf0-fa98-11e6-aca1-00237d497a29") #goes wrong
+    #writeDirectory = os.path.normpath("E:\nimbieTest\kb-585d6eb6-faa7-11e6-9104-00237d497a29\6bcca8be-faa7-11e6-ab7b-00237d497a29")
+    #print(writeDirectory)
+    
+    #test = extractData(writeDirectory, 2)
+    #print(test)
+
+if __name__ == "__main__":
+    main()

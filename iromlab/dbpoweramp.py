@@ -16,7 +16,7 @@ def consoleRipper(writeDirectory):
     # Uses the bespoke dBpoweramp console ripper which was developed at request of KB 
     # dBpoweramp\kb-nl-consolerip.exe" --drive="D" --log=E:\cdBatchesTest\testconsolerip\log.txt --path=E:\cdBatchesTest\testconsolerip\
     #    
-    #logFile = ''.join([config.tempDir,shared.randomString(12),".log"])
+
     logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
 
     args = [config.dBpowerampConsoleRipExe]
@@ -56,14 +56,20 @@ def consoleRipper(writeDirectory):
     return(dictOut)    
 
 def main():
-    config.tempDir = os.path.normpath("C:\Temp")
-    config.dBpowerampConsoleRipExe = os.path.normpath("C:\Program Files\dBpoweramp\kb-nl-consolerip.exe")
+    config.tempDir = os.path.normpath("C:/Temp")
+    config.dBpowerampConsoleRipExe = os.path.normpath("C:/Program Files/dBpoweramp/kb-nl-consolerip.exe")
     config.cdDriveLetter = "I"
-    writeDirectory = os.path.normpath("E:\nimbieTest\kb-59b99052-fa98-11e6-9df7-00237d497a29\600dbdf0-fa98-11e6-aca1-00237d497a29")
+    
+    config.batchFolder = os.path.normpath("E:/nimbieTest/kb-0da45892-faae-11e6-8d7f-00237d497a29")
+    jobID = "19eeb7be-faae-11e6-883a-00237d497a29"
+    
+    writeDirectory = os.path.join(config.batchFolder, jobID)
+    
     print(writeDirectory)
+    print("----------")
     
     test = consoleRipper(writeDirectory)
-    #print(test)
+    print(test)
 
 if __name__ == "__main__":
     main()
