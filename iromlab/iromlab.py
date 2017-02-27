@@ -508,6 +508,11 @@ def getConfiguration():
     config.rejectExe = findElementText(configElt, './config/rejectExe')
     config.cdInfoExe = findElementText(configElt, './config/cdInfoExe')
     config.isoBusterExe = findElementText(configElt, './config/isoBusterExe')
+    config.dBpowerampConsoleRipExe = findElementText(configElt, './config/dBpowerampConsoleRipExe')
+
+    ## TEST
+    #print("dBpowerampExe = " + config.dBpowerampConsoleRipExe)
+    ## TEST
     
     # Normalise all file paths
     config.rootDir = os.path.normpath(config.rootDir)
@@ -518,6 +523,11 @@ def getConfiguration():
     config.rejectExe = os.path.normpath(config.rejectExe)
     config.cdInfoExe = os.path.normpath(config.cdInfoExe)
     config.isoBusterExe = os.path.normpath(config.isoBusterExe)
+    config.dBpowerampConsoleRipExe = os.path.normpath(config.dBpowerampConsoleRipExe)
+    
+    ## TEST
+    #print("dBpowerampExe = " + config.dBpowerampConsoleRipExe)
+    ## TEST
     
     # Check if all files and directories exist, and exit if not
     checkDirExists(config.rootDir)
@@ -528,6 +538,7 @@ def getConfiguration():
     checkFileExists(config.rejectExe)
     checkFileExists(config.cdInfoExe)
     checkFileExists(config.isoBusterExe)
+    checkFileExists(config.dBpowerampConsoleRipExe)
     
     # Check that cdDriveLetter points to an existing optical drive  
     resultGetDrives = cdinfo.getDrives()

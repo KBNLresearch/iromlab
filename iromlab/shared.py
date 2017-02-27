@@ -25,6 +25,7 @@ def launchSubProcess(args):
   
     except Exception:
         # I don't even want to to start thinking how one might end up here ...
+
         exitStatus=-99
         outputAsString=""
         errorsAsString=""

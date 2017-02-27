@@ -18,6 +18,10 @@ def consoleRipper(writeDirectory):
     #    
 
     logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    
+    ## TEST
+    #print("dBpowerampExe (from dbpoweramp.py) = " + config.dBpowerampConsoleRipExe)
+    ## TEST
 
     args = [config.dBpowerampConsoleRipExe]
     args.append("".join(["--drive=", config.cdDriveLetter]))
@@ -28,22 +32,16 @@ def consoleRipper(writeDirectory):
     cmdStr = " ".join(args)
     
     ## TEST
-    #print(cmdStr)
+    print(args)
     ## TEST
-
+    
     status, out, err = shared.launchSubProcess(args)
-
-    ## TEST
-    #print(str(status))
-    #print(out)
-    #print(err)
-    ## TEST
     
     fLog = open(logFile, 'r')
     log = fLog.read()
 
     fLog.close()
-    #os.remove(logFile)
+    os.remove(logFile)
 
     # All results to dictionary
     dictOut = {}
@@ -53,24 +51,4 @@ def consoleRipper(writeDirectory):
     dictOut["stderr"] = err
     dictOut["log"] = log
         
-    return(dictOut)    
-
-def main():
-    config.tempDir = os.path.normpath("C:/Temp")
-    config.dBpowerampConsoleRipExe = os.path.normpath("C:/Program Files/dBpoweramp/kb-nl-consolerip.exe")
-    config.cdDriveLetter = "I"
-    
-    config.batchFolder = os.path.normpath("E:/nimbieTest/kb-0da45892-faae-11e6-8d7f-00237d497a29")
-    jobID = "19eeb7be-faae-11e6-883a-00237d497a29"
-    
-    writeDirectory = os.path.join(config.batchFolder, jobID)
-    
-    print(writeDirectory)
-    print("----------")
-    
-    test = consoleRipper(writeDirectory)
-    print(test)
-
-if __name__ == "__main__":
-    main()
-    
+    return(dictOut)
