@@ -52,7 +52,8 @@ def checkAudio(audioFile,format):
 
 def main():
 
-    dataDir = os.path.normpath("E:\detectDamagedAudio\data")
+    #dataDir = os.path.normpath("E:\detectDamagedAudio\data")
+    dataDir = os.path.normpath("E:/nimbieTest/test")
     filesWav = glob.glob(dataDir + "/*.wav")
     filesFlac = glob.glob(dataDir + "/*.flac")
 

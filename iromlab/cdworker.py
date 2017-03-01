@@ -265,7 +265,7 @@ def processDisc(carrierData):
         # VolumeIdentifier only defined for ISOs 
         try:
             volumeID = resultIsoBuster['volumeIdentifier'].strip()
-        except KeyError:
+        except KeyError or UnboundLocalError:
             volumeID = ''
             
         # Path to dirDisc, relative to batchFolder
