@@ -262,10 +262,13 @@ def processDisc(carrierData):
 
         # Create comma-delimited batch manifest entry for this carrier
         
-        # VolumeIdentifier only defined for ISOs 
-        try:
-            volumeID = resultIsoBuster['volumeIdentifier'].strip()
-        except KeyError or UnboundLocalError:
+        # VolumeIdentifier only defined for ISOs, not for pure audio CDs!
+        if carrierInfo["containsData"] == True:
+            try:
+                volumeID = resultIsoBuster['volumeIdentifier'].strip()
+            except:
+                volumeID = ''
+        else:
             volumeID = ''
             
         # Path to dirDisc, relative to batchFolder
