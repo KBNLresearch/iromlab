@@ -43,7 +43,7 @@ setup(name='iromlab',
       url='https://github.com/KBNLresearch/iromlab',
       download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
       #package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*']},
-      include_package_data = True
+      include_package_data = True,
       entry_points={'console_scripts': [
         'iromlab = iromlab.iromlab:main',
       ]},
