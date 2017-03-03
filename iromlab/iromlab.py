@@ -569,9 +569,9 @@ def getConfiguration():
     config.isoBusterExe = os.path.normpath(config.isoBusterExe)
     config.dBpowerampConsoleRipExe = os.path.normpath(config.dBpowerampConsoleRipExe)
     
-    ## TEST
-    #print("dBpowerampExe = " + config.dBpowerampConsoleRipExe)
-    ## TEST
+    # Paths to pre-packaged tools
+    config.shntoolExe = os.path.join(toolsDirUser, 'shntool','shntool.exe')
+    config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64','flac.exe') 
     
     # Check if all files and directories exist, and exit if not
     checkDirExists(config.rootDir)
@@ -583,6 +583,8 @@ def getConfiguration():
     checkFileExists(config.cdInfoExe)
     checkFileExists(config.isoBusterExe)
     checkFileExists(config.dBpowerampConsoleRipExe)
+    checkFileExists(config.shntoolExe)
+    checkFileExists(config.flacExe)
     
     # Check that cdDriveLetter points to an existing optical drive  
     resultGetDrives = cdinfo.getDrives()
