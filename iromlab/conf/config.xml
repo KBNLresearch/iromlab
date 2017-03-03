@@ -40,9 +40,6 @@ properly because its is badly damaged
 <unloadExe>C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Unload/Unload.exe</unloadExe>
 <rejectExe>C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/Reject/Reject.exe</rejectExe>
 
-<!-- location of cd-info -->
-<cdInfoExe>C:/cdio/cd-info.exe</cdInfoExe>
-
 <!-- location of isoBuster -->
 <isoBusterExe>C:/Program Files (x86)/Smart Projects/IsoBuster/IsoBuster.exe</isoBusterExe>
 

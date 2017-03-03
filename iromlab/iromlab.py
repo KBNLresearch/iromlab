@@ -35,7 +35,7 @@ else:
     import cdworker
     import cdinfo
 
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -550,7 +550,6 @@ def getConfiguration():
     config.loadExe = findElementText(configElt, './config/loadExe')
     config.unloadExe = findElementText(configElt, './config/unloadExe')
     config.rejectExe = findElementText(configElt, './config/rejectExe')
-    config.cdInfoExe = findElementText(configElt, './config/cdInfoExe')
     config.isoBusterExe = findElementText(configElt, './config/isoBusterExe')
     config.dBpowerampConsoleRipExe = findElementText(configElt, './config/dBpowerampConsoleRipExe')
 
@@ -565,13 +564,13 @@ def getConfiguration():
     config.loadExe = os.path.normpath(config.loadExe)
     config.unloadExe = os.path.normpath(config.unloadExe)
     config.rejectExe = os.path.normpath(config.rejectExe)
-    config.cdInfoExe = os.path.normpath(config.cdInfoExe)
     config.isoBusterExe = os.path.normpath(config.isoBusterExe)
     config.dBpowerampConsoleRipExe = os.path.normpath(config.dBpowerampConsoleRipExe)
     
     # Paths to pre-packaged tools
     config.shntoolExe = os.path.join(toolsDirUser, 'shntool','shntool.exe')
-    config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64','flac.exe') 
+    config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64','flac.exe')
+    config.cdInfoExe = os.path.join(toolsDirUser, 'libcdio', 'win64','cd-info.exe')
     
     # Check if all files and directories exist, and exit if not
     checkDirExists(config.rootDir)
@@ -580,11 +579,11 @@ def getConfiguration():
     checkFileExists(config.loadExe)
     checkFileExists(config.unloadExe)
     checkFileExists(config.rejectExe)
-    checkFileExists(config.cdInfoExe)
     checkFileExists(config.isoBusterExe)
     checkFileExists(config.dBpowerampConsoleRipExe)
     checkFileExists(config.shntoolExe)
     checkFileExists(config.flacExe)
+    checkFileExists(config.cdInfoExe)
     
     # Check that cdDriveLetter points to an existing optical drive  
     resultGetDrives = cdinfo.getDrives()
