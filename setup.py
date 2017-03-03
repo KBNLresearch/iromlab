@@ -42,7 +42,7 @@ setup(name='iromlab',
       maintainer_email='johan.vanderknijff@kb.nl',
       url='https://github.com/KBNLresearch/iromlab',
       download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
-      package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*']},
+      package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*','tools/flac/*.*','tools/flac/win64/*.*','tools/flac/html/*.*','tools/flac/html/images/*.*','tools/flac/win32/*.*','tools/shntool/*.*','tools/shntool/doc/*.*']},
       zip_safe=False,
       entry_points={'console_scripts': [
         'iromlab = iromlab.iromlab:main',
@@ -54,4 +54,7 @@ setup(name='iromlab',
         'Programming Language :: Python :: 3'
     ]
     )
+    
+
+'tools/flac/*.*','tools/flac/win64/*.*','tools/flac/html/*.*','tools/flac/html/images/*.*','tools/flac/win32/*.*','tools/shntool/*.*','tools/shntool/doc/*.*'
 
