@@ -1,0 +1,329 @@
+version 3.0.10 (2009-03-30)
+  + cat mode: fixed bug that prevented use of the -d option
+  + cat mode [win32]: properly write WAVE data to the terminal
+  + conv mode [win32]: properly read WAVE data from the terminal
+
+version 3.0.9 (2009-03-18)
+  + allow fix mode to fix (essentially postpad) just one file, which is useful
+    when using the -c option to check for boundary issues
+  + added new global -F option to specify a file containing input filenames
+    (most modes will now accept input filenames from a single source, using the
+     following order of precedence: file specified by -F option, otherwise
+     filenames on the command line, otherwise filenames read from the terminal)
+
+version 3.0.8 (2008-08-27)
+  + added new -a option to show default encoder/decoder arguments
+  + fixed bug when prompting for overwrite action when stdin was
+    already at EOF on certain platforms (e.g. OS X)
+  + split mode: handle CUE sheets that contain Unicode BOMs
+  + wv format: support self-extracting WavPack files
+
+version 3.0.7 (2008-03-02)
+  + support for TAK decoding (requires TAK 1.0.4+)
+  + updated MPEG-4 ALS to version RM20, and added output support
+  + removed detection of unsupported formats RKAU and WMA
+
+version 3.0.6 (2007-12-16)
+  + support for TAK encoding (requires TAK 1.0.3+)
+
+version 3.0.5 (2007-10-22)
+  + hash mode: show progress indicators
+  + cmp mode: new -c option to specify size of byte-shift comparison buffer
+
+version 3.0.4 (2007-09-07)
+  + no longer ignore raw WavPack files (wvunpack creates WAVE header for us)
+  + support for TTA 3.4.x as well as TTA encoding
+  + fixed display bug in joined mode when input files were not CD-quality
+  + split mode: new -m option to allow character manipulation of CUE filenames
+
+version 3.0.3 (2007-06-01)
+  + improved use of exit codes
+  + mkw format: removed deprecated input kluge
+  + split mode: override path separation characters in CUE-generated files
+
+version 3.0.2 (2007-02-18)
+  + split mode: -c option works again
+  + split mode: support wider range of CUE sheets
+  + aiff format: support for sox 13.x
+
+version 3.0.1 (2007-01-24)
+  + fixed bug with WavPack format detection on 64-bit systems
+  + split mode: fixed bug parsing CUE sheets whose last line lacks a newline
+  + added support for MKW files
+  + added support for MPEG-4 ALS files (input only)
+  + added support for detection of TAK files (no input or output yet)
+  + added support for detection of WMA files (no input or output yet)
+  + added support for detection of RKAU files (no input or output yet)
+
+version 3.0.0 (2007-01-01)
+
+  [platform support]
+  + shntool is now a native windows executable (Cygwin is no longer needed)
+
+  [file formats]
+  + added support for WavPack 4.x files
+  + added support for m4a (Apple Lossless Audio Codec) files (input only)
+  + added support for la (Lossless Audio) files (input only)
+  + added support for tta files (input only)
+  + added support for bonk files
+  + added support for kxs (Kexis) files (input only)
+  + added new format 'term' to send output to a terminal (standard output)
+  + cust format: correct output filenames now shown (instead of "file.custom")
+  + cust format: partially-written output files are now removed on error
+
+  [modes]
+  + added new mode 'gen' to generate arbitrary-sized files containing silence
+  + added new mode 'trim' to trim silence from front and/or back of files
+  + renamed mode 'md5' to 'hash', since it now calculates MD5 and SHA1 hashes
+  + hash mode: added option to reorder filenames - may be useful with -c
+  + split mode: new -n option to control output count format (01, 001, ...)
+  + split mode: support for wider range of CUE sheets
+  + split mode: new -t option to name files based on keywords in CUE sheets
+  + split mode: fixed bug in which -l option failed with large input files
+  + split mode: new -e/-u options for specifying lead-in/lead-out
+  + split mode: new -x option to extract specific tracks
+  + len mode: show compression ratio for individual files as well as overall
+  + len mode: show input file format for each file
+  + len mode: new -c/-t options to suppress column names/totals line
+  + len mode: configurable units for files and totals
+  + conv mode: new -t option to convert WAVE data read from the terminal
+  + fix, join and hash modes: filenames can now be sorted automatically using
+    a natural sorting algorithm, which orders filenames containing numbers the
+    the same way a human would, e.g. "t1.wav, t2.wav, ... t10.wav" instead of
+    "t1.wav, t10.wav, t2.wav, ...".  as this was taken from the sources of GNU
+    ls (see 'ls -v'), it is considered stable enough to be the default.
+    if desired, sorting can still be done interactively, or not at all.
+
+  [global behavior]
+  + user-configureable progress types (percentage, dots, spin, faces or none)
+  + default overwrite option is now 'ask' - can be overridden with -O option
+  + allow on-the-fly renaming when files exist and overwrite option is 'ask'
+  + new -H option to show h:mm:ss.{ff,nnn} in output, instead of m:ss.{ff,nnn}
+  + new -a and -z options to override default file name prefix and postfix
+  + new options -w to suppress warnings and -q to suppress non-critical output
+  + converted to getopt - this means long options have become single characters
+  + alternate input decoder: -i "fmt decoder [arg1 ... argN]"
+  + alternate output ext/encoder: -o "fmt [ext=abc] [encoder [arg1 ... argN]]"
+  + in addition to the new -i/-o options above, default encoders/decoders
+    and/or their arguments, as well as file extensions, can be overridden
+    using any combination of appropriately named environment variables:
+
+      ST_<format>_DEC="decoder [arg1 ... argN]"
+      ST_<format>_ENC="[ext=abc] [encoder [arg1 ... argN]]"
+
+    e.g.:
+
+      % ST_SHN_DEC="shorten-2.3b" shntool len *.shn
+      % ST_FLAC_ENC="flake - %f" shntool conv -o flac *.wav
+      % ST_AIFF_ENC="ext=aif" shntool gen -o aiff -l 1:00
+
+version 2.0.3 (2004-05-05)
+  + fixed bug in len mode that sometimes caused the m:ss.ff value on the totals
+    line to be reported as being one second longer than it actually is - this
+    should finally resolve all variants of this bug, which was discovered after
+    2.0.0 was released, thought to have been fixed in 2.0.1, and has since been
+    determined to have existed from version 0.96 onward
+  + len and info modes now indicate whether audio data is block-aligned
+
+version 2.0.2 (2004-05-04)
+  + fixed crash when using -stdout in join mode without specifying an output
+    format
+
+version 2.0.1 (2004-05-03)
+  + fixed bug in len mode that sometimes caused the m:ss.ff value on the totals
+    line to be reported as being one second shorter than it actually is
+
+version 2.0.0 (2004-04-20)
+  + added new mode 'pad' to individually prepad or postpad CD-quality files
+  + added new mode 'cue' to generate CUE sheets or split points from files
+  + split mode now supports simple CUE sheets for splitting
+  + added "-l len" option in split mode to split file into smaller files
+    based on multiples of time interval "len"
+  + added -c option to md5 mode for calculating composite MD5 fingerprints
+  + added the ability to prepad or postpad files created in join mode
+  + added support for sowt-compressed AIFF-C files (requires sox 12.17.4)
+  + added the ability to skip ID3v2 tags contained in files or input streams:
+     - formats with decoders that natively handle ID3v2 tags:  shn, flac, ape
+     - formats that handle ID3v2 tags through clever trickery:  wav, aiff, ofr
+     - formats that currently cannot handle ID3v2 tags: lpac, wv
+  + added -O option to all modes that create output files, so that the user can
+    control whether output files that already exist are overwritten
+  + len mode modified to always show overall compression ratio
+  + new column in len mode to indicate whether files contain an ID3v2 tag
+  + changed length format for non-CD quality files from m:ss to m:ss.nnn
+  + several additions and updates to the information shown by info mode
+  + all modes now accept the -D option, which enables debugging information
+  + modes that create files now remove partially-written output files on error
+    (does not apply to the cust format module, since filename cannot be trusted)
+  + updates to handle NULL-padding of odd-sized data chunks, per RIFF specs
+  + fixed nasty bug in conv mode that caused some input files to be overwritten
+  + fixed split mode m:ss.nnn bug that ignored nnn when file was not CD quality
+
+version 1.2.3 (2003-03-20)
+  + split mode will now split any file, not just CD-quality ones
+  + cat mode now accepts multiple filenames
+  + fixed bug in split mode where split point files with Windows line endings
+    were considered invalid
+
+version 1.2.2 (2003-02-22)
+  + fixed bug in md5 mode that caused extra RIFF chunks to inadvertently be
+    included in the calculation of MD5 fingerprints
+  + relaxed the file name placeholder requirement for the cust format module
+    (the '%f' placeholder can now be a substring of an argument)
+
+version 1.2.1 (2003-02-17)
+  + added new mode 'md5' (computes MD5 hash of audio data, independent of format)
+  + added support for wv (WavPack) file format
+  + added new output format module 'cust' that allows one to specify a custom
+    encoder to use in the creation of output files - this enables the user to
+    override the default encoder arguments for formats that shntool already
+    supports, as well as encode to formats that shntool does not yet support
+
+version 1.2.0 (2002-12-07)
+  + info mode now supports extra per-format information (currently this is used
+    to indicate seekability of shn files)
+  + join mode now supports joining of non-CD quality files
+
+version 1.2.0-rc2 (2002-10-31)
+  + overall compression ratio shown in len mode if all input files are compressed
+  + fixed bug in fix mode that caused shntool to hang in rare instances
+  + added support for ofr (OptimFROG) and lpac file formats
+
+version 1.2.0-rc1 (2002-09-12)
+  + added support for aiff, flac and ape file formats; dropped kexis support
+    (aiff format supports only AIFF and uncompressed AIFF-C, not compressed AIFF-C)
+  + added new mode 'conv' (converts files from one format to another)
+  + improved functionality in cmp mode (new -s, -l and -f options)
+  + join mode can now write to stdout (only with 'wav' output format)
+  + shntool now waits for child processes (prevents shorten 3.4/md5sum race condition)
+  + fixed bug in join mode that caused output file to have incorrect data size
+    when the data was not sector-aligned, and -nopad was specified
+  + some debugging output now shown if SHNTOOL_DEBUG environment variable is set
+    (currently limited to the status of child processes - useful if shntool is hanging)
+
+version 1.01 (2001-01-23)
+  + fixed rounding error in len and info modes that caused certain
+    non-sector-boundary-aligned CD-quality files to appear to be about one
+    second shorter than they actually are.  For example, a file that was just
+    over half of a frame longer than 3:14.74 would have been incorrectly rounded
+    to 3:14.00, when it should have been rounded to 3:15.00.  The error occurred
+    when the WAVE data size modulo 176400 fell in the range [175224, 176399].
+    Assuming that the data sizes of non-sector-aligned CD-quality WAVE files are
+    uniformly distributed, the chance of this error occurring is just over 1 in
+    150 (1176 in 176325, to be exact).
+  + removed arbitrary 4-byte file size cutoff
+
+version 1.00 (2001-01-13)
+  + fixed offset miscalculation in cmp mode for files that differ
+  + fixed design error in cat mode where extra RIFF chunks were not output.
+    If cat mode was used to extract a file (e.g. shncat file.shn > file.wav),
+    then the output file would appear to be truncated to len mode.  Extra RIFF
+    chunks can be still suppressed if needed via the new -nr switch.
+  + cat mode now quits when nothing more would be output
+  + minor documentation and output updates
+
+version 1.00 beta 9 (2001-01-08)
+  + added 'r' shift type to fix mode (round to nearest sector boundary)
+  + added new mode 'cmp' (compares WAVE data in two files)
+  + added -c switch to split mode
+  + now only installs symbolic links for specified built-in modes
+  + finally wrote a "tutorial"
+  + generalized the file order editor, and added more useful commands to it
+  + added -nd switch to cat mode
+
+version 1.00 beta 8 (2001-01-05)
+  + split mode erroneous input bug fixed
+  + minor code cleanup and (hopefully) improved alias installation
+
+version 1.00 beta 7 (2001-01-05)
+  + Digital Unix 4.0D compile fix and a 64-bit-architecture header size
+    calculation fix
+  + added new mode 'split'
+  + shortened some command-line arguments in certain modes
+
+version 1.00 beta 6 (2001-01-03)
+  + added new mode 'cat'
+  + each mode is now aliased to "shn<mode>", e.g. shnlen, shnfix, shncat, etc.
+  + cleaned up all errors reported by gcc -Wall
+
+version 1.00 beta 5 (2001-01-01)
+  + fixed display errors when using aliases
+
+version 1.00 beta 4 (2001-01-01)
+  + added support for conditional compilation of modules
+    (see the INSTALL file for more information)
+
+version 1.00 beta 3 (2000-12-31)
+  + converted to GNU autoconf
+
+version 1.00 beta 2 (2000-12-28)
+  + reimplemented mode aliasing, e.g. creating a symbolic link to shntool named
+    'shnlen' will start shntool in len mode
+
+version 1.00 beta 1 (2000-12-23)
+  + completely rewritten to be more modular
+  + added three new modes - 'join', 'strip' and 'info'
+  + see the README file for more information
+
+version 0.98 (2000-11-22, never released)
+  + started improving some things, but gave up in favor of a full code redesign
+
+version 0.97a (2000-11-22)
+  + fixed help screen bug
+
+version 0.97 (2000-11-21)
+  + cleaned up and corrected help screens
+  + check whether files are 'CD-quality', and report if they are not
+  + display file length in m:ss.ff format only if it is CD-quality, and
+    print totals line in m:ss.ff format only if all files were CD-quality -
+    otherwise, display file length in m:ss format
+  + check that all files are CD-quality before proceeding in fix mode
+  + check that at least one file has an error before proceeding in fix mode
+  + some code cleanup
+  + realized that this thing is due for a rewrite  :^)
+
+version 0.96 (2000-11-18)
+  + now report file length in m:ss.ff format, where ff is a number from 0 to 74
+    that best approximates the remaining number of 2352-byte blocks after m:ss
+  + more error and sanity checking for input files
+
+version 0.95 (2000-10-19)
+  + fixed bug where chunk size wasn't being updated for files that were altered in fix mode
+  + added code to help determine whether shorten is in the default path
+  + WAVE data for headers in .wav (not .shn) files are now verified
+  + added extra debugging information in len mode
+  + file names created in fix mode are now based on input filenames when -f or -b are given
+
+version 0.94 (2000-08-24)
+  + added option to pad the last file with zeroed data in fix mode, if necessary
+
+version 0.93 (2000-07-06)
+  + I partially broke file reading from stdin in len mode in 0.92 - fixed.
+  + cleaned up code to use the file_info struct for the filename wherever possible
+  + added error checking after some malloc's
+  + made some error messages more descriptive with regard as to why they may have happened
+  + added a generic bug_report() routine (may want to add some diagnostic info to it later)
+  + changed all // comments to standard comments to satisfy some bitchy compilers  :)
+
+version 0.92 (2000-07-04)
+  + added setlinebuf() support for architectures that don't have it
+    (via the "-D_SETLINEBUF_HACK" compiler option)
+  + added description of the len mode "-debug" flag to its help menu
+
+version 0.91 (2000-07-04)
+  + WAVE headers are processed correctly again
+  + added "-debug" switch for len mode
+  + fixed segfaults with headers > 64 bytes
+
+version 0.9 (2000-07-03)
+  + initial public release
+
+version 0.03 (2000-07-02)
+  + all major bugs seem to be worked out, only minor cosmetic
+    issues remain
+
+version 0.02 (2000-07-01)
+  + started merging shnlen with fixwav to form a unified tool
+
+version 0.01 (2000-06-30)
+  + some ideas coalesced, and development started on fixwav

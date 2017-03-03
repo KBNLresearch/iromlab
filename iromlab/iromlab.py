@@ -4,6 +4,7 @@ import sys
 import os
 import csv
 from shutil import copyfile
+from shutil import copytree
 import imp
 import glob
 import time
@@ -34,7 +35,7 @@ else:
     import cdworker
     import cdinfo
 
-__version__ = '0.1.3'
+__version__ = '0.2.0'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -409,6 +410,7 @@ def findElementText(elt, elementPath):
 def getConfiguration():
 
     # Install configuration file to Windows user dir if it is not there already.
+    # Install wrapped tools to Windows user dir if they are not there already
     # Read configuration file, make all config variables available via
     # config.py and check that all file paths / executables exist.
     # This assumes an non-frozen script (no Py2Exe)
@@ -468,6 +470,48 @@ def getConfiguration():
         # This should never happen but who knows ...
         else:
             msg = 'no configuration file found in either source or package'
+            errorExit(msg)
+
+    # Tools directory
+    toolsDirUser = os.path.join(configDirUser,'tools')
+    
+    if os.path.isdir(toolsDirUser) == False:
+        # No tools directory in user dir, so copy it from location in source or package. Location can be one of 
+        # the following:
+        # 1. /iromlab/conf/tools in source directory (if executed from source distribution)
+        # 2. /iromlab/conf/tools in 'site-packages' directory (if installed with pip)
+        
+        # Situation 1
+        toolsDirSource = os.path.join(rootPath,'tools')
+        
+        # Situation 2: locate site-packages dir (this returns multiple entries)
+        sitePackageDirs = site.getsitepackages()
+        
+        # Assumptions: site package dir is called 'site-packages' and is unique (?)
+        for dir in sitePackageDirs:
+            if 'site-packages'in dir:
+                sitePackageDir = dir
+                
+        # Construct path to tools dir
+        toolsDirPackage = os.path.join(sitePackageDir,'iromlab', 'tools')
+        
+        # If source tools dir exists, copy it to the user directory
+        if os.path.isdir(toolsDirSource) == True:
+            try:
+                copytree(toolsDirSource, toolsDirUser)
+            except IOError:
+                msg = 'could not copy tools directory ' + toolsDirUser
+                errorExit(msg)
+        # Otherwise if package tools dir exists, copy it to the user directory        
+        elif os.path.isdir(toolsDirPackage) == True:
+            try:
+                copytree(toolsDirPackage, toolsDirUser)
+            except IOError:
+                msg = 'could not copy tools directory to ' + toolsDirUser
+                errorExit(msg)
+        # This should never happen but who knows ...
+        else:
+            msg = 'no tools directory found in either source or package'
             errorExit(msg)
 
     # Check if user config file exists and exit if not

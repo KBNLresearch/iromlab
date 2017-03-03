@@ -4,9 +4,11 @@ import os
 import glob
 import wave
 import soundfile as sf
+import subprocess as sub
+import time
 
 def checkAudio(audioFile,format):
-    # Verify if audio file is complete (check for truncate / missing bytes)
+    # Verify if audio file is complete (check for truncated / missing bytes)
     if format == "wav":
         try:
             # Use Python's built-in Wave module
@@ -52,17 +54,77 @@ def checkAudio(audioFile,format):
 
 def main():
 
-    #dataDir = os.path.normpath("E:\detectDamagedAudio\data")
-    dataDir = os.path.normpath("E:/nimbieTest/test")
-    filesWav = glob.glob(dataDir + "/*.wav")
-    filesFlac = glob.glob(dataDir + "/*.flac")
+    # Define data directories
+    dirWav = os.path.normpath("E:/nimbieTest/wav")
+    dirFlac = os.path.normpath("E:/nimbieTest/flac")
+
+    filesWav = glob.glob(dirWav + "/*.wav")
+    filesFlac = glob.glob(dirFlac + "/*.flac")
+    
+    # Process WAVs
+    startWav = time.time()
 
     for fwav in filesWav:
         isCompleteFlag = checkAudio(fwav, "wav")
         print(fwav, isCompleteFlag)
-
+    
+    endWav = time.time()
+    elapsedWav = endWav - startWav
+    print("Processing time WAVE: " + str(elapsedWav) + " seconds")
+    
+    # Process FLACs
+    startFlac = time.time()
+    
     for fflac in filesFlac:
         isCompleteFlag = checkAudio(fflac, "flac")
         print(fflac, isCompleteFlag)
 
+    endFlac = time.time()
+    elapsedFlac = endFlac - startFlac
+    print("Processing time Flac: " + str(elapsedFlac) + " seconds")
+    
+    # Process WAVs with shntool
+    shntool = os.path.normpath("C:/shntool/shntool.exe")
+    
+    startShn = time.time()
+    for fwav in filesWav:
+        args = [shntool, "info", fwav]
+        p = sub.Popen(args,stdout=sub.PIPE,stderr=sub.PIPE)
+        output, errors = p.communicate()
+        print(output)
+        print(errors)
+    endShn = time.time()
+    elapsedShn = endShn - startShn
+    print("Processing time WAVE, shntool: " + str(elapsedShn) + " seconds")
+
+    # Process FLACs with flac
+    flactool = os.path.normpath("C:/flac/flac.exe")
+    
+    startFlac = time.time()
+    for fflac in filesFlac:
+        args = [flactool, "-t", fflac]
+        p = sub.Popen(args,stdout=sub.PIPE,stderr=sub.PIPE)
+        output, errors = p.communicate()
+        print(output)
+        print(errors)
+    endFlac = time.time()
+    elapsedFlac = endFlac - startFlac
+    print("Processing time FLAC, flac: " + str(elapsedFlac) + " seconds")
+    
+    # Process FLACs with ffmpeg
+    ffmpeg = "C:/ffmpeg/bin/ffmpeg.exe"
+    
+    startFlac = time.time()
+    for fflac in filesFlac:
+        # ffmpeg -v error -i foo.wav -f null -
+        args = [ffmpeg, "-v", "error", "-i", fflac, "-f", "null", "-"]
+        p = sub.Popen(args,stdout=sub.PIPE,stderr=sub.PIPE)
+        output, errors = p.communicate()
+        print(output)
+        print(errors)
+    endFlac = time.time()
+    elapsedFlac = endFlac - startFlac
+    print("Processing time FLAC, ffmpeg: " + str(elapsedFlac) + " seconds")
+    
+    
 main()

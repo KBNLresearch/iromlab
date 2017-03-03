@@ -1,0 +1,153 @@
+Thanks go to the following people, in no particular order:
+
+Tim [tmo], whose ideas prompted the creation of this program's predecessor
+(shnlen), and whose diligent testing helped iron out the bugs in that program.
+
+Herschel Gelman, who had the great suggestion that shnlen could check to see
+whether the .wav files inside the .shn's were properly cut on sector boundaries.
+He also suggested that join mode could write to stdout, so that large amounts of
+data could be piped into an external program, such as an mp3 encoder.
+
+Caleb Epstein, for sending patches and helping to debug shntool, as well as
+providing documentation and binary packages.  Also, for reporting the fix mode
+hang, as well as providing a set of files that helped me reproduce it.
+Additionally, for suggesting that info mode could tell whether .shn files were
+seekable.
+
+Jeff Kempka, for helping me obtain unruly files to aid in figuring out a rare
+bug in the 0.9x series, as well as usability suggestions.
+
+Bill Bumgarner, for suggesting that shntool move to GNU autoconf.  I learned a
+lot in the process.  :^)
+
+Paul Mather, for reporting bugs and compilation problems on platforms on which I
+currently have no access, as well as testing and verifying their respective
+fixes.  Also, for reporting the m:ss.ff rounding bug, as well as providing a
+detailed analysis of the problem which expedited its fix.
+
+Mike Kelleher, for contributing toward the design of split mode, as well as
+helping to test it.
+
+Mike Vernal, for providing the impetus (and nearly the code) to support AIFF, as
+well as testing it.
+
+Scott Brown, for putting the AIFF support through the wringer, helping to iron
+out the kinks.  Also, for informing me that sox 12.17.4 now supports sowt-
+compressed AIFF-C files.
+
+jelly, for suggesting that join mode be able to join non-CD quality files.
+
+Michael Dougherty, for reporting a bug where shntool would inadvertently include
+extra RIFF chunks when calculating audio MD5 fingerprints.
+
+Christian Weisgerber, who provided a Makefile patch.
+
+Boogie Shafer, who was the first to suggest that shntool should support CUE
+sheets.  Also, for the idea that split mode could split a file based on multiples
+of a given time interval.  Finally, for enduring and reporting a seriously nasty
+data-destroying bug in conv mode, which led to the implementation of file clobber
+checks and the eventual instatement of 'ask' as the default overwrite action. :-/
+
+John Cook, who was the first of several to ask for the ability to prepad files.
+Also, for suggesting that shntool generate split points from an existing set of
+files, and for suggesting that info mode show the sector-misalignment of
+CD-quality files.
+
+David Loehr, who was the first to report a set of files that could not be read
+by shntool, which turned out to be caused by the existence of ID3v2 tags.
+These tags are now skipped by shntool, leaving it up to external decoder
+programs to handle them.
+
+deep_elem, who reported a situation in which split mode would round extremely
+small split points (0:00.001 - 0:00.020) to 0, causing shntool to error out.
+
+Tim Ebben, whose keen eye noticed that the m:ss.ff value on the totals line was
+reporting an incorrect value.
+
+Greg Eriksen, for suggesting that shntool have an option not to add predefined
+strings (e.g. "-fixed") to files.  This led to the ability to specify arbitrary
+user-defined prefixes and postfixes.  Also, for suggesting that md5 mode allow
+file reordering, for use with composite md5s.
+
+M Blake, who was the first of several people to request the ability to trim
+leading and/or trailing silence from files.
+
+Dave Maley, who didn't like that split mode moved to a three-digit numbering
+scheme (split-track001.wav, ...).  This led to the ability to specify your own
+number format, in printf syntax (e.g. "%02d").
+
+Krzysiek Wojszko, whose CUE file tripped up split mode so badly that I decided
+I better try to support the whole CUE specification.  :)
+
+Mike Harder, who reported a bug in split mode that prevented extremely large
+files from being split correctly when using the -l option.
+
+Michael Barnes, for contributing a patch to support natural filename sorting, and
+for the idea that shntool can better utilize exit codes.
+
+John, for suggesting that split mode be able to name output files based on TITLE
+keywords in CUE sheets.
+
+rob, for reporting a bug that prevented shntool from processing filenames read
+from stdin under Windows.
+
+Pierre-Yves, for offering to contribute code to name output files in split mode
+based on several fields in CUE sheets.
+
+David Bonde, for suggesting that split mode support user-defined lead-in and/or
+lead-out.
+
+Wim Speekenbrink, for reporting a bug where the last line of a CUE sheet that
+lacks a newline character was not getting parsed in split mode.
+
+Samson, for reporting a WavPack format detection issue and working with me to
+discover the cause, which turned out to be a bug triggered by 64-bit systems.
+Also, for providing me with sample CUE sheets that helped make split mode's
+CUE sheet parsing more robust.
+
+Thomas Strosslin, for reporting a major shortcoming in shntool's exit code
+reporting (especially affecting conv mode), and for providing a patch to
+address this issue.
+
+Tom, for suggesting that hash mode use progress indicators, like other modes.
+
+Paolo Saggese, for suggesting that shntool allow user-specified byte-shift
+comparison buffer sizes in cmp mode, for those times when DAE is off by more
+than the default of 3 seconds.
+
+German Pulido, for reporting an issue in which self-extracting WavPack files
+were not being properly detected by shntool.
+
+Albin Larsson, for suggesting that fix mode should handle the case where just
+a single file is specified (essentially postpad the file), which is especially
+useful when using the -c option to check files for boundary issues.
+
+Robert Rozee, for suggesting that shntool could read input filenames from a
+file, instead of listing everything on the command line.
+
+Mark, for reporting multiple issues with cat mode and providing fixes.
+
+-------
+
+Thanks also goes to the developers of the following software, from which I have
+taken both ideas and code for shntool:
+
+xmms - shntool's WAVE header parsing algorithm was based on the one in xmms's
+       WAVE input plugin
+
+proftpd - shntool's method for gluing modules together was adapted from the way
+          proftpd handles it
+
+sox - the WAVE_FORMAT_* defines and format_to_str() function were taken from the
+      sox distribution
+
+coreutils - the MD5 and natural filename sorting algorithms were lifted from the
+            GNU coreutils distribution
+
+v2strip - shntool's ID3v2 detection was based on the v2strip implementation
+
+==================
+Document revision:
+==================
+
+$Id: CREDITS,v 1.30 2009/03/30 06:31:13 jason Exp $

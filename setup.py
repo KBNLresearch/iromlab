@@ -42,7 +42,7 @@ setup(name='iromlab',
       maintainer_email='johan.vanderknijff@kb.nl',
       url='https://github.com/KBNLresearch/iromlab',
       download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
-      package_data={'iromlab': ['*.*', 'conf/*.*']},
+      package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*']},
       entry_points={'console_scripts': [
         'iromlab = iromlab.iromlab:main',
       ]},
