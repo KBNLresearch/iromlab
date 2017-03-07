@@ -290,14 +290,10 @@ def processDisc(carrierData):
                 volumeID = ''
         else:
             volumeID = ''
-            
-        # Path to dirDisc, relative to batchFolder
-        dirDiscRel = os.path.relpath(dirDisc, os.path.commonprefix([dirDisc, config.batchFolder])) 
         
         # Put all items for batch manifest entry in a list
         rowBatchManifest = ([jobID, 
                             carrierData['PPN'], 
-                            dirDiscRel,
                             carrierData['volumeNo'], 
                             carrierData['carrierType'],
                             carrierData['title'], 
@@ -341,14 +337,10 @@ def processDiscTest(carrierData):
     
     # Dummy value for VolumeIdentifier 
     volumeID = 'DUMMY'
-        
-    # Path to dirDisc, relative to batchFolder
-    dirDiscRel = os.path.relpath(dirDisc, os.path.commonprefix([dirDisc, config.batchFolder])) 
-    
+            
     # Put all items for batch manifest entry in a list
     rowBatchManifest = ([jobID, 
                         carrierData['PPN'], 
-                        dirDiscRel,
                         carrierData['volumeNo'], 
                         carrierData['carrierType'],
                         carrierData['title'], 
@@ -393,7 +385,6 @@ def cdWorker():
     if os.path.isfile(config.batchManifest) == False:
         headerBatchManifest = (['jobID', 
                             'PPN', 
-                            'dirDisc',
                             'volumeNo', 
                             'carrierType',
                             'title', 
