@@ -94,7 +94,7 @@ def processDisc(carrierData):
     # Initialise reject and success status
     reject = False
     success = True
-   
+       
     # Load disc
     logging.info('*** Loading disc ***')
     resultLoad = drivers.load()
@@ -183,6 +183,7 @@ def processDisc(carrierData):
             # TODO: parse dBpoweramp's log file line-by line and then report each line to logging.info
                         
             # Verify that created audio files are not corrupt (using shntool / flac)
+            logging.info('*** Verifying audio ***')
             audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, config.audioFormat)
             logging.info(''.join(['audioHasErrors: ', str(audioHasErrors)]))
             
@@ -190,10 +191,12 @@ def processDisc(carrierData):
                 success = False
                 reject = True
                 logging.error("Verification of audio files resulted in error(s)")
-                logging.info("Output of audio verification:")
-                for audioFile in audioErrorsList:
-                    for item in audioFile:
-                        logging.info(item)
+             
+            # TODO perhaps indent this block if we only want this in case of actual errors?
+            logging.info("Output of audio verification:")
+            for audioFile in audioErrorsList:
+                for item in audioFile:
+                    logging.info(item)
                                     
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
@@ -237,11 +240,7 @@ def processDisc(carrierData):
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
             imageTruncated = resultIsoBuster['imageTruncated']
-            
-            ## TEST
-            print(type(imageTruncated))
-            ## TEST
-                                    
+                                                
             if statusIsoBuster != "0":
                 success = False
                 reject = True

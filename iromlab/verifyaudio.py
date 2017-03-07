@@ -12,7 +12,7 @@ def verifyAudioFile(audioFile, format):
     
     if format == "wav":
         # Check with shntool
-        
+                
         args = [config.shntoolExe]
         #args = ["C:/Users/jkn010/iromlab/tools/shntool/shntool.exe"]
         args.append("info")
@@ -90,20 +90,26 @@ def verifyCD(directory, format):
         
         # List of audio files to check
         filesAudio = glob.glob(directory + "/*." + format)
-    
+            
         # List to store error messages/ tool outputs for each file
         errorsList = []
     
         # Flag that signals the presence of audio (file) errors
         hasErrors = False
-    
-        for file in filesAudio:
-            isOK, status, errors = verifyAudioFile(file, format)
-                    
-            if isOK == False or status != 0:
-                hasErrors = True
-                errorsList.append(errors)
         
+        # If filesAudio is empty list this indicates something is wrong
+        # (note: this can happens if config.audioFormat does not match the
+        # dBpoweramp's setting!)
+        if filesAudio == []:
+            hasErrors = True
+        else:          
+            for file in filesAudio:
+                isOK, status, errors = verifyAudioFile(file, format)
+                errorsList.append(errors)
+                        
+                if isOK == False or status != 0:
+                    hasErrors = True
+                            
         return(hasErrors, errorsList)
         
 def main():
@@ -116,18 +122,19 @@ def main():
     filesWav = glob.glob(dirAudio + "/*.wav")
     filesFlac = glob.glob(dirAudio + "/*.flac")
 
+    """ 
     for fileWav in filesWav:
         isOK, status, errors = checkAudioFile(fileWav, "wav")
         print(fileWav, isOK, status)
         for error in errors:
             print(error)
+    """
     
     for fileFlac in filesFlac:
-        isOK, status, errors = checkAudioFile(fileFlac, "flac")
-        if status != 0:
-            print(fileFlac, isOK, status)
-            for error in errors:
-                print(error)
+        isOK, status, errors = verifyAudioFile(fileFlac, "wav")
+        print(fileFlac, isOK, status)
+        for error in errors:
+            print(error)
 
 if __name__ == "__main__":
     main()

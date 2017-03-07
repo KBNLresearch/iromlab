@@ -553,10 +553,6 @@ def getConfiguration():
     config.rejectExe = findElementText(configElt, './config/rejectExe')
     config.isoBusterExe = findElementText(configElt, './config/isoBusterExe')
     config.dBpowerampConsoleRipExe = findElementText(configElt, './config/dBpowerampConsoleRipExe')
-
-    ## TEST
-    #print("dBpowerampExe = " + config.dBpowerampConsoleRipExe)
-    ## TEST
     
     # Normalise all file paths
     config.rootDir = os.path.normpath(config.rootDir)
