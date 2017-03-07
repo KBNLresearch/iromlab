@@ -25,11 +25,7 @@ def consoleRipper(writeDirectory):
   
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
-    
-    ## TEST
-    print(args)
-    ## TEST
-    
+        
     status, out, err = shared.launchSubProcess(args)
     
     fLog = open(logFile, 'r')
