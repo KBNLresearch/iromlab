@@ -181,13 +181,9 @@ def processDisc(carrierData):
             logging.info(''.join(['dBpoweramp-status: ', str(resultdBpoweramp['status'])]))
             
             # TODO: parse dBpoweramp's log file line-by line and then report each line to logging.info
-            
-            # Flag that sets audio format (TODO: move to config) 
-            #audioFormat = "wav"
-            audioFormat = "flac"
-            
+                        
             # Verify that created audio files are not corrupt (using shntool / flac)
-            audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, audioFormat)
+            audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, config.audioFormat)
             logging.info(''.join(['audioHasErrors: ', str(audioHasErrors)]))
             
             if audioHasErrors == True:

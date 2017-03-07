@@ -18,6 +18,7 @@ batchManifest = ""
 jobsFolder = ""
 secondsToTimeout = ""
 prefixBatch = ""
+audioFormat = ""
 quitFlag = False
 readyToStart = False
 finishedBatch = False

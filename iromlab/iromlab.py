@@ -546,6 +546,7 @@ def getConfiguration():
     config.tempDir = findElementText(configElt, './config/tempDir')
     config.secondsToTimeout = findElementText(configElt, './config/secondsToTimeout')
     config.prefixBatch = findElementText(configElt, './config/prefixBatch')
+    config.audioFormat = findElementText(configElt, './config/audioFormat')
     config.prebatchExe = findElementText(configElt, './config/prebatchExe')
     config.loadExe = findElementText(configElt, './config/loadExe')
     config.unloadExe = findElementText(configElt, './config/unloadExe')
@@ -591,7 +592,12 @@ def getConfiguration():
     if config.cdDriveLetter not in cdDrives:
         msg = '"' + config.cdDriveLetter + '" is not a valid optical drive!'
         errorExit(msg)
-
+        
+    # Check that audioFormat is wav or flac
+    if config.audioFormat not in ["wav", "flac"]:
+        msg = '"' + config.audioFormat + '" is not a valid audio format (expected "wav" or "flac")!'
+        errorExit(msg)
+    
 def main():
 
     try:           

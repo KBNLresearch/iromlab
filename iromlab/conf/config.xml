@@ -25,6 +25,10 @@ as iromlab.py/ iromlab.exe!
 <!-- prefix that is used to create batch names -->
 <prefixBatch>kb</prefixBatch>
 
+<!-- String that sets audio format. Permitted values: wav or flac. ONLY used for the audio verification, 
+the ripping format must be set from dBpoweramp's CD Ripper tool (GUI) defined in the Windows registry  -->
+<audioFormat>flac</audioFormat>
+
 <!-- maximum number of seconds that iromlab will wait while trying to load a new disc 
 this will prevent iromlab from entering an infinite loop if e.g. a disc cannot be loaded
 properly because its is badly damaged
