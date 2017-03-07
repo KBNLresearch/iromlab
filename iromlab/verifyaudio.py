@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import glob
 if __package__ == 'iromlab':
     from . import config
     from . import shared
@@ -6,14 +7,14 @@ else:
     import config
     import shared
     
-def checkAudio(audioFile, format):
+def verifyAudioFile(audioFile, format):
     # Verify integrity of an audio file (check for missing / truncated bytes)
     
-    if format == "wave":
+    if format == "wav":
         # Check with shntool
         
-        #args = [config.shntoolExe]
-        args = ["C:/Users/jkn010/iromlab/tools/shntool/shntool.exe"]
+        args = [config.shntoolExe]
+        #args = ["C:/Users/jkn010/iromlab/tools/shntool/shntool.exe"]
         args.append("info")
         args.append(audioFile)
     
@@ -28,6 +29,7 @@ def checkAudio(audioFile, format):
        
         # Set up dictionary for storing values on reported problems
         problems = {}
+        problemsAsList = []
         
         # Locate problems report
         startIndexProblems = shared.index_startswith_substring(outAsList, "Possible problems:")
@@ -35,26 +37,33 @@ def checkAudio(audioFile, format):
         # Parse problems list and store as dictionary
         for i in range(startIndexProblems + 1, noLines, 1):
             thisLine = outAsList[i]
-            thisLine = thisLine.split(":")
-            problemName = thisLine[0].strip()
-            problemValue = thisLine[1].strip()
+            lineAsList = thisLine.split(":")
+            problemName = lineAsList[0].strip()
+            problemValue = lineAsList[1].strip()
             problems[problemName] = problemValue
+            problemsAsList.append(thisLine.strip())
         try:
-            if problems["File probably truncated"] != "no":
-                isComplete = False
+            if problems["Inconsistent header"] != "no":
+                isOK = False
+            elif problems["File probably truncated"] != "no":
+                isOK = False
+            elif problems["Junk appended to file"] != "no":
+                isOK = False
             else:
-                isComplete = True
+                isOK = True
         except KeyError:
-                isComplete = False
-        
-        # TODO: better to pass whole problem dict, so can be written to log!
-        return(isComplete, status)
+                isOK = False
+
+        # Add file reference as first element of errors list (used for logging only)
+        problemsAsList.insert(0, "File: " + audioFile)
+        return(isOK, status, problemsAsList)
         
     elif format == "flac":
         # Check with flac
         
-        #args = [config.flacExe]
-        args = ["C:/Users/jkn010/iromlab/tools/flac/win64/flac.exe"]
+        args = [config.flacExe]
+        #args = ["C:/Users/jkn010/iromlab/tools/flac/win64/flac.exe"]
+        args.append("-s")
         args.append("-t")
         args.append(audioFile)
     
@@ -62,38 +71,63 @@ def checkAudio(audioFile, format):
         cmdStr = " ".join(args)
      
         status, out, err = shared.launchSubProcess(args)
-
-        # ACHTUNG: flac output is sent to stderr
+       
+        # Output lines to list (flac output is sent to stderr!)
+        errAsList = err.splitlines()
         
-        # Output lines to list
-        outAsList = out.splitlines()
-        noLines = len(outAsList)
-             
-        # Set up dictionary for storing values on reported problems
-        problems = {}
+        if(len(errAsList)) == 0:
+            # No errors encountered
+            isOK = True
+        else:
+            isOK = False
         
-        # Locate problems report
-        startIndexProblems = shared.index_startswith_substring(outAsList, "Possible problems:")
+        # Add file reference as first element of errors list (used for logging only)
+        errAsList.insert(0, "File: " + audioFile)
+        return(isOK, status, errAsList)
 
-        # Parse problems list and store as dictionary
-        for i in range(startIndexProblems + 1, noLines, 1):
-            thisLine = outAsList[i]
-            thisLine = thisLine.split(":")
-            problemName = thisLine[0].strip()
-            problemValue = thisLine[1].strip()
-            problems[problemName] = problemValue
-        try:
-            if problems["File probably truncated"] != "no":
-                isComplete = False
-            else:
-                isComplete = True
-        except KeyError:
-                isComplete = False
-                
-        return(isComplete, status)
+def verifyCD(directory, format):
+        # Verify audio with Shntool (wav) or flac (FLAC)
+        
+        # List of audio files to check
+        filesAudio = glob.glob(directory + "/*." + format)
     
+        # List to store error messages/ tool outputs for each file
+        errorsList = []
+    
+        # Flag that signals the presence of audio (file) errors
+        hasErrors = False
+    
+        for file in filesAudio:
+            isOK, status, errors = verifyAudioFile(file, format)
+                    
+            if isOK == False or status != 0:
+                hasErrors = True
+                errorsList.append(errors)
+        
+        return(hasErrors, errorsList)
+        
 def main():
-    audioFile = "E:/nimbieTest/wav/01.wav"
-    checkAudio(audioFile, "wave")
 
-main()
+    import os
+    import glob
+    
+    dirAudio = os.path.normpath("E:/detectDamagedAudio/data/")
+
+    filesWav = glob.glob(dirAudio + "/*.wav")
+    filesFlac = glob.glob(dirAudio + "/*.flac")
+
+    for fileWav in filesWav:
+        isOK, status, errors = checkAudioFile(fileWav, "wav")
+        print(fileWav, isOK, status)
+        for error in errors:
+            print(error)
+    
+    for fileFlac in filesFlac:
+        isOK, status, errors = checkAudioFile(fileFlac, "flac")
+        if status != 0:
+            print(fileFlac, isOK, status)
+            for error in errors:
+                print(error)
+
+if __name__ == "__main__":
+    main()

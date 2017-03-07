@@ -14,12 +14,14 @@ if __package__ == 'iromlab':
     from . import cdinfo
     from . import isobuster
     from . import dbpoweramp
+    from . import verifyaudio
 else:
     import config
     import drivers
     import cdinfo
     import isobuster
     import dbpoweramp
+    import verifyaudio
 try:
     import thread # Python 2.x
 except ImportError:
@@ -178,8 +180,25 @@ def processDisc(carrierData):
             logging.info(''.join(['dBpoweramp command: ', resultdBpoweramp['cmdStr']]))
             logging.info(''.join(['dBpoweramp-status: ', str(resultdBpoweramp['status'])]))
             
-            # TODO: parse dBpoweramp's log file line-by line and then report each line to logging.info 
-                
+            # TODO: parse dBpoweramp's log file line-by line and then report each line to logging.info
+            
+            # Flag that sets audio format (TODO: move to config) 
+            #audioFormat = "wav"
+            audioFormat = "flac"
+            
+            # Verify that created audio files are not corrupt (using shntool / flac)
+            audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, audioFormat)
+            logging.info(''.join(['audioHasErrors: ', str(audioHasErrors)]))
+            
+            if audioHasErrors == True:
+                success = False
+                reject = True
+                logging.error("Verification of audio files resulted in error(s)")
+                logging.info("Output of audio verification:")
+                for audioFile in audioErrorsList:
+                    for item in audioFile:
+                        logging.info(item)
+                                    
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 # Create ISO file from data on 2nd session
@@ -188,7 +207,7 @@ def processDisc(carrierData):
                 resultIsoBuster = isobuster.extractData(dirOut, 2)                
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
-                imageTruncated = resultIsoBuster['imageTruncated']
+                imageTruncated = resultIsoBuster['imageTruncated']               
                 
                 if statusIsoBuster != "0":
                     success = False
@@ -222,6 +241,10 @@ def processDisc(carrierData):
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
             imageTruncated = resultIsoBuster['imageTruncated']
+            
+            ## TEST
+            print(type(imageTruncated))
+            ## TEST
                                     
             if statusIsoBuster != "0":
                 success = False

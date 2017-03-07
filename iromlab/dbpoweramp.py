@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import os
-
 if __package__ == 'iromlab':
     from . import config
     from . import shared
@@ -18,11 +17,7 @@ def consoleRipper(writeDirectory):
     #    
 
     logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-    
-    ## TEST
-    #print("dBpowerampExe (from dbpoweramp.py) = " + config.dBpowerampConsoleRipExe)
-    ## TEST
-
+       
     args = [config.dBpowerampConsoleRipExe]
     args.append("".join(["--drive=", config.cdDriveLetter]))
     args.append("".join(["--log=", logFile]))
@@ -42,7 +37,7 @@ def consoleRipper(writeDirectory):
 
     fLog.close()
     os.remove(logFile)
-
+            
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
