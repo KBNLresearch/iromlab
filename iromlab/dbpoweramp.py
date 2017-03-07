@@ -28,11 +28,15 @@ def consoleRipper(writeDirectory):
         
     status, out, err = shared.launchSubProcess(args)
     
-    fLog = open(logFile, 'r')
-    log = fLog.read()
-
+    # dBpoweramp writes UTF-8 BOM at start of file, open in binary mode and
+    # then decode gets rid of the BOM
+    fLog = open(logFile, 'rb')
+    log = fLog.read().decode("utf-8-sig")
     fLog.close()
     os.remove(logFile)
+        
+    # Contents of log file to list
+    logAsList = log.splitlines()
                 
     # All results to dictionary
     dictOut = {}
@@ -40,6 +44,6 @@ def consoleRipper(writeDirectory):
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
-    dictOut["log"] = log
+    dictOut["log"] = logAsList
         
     return(dictOut)

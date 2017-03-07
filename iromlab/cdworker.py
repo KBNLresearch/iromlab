@@ -171,6 +171,7 @@ def processDisc(carrierData):
                             
             resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
             statusdBpoweramp = str(resultdBpoweramp["status"])
+            logdBpoweramp = resultdBpoweramp["log"]
               
             if statusdBpoweramp != "0":
                 success = False
@@ -179,9 +180,10 @@ def processDisc(carrierData):
 
             logging.info(''.join(['dBpoweramp command: ', resultdBpoweramp['cmdStr']]))
             logging.info(''.join(['dBpoweramp-status: ', str(resultdBpoweramp['status'])]))
-            
-            # TODO: parse dBpoweramp's log file line-by line and then report each line to logging.info
-                        
+            logging.info("dBpoweramp log:")
+            for line in logdBpoweramp:
+                logging.info(line.strip())
+                                    
             # Verify that created audio files are not corrupt (using shntool / flac)
             logging.info('*** Verifying audio ***')
             audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, config.audioFormat)
