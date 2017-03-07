@@ -33,7 +33,7 @@ def consoleRipper(writeDirectory):
 
     fLog.close()
     os.remove(logFile)
-            
+                
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
