@@ -30,7 +30,7 @@ install_requires = [
 
 setup(name='iromlab',
       packages=find_packages(),
-      version=find_version('iromlab', 'iromlab.py'),
+      version=find_version('iromlab', 'iromlab.pyw'),
       license='Apache License 2.0',
       install_requires=install_requires,
       platforms=['Windows'],
@@ -41,7 +41,7 @@ setup(name='iromlab',
       maintainer='Johan van der Knijff',
       maintainer_email='johan.vanderknijff@kb.nl',
       url='https://github.com/KBNLresearch/iromlab',
-      download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
+      download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.pyw') + '.tar.gz',
       package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*','tools/flac/*.*','tools/flac/win64/*.*','tools/flac/html/*.*','tools/flac/html/images/*.*','tools/flac/win32/*.*','tools/shntool/*.*','tools/shntool/doc/*.*', 'tools/libcdio/*.*','tools/libcdio/win64/*.*']},
       zip_safe=False,
       entry_points={'gui_scripts': [
@@ -55,6 +55,4 @@ setup(name='iromlab',
     ]
     )
     
-
-'tools/flac/*.*','tools/flac/win64/*.*','tools/flac/html/*.*','tools/flac/html/images/*.*','tools/flac/win32/*.*','tools/shntool/*.*','tools/shntool/doc/*.*'
 

@@ -14,12 +14,8 @@ def launchSubProcess(args):
     try:
         # Execute command line; stdout + stderr redirected to objects
         # 'output' and 'errors'.
-        
-        # Set startupinfo to avoid console window poppong up with pythonw
-        # Source: http://stackoverflow.com/a/1813893
-        startupinfo = sub.STARTUPINFO()
-        startupinfo.dwFlags |= sub.STARTF_USESHOWWINDOW         
-        p = sub.Popen(args,stdout=sub.PIPE,stderr=sub.PIPE, startupinfo=startupinfo).wait()
+        # Setting shell=True avoids console window poppong up with pythonw
+        p = sub.Popen(args,stdout=sub.PIPE,stderr=sub.PIPE, shell=True)
         output, errors = p.communicate()
                 
         # Decode to UTF8
