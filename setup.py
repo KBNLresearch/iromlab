@@ -44,7 +44,7 @@ setup(name='iromlab',
       download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.py') + '.tar.gz',
       package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*','tools/flac/*.*','tools/flac/win64/*.*','tools/flac/html/*.*','tools/flac/html/images/*.*','tools/flac/win32/*.*','tools/shntool/*.*','tools/shntool/doc/*.*', 'tools/libcdio/*.*','tools/libcdio/win64/*.*']},
       zip_safe=False,
-      entry_points={'console_scripts': [
+      entry_points={'gui_scripts': [
         'iromlab = iromlab.iromlab:main',
       ]},
       classifiers=[
