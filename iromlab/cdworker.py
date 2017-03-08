@@ -370,7 +370,11 @@ def processDiscTest(carrierData):
         
 def cdWorker():
 
-    # Worker function that monitors the job queue and processes the discs in FIFO order 
+    # Worker function that monitors the job queue and processes the discs in FIFO order
+    
+    # Initialise 'success' flag to prevent run-time error in case user
+    # finalizes batch before entering any carriers (edge case) 
+    success = True
 
     # Loop periodically scans value of config.batchFolder
     while config.readyToStart == False:
