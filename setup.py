@@ -5,9 +5,6 @@ import os
 import re
 import sys
 import sysconfig
-if sys.platform == 'win32':
-    from win32com.client import Dispatch
-    import winreg
 
 from setuptools import setup, find_packages
 
@@ -37,6 +34,9 @@ def get_reg(name,path):
 
 def post_install():
     # Creates a Desktop shortcut to the installed software
+    
+    from win32com.client import Dispatch
+    import winreg
     
     # Package name
     packageName = 'iromlab'
