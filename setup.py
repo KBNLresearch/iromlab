@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-#import atexit
 import codecs
 import os
 import re
 import sys
 import sysconfig
-import winreg
-from win32com.client import Dispatch
+if sys.platform == 'win32':
+    from win32com.client import Dispatch
+    import winreg
 
 from setuptools import setup, find_packages
 
@@ -100,5 +100,6 @@ setup(name='iromlab',
     ]
     )
 
-post_install()  
+if sys.platform == 'win32':
+    post_install()  
 
