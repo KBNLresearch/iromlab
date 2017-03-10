@@ -100,6 +100,6 @@ setup(name='iromlab',
     ]
     )
 
-if sys.platform == 'win32':
-    post_install()  
+if sys.argv[1] == '-install' and sys.platform == 'win32':
+    post_install()
 
