@@ -22,6 +22,7 @@ def find_version(*file_paths):
     
 def get_reg(name,path):
     # Read variable from Windows Registry
+    import winreg
     # From http://stackoverflow.com/a/35286642
     try:
         registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
@@ -36,8 +37,7 @@ def post_install():
     # Creates a Desktop shortcut to the installed software
     
     from win32com.client import Dispatch
-    import winreg
-    
+        
     # Package name
     packageName = 'iromlab'
 
