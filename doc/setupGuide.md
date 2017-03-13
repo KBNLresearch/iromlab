@@ -62,7 +62,7 @@ Finally, you need to install the console ripping tool. This tool was created spe
 
 ![](./dbpaCLI.png)
 
-### Configure ripping settings
+### Configure general settings
 
 After installing, locate the *dBpoweramp* item in the Windows Start Menu, and launch the *CD Ripper* application, as shown below: 
 
@@ -86,8 +86,51 @@ At the bottom you can configure a number of settings. Select the following:
     ![](./dbpaReplayGain.png)
     
     (This option adds metadata on a track's loudness to the audio file. This information can be used by some audio players for volume matching / correcting. It doesn't change the audio itself.)
-* *Path* - leave this at whatever value the default is
-* *Naming* - change the default to *TrackNum*. The effect of this is that track numbers will be used as the base names of the audio files that are written (*001.wav*, *002.wav*, and so on)
+* *Path* - leave this at the default (whatever it may be).
+* *Naming* - change the default to *TrackNum*. The effect of this is that track numbers will be used as the base names of the audio files that are written (*001.wav*, *002.wav*, and so on).
+* *CD Drive* - select the CD-drive that corresponds to the Nimbie discrobot (make sure *not* to select the computer's built-in drive here; the Nimbie has a *Teac* drive so you should be able to identify it from its description.)
+
+### Configure ripper options
+
+Now click on the green menu button at the top toolbar, and select *CD Ripper Options*:
+
+![](./dbpaRipperOptions.png)
+
+In the window that appears, set *Ripping  Method* (at the top) to *Secure (Recover Errors)*:
+
+![](./dbpaRipperOptions2.png)
+
+Leave the *AccurateRip* options as they are (all options checked). Next click on *Secure Settings* (to the right of *Secure (Recover Errors)*):
+
+* Check *Enable Ultra Secure Ripping*
+* *Minimum Ultra Passes* - set to 2 
+* *Maximum Ultra Passes* - set to 4
+*  *End After Clean Passes* - set to 2
+
+Note: the above settings are valid for a drive that does not support C2 pointers. See dBpoweramp's *cd-ripper-setup-guide* on how to determine if a drive supports C2 pointers (the Nimbie's built-in drive doesn't appear to support them).
+
+* *Drive Read Cache* - leave this at default value (1024 kB)
+
+See also:
+
+![](./dbpaSecureOptions.png)
+
+* *Clear Read Cache with FUA* - leave this unchecked
+* *C2 Error Pointers for Error Detection* - leave this unchecked as well
+
+### Secure Rip Abort options
+
+* *After Unrecoverable Frames* - set to 1 frame
+* *When have to Re-Rip* - set to 100 frames
+* *After Ripping a Track For* - set to 10 minutes
+
+Finally, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. See below:
+
+![](./dbpaSecureRipAbort)
+
+
+### AccurateRip configuration
+
   
 Then close *CD Ripper*.
 
