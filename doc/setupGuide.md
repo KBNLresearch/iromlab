@@ -79,10 +79,13 @@ At the bottom you can configure a number of settings. Select the following:
     * If you selected *Wave*, make sure the encoder settings (on the right) are set to *Uncompressed*, with *Bit Depth*, *Sample Rate* and *Channels* all at *as source*.
     * In case of *FLAC*, leave the *Lossless Encoding* setting at *Level 5*. (TODO: what about the *Verify Written Audio* checkbox?)
 * Click on the *DSP* tab, and then on the *Add DSP / Action* button, and select *Add DSP Effect*:
+
     ![](./dbpaDSP1.png)
-* Select *RePlayGain* from the drop-down list: 
+* Select *RePlayGain* from the drop-down list:
+
     ![](./dbpaReplayGain.png)
-    (This option adds metadata on a track's loudness to the audio file. This information can be used by some audio players for volume matching / correcting. It doesn't change the audio itself)
+    
+    (This option adds metadata on a track's loudness to the audio file. This information can be used by some audio players for volume matching / correcting. It doesn't change the audio itself.)
 * *Path* - leave this at whatever value the default is
 * *Naming* - change the default to *TrackNum*. The effect of this is that track numbers will be used as the base names of the audio files that are written (*001.wav*, *002.wav*, and so on)
   
