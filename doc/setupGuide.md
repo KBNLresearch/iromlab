@@ -102,6 +102,8 @@ In the window that appears, set *Ripping  Method* (at the top) to *Secure (Recov
 
 Leave the *AccurateRip* options as they are (all options checked). Next click on *Secure Settings* (to the right of *Secure (Recover Errors)*):
 
+![](./dbpaSecureOptions.png)
+
 * Check *Enable Ultra Secure Ripping*
 * *Minimum Ultra Passes* - set to 2 
 * *Maximum Ultra Passes* - set to 4
@@ -110,30 +112,37 @@ Leave the *AccurateRip* options as they are (all options checked). Next click on
 Note: the above settings are valid for a drive that does not support C2 pointers. See dBpoweramp's *cd-ripper-setup-guide* on how to determine if a drive supports C2 pointers (the Nimbie's built-in drive doesn't appear to support them).
 
 * *Drive Read Cache* - leave this at default value (1024 kB)
-
-See also:
-
-![](./dbpaSecureOptions.png)
-
 * *Clear Read Cache with FUA* - leave this unchecked
 * *C2 Error Pointers for Error Detection* - leave this unchecked as well
 
 ### Secure Rip Abort options
 
+Scrolling down we see the following options:
+
+![](./dbpaSecureRipAbort)
+
 * *After Unrecoverable Frames* - set to 1 frame
 * *When have to Re-Rip* - set to 100 frames
 * *After Ripping a Track For* - set to 10 minutes
 
-Finally, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. See below:
-
-![](./dbpaSecureRipAbort)
+Finally, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options.
 
 
 ### AccurateRip configuration
 
-  
-Then close *CD Ripper*.
+AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) (CRC) of ripped audio tracks against an online database. This only works correctly if the read offset of the CD-drive is known. To so, load a (preferrably well-known/popular) audio CD into the disc robot. If all goes well the following dialog will pop up:
 
+![](./dbpaAccurateRip.png)
+
+Press *Configure*. After a few seconds the result is:
+
+![](./dbpaAccurateRip2.png)
+
+This value is automatically added to the CD-ROM settings:
+
+![](./dbpaAccurateRip3.png)
+
+Close the *CD Ripper* application. Now dBpoweramp is configured and ready for use! 
 
 ## Iromlab configuration
 
