@@ -24,7 +24,7 @@ Iromlab wraps around a number of existing software tools:
 
 Both IsoBuster and dBpoweramp require a license, and they must be installed separately. Binaries of cd-info, shntool and flac are included in the iromlab installation. When Iromlab is started for the first time, they are automatically copied to directory `iromlab/tools' in the Windows user directory.
         
-## [IsoBuster setup and configuration]((./setupIsobuster.md))
+## [Isobuster setup and configuration](./setupIsobuster.md)
 
 ## [dBpoweramp setup and configuration](./setupDbpoweramp.md)
 
