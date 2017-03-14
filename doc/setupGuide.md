@@ -32,7 +32,7 @@ Before using Iromlab, it is necessary to change some of IsoBuster's default sett
 
 From the IsoBuster GUI, go to the *Options* menu and then select *Communication*. From there select the *Finding Devices* tab, and uncheck the "Find and list other devices (HD, Flash, USB etc)" checkbox. Also make sure that the "Store this setting and use it always" checkbox at the bottom of the tab is checked. See screenshot below:
 
-![](./findingDevices.png)
+![](./img/findingDevices.png)
 
 **Why:** by default IsoBuster tries to find and access all storage devices that are connected to the machine it runs on. This triggers a Windows "User Account Control" notification popup window (which needs manual intervention) every time IsoBuster is called from Iromlab. This can be prevented by disabling all devices except optical drives.
 
@@ -40,7 +40,7 @@ From the IsoBuster GUI, go to the *Options* menu and then select *Communication*
 
 From the IsoBuster GUI, go to *Options* / *Image Files*, and then select the *General* tab. Locate the option "select when a cue sheet file will be created", and select "Never". Likewise, set the "Select when an MD5 checksum file will be created" setting to "Never". See screenshot:
 
-![](./cuesheetOption.png) 
+![](./img/cuesheetOption.png) 
 
 **Why:** cue sheets aren't needed for ISO images, and we don't want IsoBuster to prompt for anything either. Iromlab already has built-in checksum creation functionality, so we don't need IsoBuster for this.
 
@@ -60,17 +60,17 @@ Download and install the following:
 
 Finally, you need to install the console ripping tool. This tool was created specifically for the KB and is *not* part of the standard dBpoweramp distribution! It must be installed in the same directory where the *CDGrab.exe* is located.  This is typically dBpoweramp's top-level installation folder (*C:\Program Files\dBpoweramp*). Drop the executable of the console riping tool (*kb-nl-consolerip.exe*) in this folder, as shown below:
 
-![](./dbpaCLI.png)
+![](./img/dbpaCLI.png)
 
 ### Configure general settings
 
 After installing, locate the *dBpoweramp* item in the Windows Start Menu, and launch the *CD Ripper* application, as shown below: 
 
-![](./dbpaCDripper.png)
+![](./img/dbpaCDripper.png)
 
 This results in the following window:
 
-![](./dbpaCDRipperWindow.png)
+![](./img/dbpaCDRipperWindow.png)
 
 At the bottom you can configure a number of settings. Select the following:
 
@@ -80,10 +80,10 @@ At the bottom you can configure a number of settings. Select the following:
     * In case of *FLAC*, leave the *Lossless Encoding* setting at *Level 5*. (TODO: what about the *Verify Written Audio* checkbox?)
 * Click on the *DSP* tab, and then on the *Add DSP / Action* button, and select *Add DSP Effect*:
 
-    ![](./dbpaDSP1.png)
+    ![](./img/dbpaDSP1.png)
 * Select *RePlayGain* from the drop-down list:
 
-    ![](./dbpaReplayGain.png)
+    ![](./img/dbpaReplayGain.png)
     
     (This option adds metadata on a track's loudness to the audio file. This information can be used by some audio players for volume matching / correcting. It doesn't change the audio itself.)
 * *Path* - leave this at the default (whatever it may be).
@@ -94,15 +94,15 @@ At the bottom you can configure a number of settings. Select the following:
 
 Now click on the green menu button at the top toolbar, and select *CD Ripper Options*:
 
-![](./dbpaRipperOptions.png)
+![](./img/dbpaRipperOptions.png)
 
 In the window that appears, set *Ripping  Method* (at the top) to *Secure (Recover Errors)*:
 
-![](./dbpaRipperOptions2.png)
+![](./img/dbpaRipperOptions2.png)
 
 Leave the *AccurateRip* options as they are (all options checked). Next click on *Secure Settings* (to the right of *Secure (Recover Errors)*):
 
-![](./dbpaSecureOptions.png)
+![](./img/dbpaSecureOptions.png)
 
 * Check *Enable Ultra Secure Ripping*
 * *Minimum Ultra Passes* - set to 2 
@@ -119,7 +119,7 @@ Note: the above settings are valid for a drive that does not support C2 pointers
 
 Scrolling down we see the following options:
 
-![](./dbpaSecureRipAbort.png)
+![](./img/dbpaSecureRipAbort.png)
 
 * *After Unrecoverable Frames* - set to 1 frame
 * *When have to Re-Rip* - set to 100 frames
@@ -132,15 +132,15 @@ Finally, check *Mark Track as Error if Insecure*, and check both the *Secure Ext
 
 AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) (CRC) of ripped audio tracks against an online database. This only works correctly if the read offset of the CD-drive is known. To so, load a (preferrably well-known/popular) audio CD into the disc robot. If all goes well the following dialog will pop up:
 
-![](./dbpaAccurateRip.png)
+![](./img/dbpaAccurateRip.png)
 
 Press *Configure*. After a few seconds the result is:
 
-![](./dbpaAccurateRip2.png)
+![](./img/dbpaAccurateRip2.png)
 
 This value is automatically added to the CD-ROM settings:
 
-![](./dbpaAccurateRip3.png)
+![](./img/dbpaAccurateRip3.png)
 
 Close the *CD Ripper* application. Now dBpoweramp is configured and ready for use! 
 
