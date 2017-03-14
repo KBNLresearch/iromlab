@@ -33,7 +33,7 @@ else:
     import cdworker
     import cdinfo
 
-__version__ = '0.3.7'
+__version__ = '0.3.8'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
@@ -474,7 +474,7 @@ def getConfiguration():
     config.dBpowerampConsoleRipExe = os.path.normpath(config.dBpowerampConsoleRipExe)
     
     # Paths to pre-packaged tools
-    config.shntoolExe = os.path.join(too lsDirUser, 'shntool','shntool.exe')
+    config.shntoolExe = os.path.join(toolsDirUser, 'shntool','shntool.exe')
     config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64','flac.exe')
     config.cdInfoExe = os.path.join(toolsDirUser, 'libcdio', 'win64','cd-info.exe')
     
