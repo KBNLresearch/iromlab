@@ -2,11 +2,17 @@
 
 import codecs
 import os
+import site
 import re
 import sys
 import sysconfig
 
 from setuptools import setup, find_packages
+
+def errorExit(msg):
+    msgString=("Error: " + msg + "\n")
+    sys.stderr.write(msgString)
+    sys.exit()
 
 def read(*parts):
     path = os.path.join(os.path.dirname(__file__), *parts)
@@ -34,13 +40,92 @@ def get_reg(name,path):
         return None
 
 def post_install():
-    # Creates a Desktop shortcut to the installed software
+    # Install config file + pre-packaged tools to user dir +
+    # Create a Desktop shortcut to the installed software
     
     from win32com.client import Dispatch
-        
+    
     # Package name
     packageName = 'iromlab'
+    
+    # Part 1: install config file
+    
+    # Locate Windows user directory
+    userDir = os.path.expanduser('~')
+    # Config directory
+    configDirUser = os.path.join(userDir, packageName)
+    
+    # Create config directory if it doesn't exist
+    if os.path.isdir(configDirUser) == False:
+        try:
+            os.makedirs(configDirUser)
+        except IOError:
+            msg = 'could not create configuration directory'
+            errorExit(msg)
 
+    # Config file name
+    configFileUser = os.path.join(configDirUser,'config.xml')
+    
+    if os.path.isfile(configFileUser) == False:
+        # No config file in user dir, so copy it from location in package. Location 
+        # is /iromlab/conf/config.xml in 'site-packages' directory (if installed with pip)
+               
+        # Locate site-packages dir (this returns multiple entries)
+        sitePackageDirs = site.getsitepackages()
+        
+        # Assumptions: site package dir is called 'site-packages' and is unique (?)
+        for dir in sitePackageDirs:
+            if 'site-packages' in dir:
+                sitePackageDir = dir
+                
+        # Construct path to config file
+        configFilePackage = os.path.join(sitePackageDir,packageName, 'conf', 'config.xml')
+                       
+        if os.path.isfile(configFilePackage) == True:
+            try:
+                copyfile(configFilePackage, configFileUser)
+            except IOError:
+                msg = 'could not copy configuration file to ' + configFileUser
+                errorExit(msg)
+        # This should never happen but who knows ...
+        else:
+            msg = 'no configuration file found in package'
+            errorExit(msg)
+            
+    # Part 2: install tools
+
+    # Tools directory
+    toolsDirUser = os.path.join(configDirUser,'tools')
+    
+    if os.path.isdir(toolsDirUser) == False:
+        # No tools directory in user dir, so copy it from location in source or package. Location is
+        # /iromlab/conf/tools in 'site-packages' directory (if installed with pip)
+               
+        # Locate site-packages dir (this returns multiple entries)
+        sitePackageDirs = site.getsitepackages()
+        
+        # Assumptions: site package dir is called 'site-packages' and is unique (?)
+        for dir in sitePackageDirs:
+            if 'site-packages'in dir:
+                sitePackageDir = dir
+                
+        # Construct path to tools dir
+        toolsDirPackage = os.path.join(sitePackageDir,'iromlab', 'tools')
+        
+        # If package tools dir exists, copy it to the user directory        
+        if os.path.isdir(toolsDirPackage) == True:
+            try:
+                copytree(toolsDirPackage, toolsDirUser)
+            except IOError:
+                msg = 'could not copy tools directory to ' + toolsDirUser
+                errorExit(msg)
+        # This should never happen but who knows ...
+        else:
+            msg = 'no tools directory found in package'
+            errorExit(msg)
+     
+    # Part 3: create Desktop shortcut
+    
     # Scripts directory (location of launcher script)
     scriptsDir = sysconfig.get_path('scripts')
 
@@ -63,7 +148,7 @@ def post_install():
     shortcut.WorkingDirectory = scriptsDir
     shortcut.IconLocation = target
     shortcut.save()
-        
+    
 install_requires = [
     'requests',
     'setuptools',

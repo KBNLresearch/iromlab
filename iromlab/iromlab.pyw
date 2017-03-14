@@ -421,99 +421,10 @@ def getConfiguration():
     userDir = os.path.expanduser('~')
     # Config directory
     configDirUser = os.path.join(userDir,'iromlab')
-    
-    # Create config directory if it doesn't exist
-    if os.path.isdir(configDirUser) == False:
-        try:
-            os.makedirs(configDirUser)
-        except IOError:
-            msg = 'could not create configuration directory'
-            errorExit(msg)
-
-    # Config file name
-    configFileUser = os.path.join(configDirUser,'config.xml')
-    
-    if os.path.isfile(configFileUser) == False:
-        # No config file in user dir, so copy it from location in source or package. Location can be one of 
-        # the following:
-        # 1. /iromlab/conf/config.xml in source directory (if executed from source distribution)
-        # 2. /iromlab/conf/config.xml in 'site-packages' directory (if installed with pip)
-        
-        # Situation 1
-        configFileSource = os.path.join(rootPath,'conf','config.xml')
-        
-        # Situation 2: locate site-packages dir (this returns multiple entries)
-        sitePackageDirs = site.getsitepackages()
-        
-        # Assumptions: site package dir is called 'site-packages' and is unique (?)
-        for dir in sitePackageDirs:
-            if 'site-packages'in dir:
-                sitePackageDir = dir
-                
-        # Construct path to config file
-        configFilePackage = os.path.join(sitePackageDir,'iromlab', 'conf', 'config.xml')
-        
-        # If source config.xml exists, copy it to the user directory
-        if os.path.isfile(configFileSource) == True:
-            try:
-                copyfile(configFileSource, configFileUser)
-            except IOError:
-                msg = 'could not copy configuration file to ' + configFileUser
-                errorExit(msg)
-        # Otherwise if package config.xml exists, copy it to the user directory        
-        elif os.path.isfile(configFilePackage) == True:
-            try:
-                copyfile(configFilePackage, configFileUser)
-            except IOError:
-                msg = 'could not copy configuration file to ' + configFileUser
-                errorExit(msg)
-        # This should never happen but who knows ...
-        else:
-            msg = 'no configuration file found in either source or package'
-            errorExit(msg)
-
+    configFileUser = os.path.join(configDirUser,'config.xml')    
     # Tools directory
     toolsDirUser = os.path.join(configDirUser,'tools')
     
-    if os.path.isdir(toolsDirUser) == False:
-        # No tools directory in user dir, so copy it from location in source or package. Location can be one of 
-        # the following:
-        # 1. /iromlab/conf/tools in source directory (if executed from source distribution)
-        # 2. /iromlab/conf/tools in 'site-packages' directory (if installed with pip)
-        
-        # Situation 1
-        toolsDirSource = os.path.join(rootPath,'tools')
-        
-        # Situation 2: locate site-packages dir (this returns multiple entries)
-        sitePackageDirs = site.getsitepackages()
-        
-        # Assumptions: site package dir is called 'site-packages' and is unique (?)
-        for dir in sitePackageDirs:
-            if 'site-packages'in dir:
-                sitePackageDir = dir
-                
-        # Construct path to tools dir
-        toolsDirPackage = os.path.join(sitePackageDir,'iromlab', 'tools')
-        
-        # If source tools dir exists, copy it to the user directory
-        if os.path.isdir(toolsDirSource) == True:
-            try:
-                copytree(toolsDirSource, toolsDirUser)
-            except IOError:
-                msg = 'could not copy tools directory ' + toolsDirUser
-                errorExit(msg)
-        # Otherwise if package tools dir exists, copy it to the user directory        
-        elif os.path.isdir(toolsDirPackage) == True:
-            try:
-                copytree(toolsDirPackage, toolsDirUser)
-            except IOError:
-                msg = 'could not copy tools directory to ' + toolsDirUser
-                errorExit(msg)
-        # This should never happen but who knows ...
-        else:
-            msg = 'no tools directory found in either source or package'
-            errorExit(msg)
-
     # Check if user config file exists and exit if not
     if os.path.isfile(configFileUser) == False:
         msg = 'configuration file not found'
@@ -565,7 +476,7 @@ def getConfiguration():
     config.dBpowerampConsoleRipExe = os.path.normpath(config.dBpowerampConsoleRipExe)
     
     # Paths to pre-packaged tools
-    config.shntoolExe = os.path.join(toolsDirUser, 'shntool','shntool.exe')
+    config.shntoolExe = os.path.join(too lsDirUser, 'shntool','shntool.exe')
     config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64','flac.exe')
     config.cdInfoExe = os.path.join(toolsDirUser, 'libcdio', 'win64','cd-info.exe')
     
