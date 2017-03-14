@@ -99,5 +99,6 @@ This value is automatically added to the CD-ROM settings:
 
 Close the *CD Ripper* application. Now dBpoweramp is configured and ready for use! 
 
+| | |
 |:--|:--|
 |[<< Previous: Isobuster setup and configuration](./setupIsobuster.md)|[Back to Setup Guide](./setupGuide.md)|

@@ -30,5 +30,6 @@ From the IsoBuster GUI, go to *Options* / *Image Files*, and then select the *Ge
 
 After these changes Isobuster will work correctly when called from Iromlab.
 
+| | |
 |:--|:--|
 |[Back to Setup Guide](./setupGuide.md)|[>> Next: dBpoweramp setup and configuration](./setupDbpoweramp.md)|
