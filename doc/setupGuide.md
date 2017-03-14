@@ -119,7 +119,7 @@ Note: the above settings are valid for a drive that does not support C2 pointers
 
 Scrolling down we see the following options:
 
-![](./dbpaSecureRipAbort)
+![](./dbpaSecureRipAbort.png)
 
 * *After Unrecoverable Frames* - set to 1 frame
 * *When have to Re-Rip* - set to 100 frames
