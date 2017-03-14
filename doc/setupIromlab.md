@@ -1,13 +1,4 @@
-# Iromlab Setup Guide
-
-Before trying to set up Iromlab, check if the following requirements are met:
-
-* The installation platform is Microsoft Windows (tested with Windows 7). Other platforms (e.g. Linux-based one) will not work properly, because various parts of the code are Windows-specific.
-* Python 3.6 (or more recent) is installed on the target platform. Older 3.x versions may (but are not guaranteed to) work.
-* Since Iromlab uses the [IsoBuster](https://www.isobuster.com/) and [dBpoweramp](https://www.dbpoweramp.com/) software for data extraction and audio ripping, licensed copies of both software packages must be available.
-* Iromlab requires the dBpoweramp command-line ripping tool, which provides a command-line interface to dBpoweramp. **This is a custom tool that was developed specifically for KB, and it is not included in dBpoweramp's default installer!** 
-* Iromlab was created to be used in conjuction with Acronova Nimbie disc autoloaders. It has been tested with the [Nimbie NB21-DVD model](http://www.acronova.com/product/auto-blu-ray-duplicator-publisher-ripper-nimbie-usb-nb21/9/review.html). It may work with other models as well.
-
+# Iromlab setup and configuration
 
 ## Installation
 
@@ -29,14 +20,7 @@ The above steps will install Iromlab and all required libraries. It also install
 * [flac](https://xiph.org/flac/) - used to verify the integrity of created WAVE files.
 
 Finally it also creates a shortcut to the main Iromlab application on the Windows Desktop.
-
-
-When Iromlab is started for the first time, they are automatically copied to directory `iromlab/tools' in the Windows user directory.
         
-## [Isobuster setup and configuration](./setupIsobuster.md)
-
-## [dBpoweramp setup and configuration](./setupDbpoweramp.md)
-
 
 ## Iromlab configuration
 
@@ -95,3 +79,7 @@ Example:
     <dBpowerampConsoleRipExe>C:/Program Files/dBpoweramp/kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
 
     </config>
+
+| |
+|:--|
+|[Back to Setup Guide](./setupGuide.md)|
