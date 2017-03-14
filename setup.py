@@ -3,6 +3,8 @@
 import codecs
 import os
 import site
+from shutil import copyfile
+from shutil import copytree
 import re
 import sys
 import sysconfig

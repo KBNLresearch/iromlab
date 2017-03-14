@@ -3,8 +3,6 @@ import site
 import sys
 import os
 import csv
-from shutil import copyfile
-from shutil import copytree
 import imp
 import glob
 import time
@@ -35,7 +33,7 @@ else:
     import cdworker
     import cdinfo
 
-__version__ = '0.3.5'
+__version__ = '0.3.7'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
