@@ -13,7 +13,7 @@ as iromlab.py/ iromlab.exe!
 <cdDriveLetter>I</cdDriveLetter>
 
 <!-- root directory - this is the default search path for creating / opening batches -->
-<rootDir>E:\test\nimbieTest</rootDir>
+<rootDir>E:\nimbieTest</rootDir>
 
 <!-- directory for storing temporary files -->
 <tempDir>C:\Temp</tempDir>
