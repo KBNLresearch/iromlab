@@ -51,7 +51,7 @@ In this case we have 2 CD drives, where *D* is the internal drive, and *I* is th
 
     <cdDriveLetter>I</cdDriveLetter>
 
-(Not: do *not* add a colon to the drive letter).
+(Note: do *not* add a colon to the drive letter).
 
 ### rootDir
 
@@ -104,61 +104,6 @@ Location of isoBuster (installation instructions for Isobuster can be found [her
 Location of the dBpoweramp console ripper tool (note: not included with dBpoweramp!): 
 
     <dBpowerampConsoleRipExe>C:\Program Files\dBpoweramp\kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
-
-## Example configuration file
-
-Below is an example configuration file that contains all the above settings: 
-
-
-    <?xml version="1.0"?>
-    <!-- iromlab configuration file. This file MUST be in the same directory 
-    as iromlab.py/ iromlab.exe! 
-    -->
-
-    <config>
-
-    <!-- Note on file paths: do NOT wrap any of the file paths below in quotes, even if they contain
-       spaces! (the Python os.path libs don't seem to like this!)
-    -->
-
-    <!-- CD drive letter -->
-    <cdDriveLetter>I</cdDriveLetter>
-
-    <!-- root directory - this is the default search path for creating / opening batches -->
-    <rootDir>E:\nimbieTest</rootDir>
-
-    <!-- directory for storing temporary files -->
-    <tempDir>C:\Temp</tempDir>
-
-    <!-- prefix that is used to create batch names -->
-    <prefixBatch>kb</prefixBatch>
-
-    <!-- String that sets audio format. Permitted values: wav or flac. ONLY used for the audio verification, 
-    the ripping format must be set from dBpoweramp's CD Ripper tool (GUI) defined in the Windows registry  -->
-    <audioFormat>flac</audioFormat>
-
-    <!-- maximum number of seconds that iromlab will wait while trying to load a new disc 
-    this will prevent iromlab from entering an infinite loop if e.g. a disc cannot be loaded
-    properly because its is badly damaged
-    -->
-    <secondsToTimeout>20</secondsToTimeout>
-
-    <!-- Below items point to the locations of all executables that are wrapped by Iromlab
-    -->
-
-    <!-- location of Nimbie drivers -->
-    <prebatchExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Pre-Batch\Pre-Batch.exe</prebatchExe>
-    <loadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load.exe</loadExe>
-    <unloadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload.exe</unloadExe>
-    <rejectExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Reject\Reject.exe</rejectExe>
-
-    <!-- location of isoBuster -->
-    <isoBusterExe>C:\Program Files (x86)\Smart Projects\IsoBuster\IsoBuster.exe</isoBusterExe>
-
-    <!-- location of dBpoweramp console ripper -->
-    <dBpowerampConsoleRipExe>C:\Program Files\dBpoweramp\kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
-
-    </config>
 
 If all went well, Iromlab will now be ready to use!
 
