@@ -6,7 +6,7 @@ Iromlab (Image and Rip Optical Media Like A Boss ) provides a simple and straigh
 
 ISO images are verified using [Isolyzer](https://github.com/KBNLresearch/isolyzer). Audio files are checked for errors using [shntool](http://www.etree.org/shnutils/shntool/) (WAV) or [flac](https://xiph.org/flac/).
 
-The disc images/rips are saved in a simple batch structure. Each batch contains a batch manifest, which is a comma-delimite text file with basic information about each carriers, such as:
+The disc images/rips are saved in a simple batch structure. Each batch contains a batch manifest, which is a comma-delimited text file with basic information about each carriers, such as:
 
 - An identifier that links to a record in the KB catalogue.
 - A serial number (because carriers may span multiple volumes).
