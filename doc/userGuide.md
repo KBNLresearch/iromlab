@@ -32,7 +32,6 @@ We start by entering the required fields:
 
 ![](./img/iromAllesBestandsformaten.png)
 
-
 * *PPN* is the PPN that is associated with the carrier (here: *155658050*).
 * *Volume number* is *1* (the assignment of volume numbers and how they are related to carrier type is explained further below).
 * *Carrier type* is *cd-rom*.
@@ -54,38 +53,65 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 3. Extract the contents of the disc. In this case we have a cd-rom that only contains a data track, which is extracted to an ISO image with Isobuster. Beware that Isobuster will launch in a separate window (the window automatically disappears after Isobuster is finished).
 4. Verify the ISO image with Isolyzer; verify audio tracks with Shntool or flac (depending on the format that was set in the configuration)
 5. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
-6. Finally, an entry is added to the *batch manifest*. This is a comma-delimited text file named *manifest.csv* which is located at the root of a batch.
+6. Finally, an entry is added to the *batch manifest* (explained further below).
+
+## Processing more discs
+
+In order to process additional discs, simply repeat the steps from the previous section for each disc. You can add new discs while the Nimbie is busy processing a disc; in fact you can keep adding discs until the disc loader is full (which is at 30 discs by default, and 100 if the extension rods are used). For each disc, Iromlab creates a *job file* that contains the fields that were entered by the operator (PPN, volume number, carrier type). The job file is then placed in a ["first in first out"](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) (FIFO)  queue. The job files are physically written to the *jobs* directory inside the batch. 
+
+**Important:** you should *never* modify any of the files inside the *jobs* folder in *any* way. This includes opening them in a text editor and re-saving them. This is because Iromlab uses the timestamps of the job files (their creation times) to establish the processing order. Modifying a job file will change its timestamp, and mess up the processing order as a result.
+
+## Finalizing a batch
+
+When you're done entering new discs, press the *Finalize* button at the top of the Iromlab window. This will trigger a confirmation dialog:
+
+![](./img/finalize.png)
+
+Then press *Yes*. Iromlab now adds a special "End Of Batch" job to the queue. The *Submit* button will now be deactivated, you you won't be able to add new  discs from this point onward: 
+
+![](./img/postFinalize.png)
+
+Meanwhile, Iromlab will continue processing the remaining discs / jobs that are in the queue. After the last disc is finished, you will see:
+
+![](./img/finished.png)
+
+Now press *OK*, and Iromlab will close.
+
+## How to avoid synchronisation errors
+
+It is absolutely vital that Iromlab's job queue and the "physical" queue (i.e. the stack of discs in the Nimbie loader) are perfectly synchronised at all times. For example, if an operator mistakenly submits a disc entry to the job queue without loading an actual disc, the result will be an offset between the batch-level metadata (the batch manifest) and the actual disc images/rips. To minimise the risk of such errors, make sure to:
+
+1. Perform all steps that are needed to process a disc in a fixed order (i.e. the order suggested above).
+2. Most importantly, *only* load the disc once Iromlab displays the *Load disc* dialog.
+3. Pay special attention to only load one disc at a time (look out for discs that are 'stuck' together)
+
+It's probably impossible to eliminate synchronisation errors altogether. Since batches with synchronisation errors have to be re-processed from scratch, it is a good idea to limit the size of a batch somewhat. For example, in case of a synchronisation error in a batch with hundreds of discs that took a whole day to create, a whole day's work will have to be re-done. For a smaller batch that only took two hours, much less time will be lost.  
+
+## How to spot synchronisation errors
 
 ## Batch manifest
 
-For each processed disc, the batch manifest contains the following fields:
+The batch manifest is a comma-delimited text file named *manifest.csv* which is located at the root of a batch.
+For each processed disc, it contains the following fields:
 
-1. *jobID* - internal carrier-level identifier. The image file(s) of this carrier are stored in an eponymous directory within the batch.
+1. *jobID* - internal carrier-level identifier. The image file(s) of this disc are stored in an eponymous directory within the batch.
 2. *PPN*
-3. *volumeNo* - for intellectual entities that span multiple carriers, this defines the volume number (1 for single-volume items). Values must be unique within each *carrierType* (see below)  
-4. *carrierType* - code that specifies the carrier type. Currently the following values are permitted:
+3. *volumeNo* - for intellectual entities that span multiple discs, this defines the volume number (1 for single-volume items). Values must be unique within each *carrierType* (see below)  
+4. *carrierType* - code that specifies the disc type. Currently the following values are permitted:
     - cd-rom
     - dvd-rom
     - cd-audio
     - dvd-video
-5. *title* - text string with the title of the carrier (or the publication is is part of).
+5. *title* - text string with the title of the disc (or the publication is is part of).
 6. *volumeID* - text string, extracted from Primary Volume descriptor, empty if cd-audio.
 7. *success* - True/False flag that indicates status of *iromlab*'s imaging process. 
-8. *containsAudio* - True/False flag that indicates the carrier contains audio tracks (detected by cd-info)   
-9. *containsData* - True/False flag that indicates the carrier contains data tracks (detected by cd-info)
+8. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   
+9. *containsData* - True/False flag that indicates the disc contains data tracks (detected by cd-info)
 
 Example:
 
     jobID,PPN,volumeNo,carrierType,title,volumeID,success,containsAudio,containsData
     8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,cd-rom,(Bijna) alles over bestandsformaten,Handbook,True,False,True
-
-
-## Processing more discs
-
-In order to process additional discs, simply repeat the steps from the previous section for each disc. You can add new discs while the Nimbie is busy processing a disc; in fact you can keep adding discs until the disc loader is full (which is at 30 discs by default, and 100 if the extension rods are used). For each disc, Iromlab creates a *job file* that contains the fields that were entered by the operator (PPN, volume number, carrier type). The job file is then placed in ["first in first out"](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) (FIFO)  queue. Since the stack of discs in the Nimbie loader are processed in FIFO order as well, this should -at least in theory- ensure that each entry in the batch  This allows Iromlab to keep track of   
-
-
-
  
 
 ## How to use the Volume number and Carrier type fields
@@ -93,6 +119,8 @@ In order to process additional discs, simply repeat the steps from the previous 
 
 ![](./img/cataloguePPN.png)
 
+
+<! -- TODO: explain that all carriers that are part of a PPN must be in the same batch -->
 
 
 ## Troubleshooting
