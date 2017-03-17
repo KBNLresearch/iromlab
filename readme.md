@@ -1,4 +1,4 @@
-# Ironlab
+# Iromlab
 
 ## What it does
 
@@ -47,7 +47,7 @@ Both IsoBuster and dBpoweramp require a license, and they must be installed sepa
 
 * [Setup Guide](./doc/setupGuide.md) - covers installation, setup and configuration of Iromlab and the wrapped software
 * [User Guide](./doc/userGuide.md) - explains how to use Iromlab.
-* [Arhitecture Overview](./doc/architectureOverview.md) - gives an overview of Iromlab's architecture
+* [Architecture Overview](./doc/architectureOverview.md) - gives an overview of Iromlab's architecture
 
 ## Contributors
 
