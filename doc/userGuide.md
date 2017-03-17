@@ -153,6 +153,8 @@ This means that it may be possible to detect synchronisation errors by visually 
 <!-- TODO: explain that all carriers that are part of a PPN must be in the same batch -->
 
 
+## The log file
+
 ## Troubleshooting
 
 
