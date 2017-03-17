@@ -54,8 +54,11 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 2. Analyze the disc with [cd-info](https://linux.die.net/man/1/cd-info) to determine whether it contains data, audio, or both
 3. Extract the contents of the disc. In this case we have a cd-rom that only contains a data track, which is extracted to an ISO image with Isobuster. Beware that Isobuster will launch in a separate window (the window automatically disappears after Isobuster is finished).
 4. Verify the ISO image with Isolyzer; verify audio tracks with Shntool or flac (depending on the format that was set in the configuration)
-5. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
-6. Finally, an entry is added to the *batch manifest* (explained further below).
+5. Compute MD5 checksums for all generated files (ISO images, audio files)
+6. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
+7. Finally, an entry is added to the *batch manifest* (explained further below).
+
+For each disc, Iromlab creates a folder in the batch folder. The name of each folder is (again) a [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is based on the hardware address and the current time ("version 1" UUID).
 
 ## Process more discs
 
@@ -78,6 +81,10 @@ Meanwhile, Iromlab will continue processing the remaining discs / jobs that are 
 ![](./img/finished.png)
 
 Now press *OK*, and Iromlab will close.
+
+## All discs of a PPN must be in same batch
+
+All discs that belong to one *PPN* must *always* be in the same batch. This is because the batches must be processed into ingest-ready Submission Information Packages (SIPs) further down the processing chain, and all discs that are part of a *PPN* are grouped into one SIP. This doesn't work if a *PPN* is spread across multiple batches.  
 
 ## How to avoid synchronisation errors
 
@@ -107,12 +114,59 @@ The batch manifest is a comma-delimited text file named *manifest.csv* which is 
 8. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   
 9. *containsData* - True/False flag that indicates the disc contains data tracks (detected by cd-info)
 
+The first line of the file contains column headers.
+
 Example:
 
     jobID,PPN,volumeNo,carrierType,title,volumeID,success,containsAudio,containsData
     8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,cd-rom,(Bijna) alles over bestandsformaten,Handbook,True,False,True
+
+## The log file
+
+Each batch contains a log file *batch.log*. It contains detailed information about the detection, imaging and ripping subprocesses (including the exit status and output of wrapped tools). If a disc gets rejected or if anything unexpected happens, checking the batch log will help you identify the problem.
+
+<!-- TODO: link to some example log files -->
  
-## How to spot synchronisation errors
+## How to use the Volume number and Carrier type fields
+
+The correct use of the *Volume number* field in the Iromlab interface needs some explaining. First of, it is important to understand that one *PPN* (catalogue entry) can contain multiple discs. Moreover, there can be multiple disc *types* inside one *PPN*. Here's an example:  
+
+![](./img/cataloguePPN.png)
+
+In this case the *PPN* contains:
+
+1. one set of 3 audio CDs
+2. one set of 2 DVDs
+
+Now, the *Volume number* values apply to discs *within each of these sets*. So for each *Carrier type* we start numbering at 1 again. In this case: 
+
+|Disc|Volume number|Carrier type|
+|:--|:--|:--|
+|First audio CD|1|cd-audio|
+|Second audio CD|2|cd-audio|
+|Third audio CD|3|cd-audio|
+|First DVD|1|dvd-rom|
+|Second DVD|2|dvd-rom|
+
+### Impact of data entry errors
+ 
+The selected value of *Carrier type* does *not* influence the imaging or ripping process; it is only used to describe the disc at the metadata level. For example, suppose an operator accidentally selects *cd-audio* for a *cd-rom*, Iromlab automatically detects that the disc contains data, and the data are then correctly extracted to an ISO image. Verification of the batch with the [omSipCreator](https://github.com/KBNLresearch/omSipCreator) tool will result in an error mesage in this case, as it checks the consistency between the values of *carrierType* and the *containsAudio* and *containsData* flags for each entry. OmSipCreator also checks for duplicate *Volume number* values within each *Carrier type* set.
+
+## Troubleshooting
+
+
+<!-- You can inspect the batch folder with Windows Explorer:
+
+![](./img/iromBatchFolder.png)
+
+The folder contains the following items:
+
+- file *manifest.csv* - a comma-delimited text file that will contain basic metadata about each carrier 
+- file *batch.log* - a log file with detailed information on all sub-processes that are run as part of Iromlab
+- folder *jobs* -->
+
+
+## Annex: How to spot synchronisation errors
 
 It is difficult to identify synchronisation errors in a batch automatically. However, the *title* and *volumeID* fields in the batch manifest may give some clues. The *title* field contains the title as extracted from the catalogue. For discs that contain data, the *volumeID* field is a descriptive text string that is extracted from the ISO image. Use of the *volumeID* field is not mandatory, and it's essentially up to the creator of a CD-ROM how this field is filled (if at all). Nevertheless, the value of *volumeID* is often derived from the title (though not always in a predictable way). By way of illustration, the table below lists 20 discs from the KB collection with their corresponding *volumeID* values:  
 
@@ -142,29 +196,3 @@ It is difficult to identify synchronisation errors in a batch automatically. How
 The correspondence between the *volumeID* and *title* fields is clear for 13 of these titles. For the remaining 7 the correspondence is less obvious or altogether absent. 
 
 This means that it may be possible to detect synchronisation errors by visually inspecting the *title* and *volumeID* fields of the final (say, 10) entries that were written to the batch manifest. If the *volumeID* fields appears to be related *title* fields of preceding or succeeding entries, this is an indication that there may be synchronisation errors.
-
-
-## How to use the Volume number and Carrier type fields
-
-
-![](./img/cataloguePPN.png)
-
-
-<!-- TODO: explain that all carriers that are part of a PPN must be in the same batch -->
-
-
-## The log file
-
-## Troubleshooting
-
-
-<!-- You can inspect the batch folder with Windows Explorer:
-
-![](./img/iromBatchFolder.png)
-
-The folder contains the following items:
-
-- file *manifest.csv* - a comma-delimited text file that will contain basic metadata about each carrier 
-- file *batch.log* - a log file with detailed information on all sub-processes that are run as part of Iromlab
-- folder *jobs* -->
-
