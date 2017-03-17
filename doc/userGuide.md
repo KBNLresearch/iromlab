@@ -18,9 +18,11 @@ Now press *OK*. The Iromlab window now changes to:
 
 ![](./img/iromBatchCreated.png)
 
-The console widget at the bottom shows the full path to the newly created batch folder. It also shows some messages that are related to the initialization of the batch 
+The console widget at the bottom shows the full path to the newly created batch folder. It also shows some messages that are related to the initialization of the batch. (These messages are also written to a log file. We'll get to that later.)
 
-Note: the messages that you see in the console window are also written to a log file. We'll get to that later.
+### Naming of batches
+
+The batch name is automatically generated. It contains of a prefix (defined by the *prefixBatch* variable in Iromlab's configuration file), followed by a [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is based on the hardware address and the current time ("version 1" UUID). This ensures that batch names are always unique if Iromlab is run on different machines in parallel.
 
 ## Process a disc
 
@@ -55,13 +57,13 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 5. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
 6. Finally, an entry is added to the *batch manifest* (explained further below).
 
-## Processing more discs
+## Process more discs
 
 In order to process additional discs, simply repeat the steps from the previous section for each disc. You can add new discs while the Nimbie is busy processing a disc; in fact you can keep adding discs until the disc loader is full (which is at 30 discs by default, and 100 if the extension rods are used). For each disc, Iromlab creates a *job file* that contains the fields that were entered by the operator (PPN, volume number, carrier type). The job file is then placed in a ["first in first out"](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) (FIFO)  queue. The job files are physically written to the *jobs* directory inside the batch. 
 
 **Important:** you should *never* modify any of the files inside the *jobs* folder in *any* way. This includes opening them in a text editor and re-saving them. This is because Iromlab uses the timestamps of the job files (their creation times) to establish the processing order. Modifying a job file will change its timestamp, and mess up the processing order as a result.
 
-## Finalizing a batch
+## Finalize a batch
 
 When you're done entering new discs, press the *Finalize* button at the top of the Iromlab window. This will trigger a confirmation dialog:
 
@@ -87,22 +89,19 @@ It is absolutely vital that Iromlab's job queue and the "physical" queue (i.e. t
 
 It's probably impossible to eliminate synchronisation errors altogether. Since batches with synchronisation errors have to be re-processed from scratch, it is a good idea to limit the size of a batch somewhat. For example, in case of a synchronisation error in a batch with hundreds of discs that took a whole day to create, a whole day's work will have to be re-done. For a smaller batch that only took two hours, much less time will be lost.  
 
-## How to spot synchronisation errors
+## The batch manifest
 
-## Batch manifest
-
-The batch manifest is a comma-delimited text file named *manifest.csv* which is located at the root of a batch.
-For each processed disc, it contains the following fields:
+The batch manifest is a comma-delimited text file named *manifest.csv* which is located at the root of a batch. It contains all information that is needed to process the batch into ingest-ready Submission Information Packages further down the processing chain (using [omSipCreator](https://github.com/KBNLresearch/omSipCreator)). For each processed disc, it contains the following fields:
 
 1. *jobID* - internal carrier-level identifier. The image file(s) of this disc are stored in an eponymous directory within the batch.
-2. *PPN*
+2. *PPN* - identifier of the physical item in the KB Collection to which this disc belongs. For the KB case this is the PPN identifier in the KB catalogue (GGC).
 3. *volumeNo* - for intellectual entities that span multiple discs, this defines the volume number (1 for single-volume items). Values must be unique within each *carrierType* (see below)  
 4. *carrierType* - code that specifies the disc type. Currently the following values are permitted:
     - cd-rom
     - dvd-rom
     - cd-audio
     - dvd-video
-5. *title* - text string with the title of the disc (or the publication is is part of).
+5. *title* - text string with the title of the disc (or the publication it is part of).
 6. *volumeID* - text string, extracted from Primary Volume descriptor, empty if cd-audio.
 7. *success* - True/False flag that indicates status of *iromlab*'s imaging process. 
 8. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   
@@ -113,6 +112,37 @@ Example:
     jobID,PPN,volumeNo,carrierType,title,volumeID,success,containsAudio,containsData
     8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,cd-rom,(Bijna) alles over bestandsformaten,Handbook,True,False,True
  
+## How to spot synchronisation errors
+
+It is difficult to identify synchronisation errors in a batch automatically. However, the *title* and *volumeID* fields in the batch manifest may give some clues. The *title* field contains the title as extracted from the catalogue. For discs that contain data, the *volumeID* field is a descriptive text string that is extracted from the ISO image. Use of the *volumeID* field is not mandatory, and it's essentially up to the creator of a CD-ROM how this field is filled (if at all). Nevertheless, the value of *volumeID* is often derived from the title (though not always in a predictable way). By way of illustration, the table below lists 20 discs from the KB collection with their corresponding *volumeID* values:  
+
+|Title|volumeID|
+|:--|:--|
+|[Birds of tropical Asia : sounds and sights ](http://opc4.kb.nl/DB=1/PPN?PPN=236599380)|BIRDSTROPASIA2|
+|[(Bijna) alles over bestandsformaten](http://opc4.kb.nl/DB=1/PPN?PPN=155658050)|CD001|
+|[Suske en Wiske stripmaker](http://opc4.kb.nl/DB=1/PPN?PPN=173949940)|SWSTRIP|
+|[Ik zie, ik zie, wat jij niet ziet in het spookhuis](http://opc4.kb.nl/DB=1/PPN?PPN=227760425)|SPOOKHUIS|
+|[De bewaarmachine](http://opc4.kb.nl/DB=1/PPN?PPN=156414058)|BEWAARMACHINE_PC|
+| [Citydisc : 21 steden op CD-ROM](http://opc4.kb.nl/DB=1/PPN?PPN=142182516)|CITYDISC|
+|[Encyclopædia Britannica](http://opc4.kb.nl/DB=1/PPN?PPN=16385100X)|BCD97_1|
+|[Besturingssystemen](http://opc4.kb.nl/DB=1/PPN?PPN=341568554)|BESTURINGSSYST|
+|[Der totalitäre Staat](http://opc4.kb.nl/DB=1/PPN?PPN=322140315)|DISK|
+|[Fotoview Den Haag](http://opc4.kb.nl/DB=1/PPN?PPN=163359881)|FOTOVIEW|
+|[CD recensierom : recensies over CD-ROMS](http://opc4.kb.nl/DB=1/PPN?PPN=204097509)|CDRECENSIEROM|
+|[Nieuw Nederlands. Bovenbouw. Diagnostische toetsen](http://opc4.kb.nl/DB=1/PPN?PPN=216401070)|DTSA_NIEVWO|
+|[De feestcommissie in Marokko](http://opc4.kb.nl/DB=1/PPN?PPN=298147963)|DE_FEESTCOMMISSIE|
+|[Fotografische atlas van de praktische anatomie](http://opc4.kb.nl/DB=1/PPN?PPN=322953405)|SPRINGER|
+|[Sprekend verleden. SV-digitaal](http://opc4.kb.nl/DB=1/PPN?PPN=314073884)|DIGITAAL|
+|[Klikbijbel](http://opc4.kb.nl/DB=1/PPN?PPN=229687598)|KLIKBIJBEL|
+|[De geologie van de provincie Utrecht ](http://opc4.kb.nl/DB=1/PPN?PPN=24418898X)|UTRECHT|
+|[Bas gaat digi-taal](http://opc4.kb.nl/DB=1/PPN?PPN=234866780)|BAS_DEEL_I|
+|[De junior Bos(a)tlas](http://opc4.kb.nl/DB=1/PPN?PPN=181492121)|JTWORLD|
+|[Kamp Vught in de klas](http://opc4.kb.nl/DB=1/PPN?PPN=331115417)|KAMP_VUGHT_IN_DE_KLAS|
+
+The correspondence between the *volumeID* and *title* fields is clear for 13 of these titles. For the remaining 7 the correspondence is less obvious or altogether absent. 
+
+This means that it may be possible to detect synchronisation errors by visually inspecting the *title* and *volumeID* fields of the final (say, 10) entries that were written to the batch manifest. If the *volumeID* fields appears to be related *title* fields of preceding or succeeding entries, this is an indication that there may be synchronisation errors.
+
 
 ## How to use the Volume number and Carrier type fields
 
@@ -120,7 +150,7 @@ Example:
 ![](./img/cataloguePPN.png)
 
 
-<! -- TODO: explain that all carriers that are part of a PPN must be in the same batch -->
+<!-- TODO: explain that all carriers that are part of a PPN must be in the same batch -->
 
 
 ## Troubleshooting
