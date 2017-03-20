@@ -154,6 +154,19 @@ The selected value of *Carrier type* does *not* influence the imaging or ripping
 
 ## Troubleshooting
 
+### Iromlab shows "*X* is not a valid optical drive" error on startup
+
+Example:
+
+![](./img/errorNotValidDrive.png)
+
+Possible causes:
+
+* Disc robot is not switched on.
+* Iromlab was launched too quickly after switching on the disc robot (typically it takes about 30 seconds for the drive to be recognised). **Solution:** wait a few seconds and then lauch Iromlab again.
+* *cdDriveLetter* in configuration file is not configured properly (see [setup and configuration guide](./setupIromlab.md)).
+* If you connected a removable storage device (e.g. a USB-connected hard disk) before switching on the disc robot, that device may be mapped to *cdDriveLetter*, and the disc robot will be mapped to another value. **Solution:** disconnect the storage device, and log out of your Windows session. Then log in again, switch on the disc robot and then launch Iromlab. 
+
 
 <!-- You can inspect the batch folder with Windows Explorer:
 
