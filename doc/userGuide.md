@@ -8,6 +8,12 @@ Before launching Iromlab, switch on the Nimbie disc robot and wait about 30 seco
 
 ![](./img/iromStartup.png)
 
+Upon startup, you have three options:
+
+* Create a *New* batch (see below)
+* *Open* an existing batch
+* *Exit* Iromlab
+
 ## Create a batch
 
 Let's create a new batch. Click on the top-left *New* button. Iromlab will respond with:
@@ -81,6 +87,18 @@ Meanwhile, Iromlab will continue processing the remaining discs / jobs that are 
 ![](./img/finished.png)
 
 Now press *OK*, and Iromlab will close.
+
+## Exiting Iromlab
+
+If you press the *Exit* while a batch is being processed, Iromlab will finish the processing of the current disc. It will then close. The batch can be finished later by opening it (see below).
+
+## Opening an existing batch
+
+After pressing the *Open* button upon startup you will see a file dialog that shows all batch folders in Iromlab's root directory (*rootDir*):  
+
+![](./img/iromlabOpenBatch.png)
+
+This allows you to continue a batch that was interrupted with the *Exit* command.
 
 ## All discs of a PPN must be in same batch
 
