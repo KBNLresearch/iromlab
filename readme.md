@@ -4,7 +4,7 @@
 
 Iromlab (Image and Rip Optical Media Like A Boss ) provides a simple and straightforward way to save the content of offline optical media from the KB collection. Internally it wraps around a number of widely-used software tools. Iromlab automatically detects if a carrier contains data, audio, or both. The content of data sessions is extracted and saved as an ISO image using [IsoBuster](https://www.isobuster.com/). For audio sessions all tracks are ripped to WAV or FLAC format with [dBpoweramp](https://www.dbpoweramp.com/). Iromlab supports 'enhanced' audio CDs that contain both audio and data sessions. ('Mixed mode' discs, which contain 1 session that holds both audio and data tracks, are currently not supported).
 
-ISO images are verified using [Isolyzer](https://github.com/KBNLresearch/isolyzer). Audio files are checked for errors using [shntool](http://www.etree.org/shnutils/shntool/) (WAV) or [flac](https://xiph.org/flac/).
+ISO images are verified using [Isolyzer](https://github.com/KBNLresearch/isolyzer). Audio files are checked for errors using [shntool](http://www.etree.org/shnutils/shntool/) (WAV format) or [flac](https://xiph.org/flac/) (FLAC format).
 
 The disc images/rips are saved in a simple batch structure. Each batch contains a batch manifest, which is a comma-delimited text file with basic information about each carriers, such as:
 
