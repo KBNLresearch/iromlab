@@ -56,5 +56,4 @@ Written by Johan van der Knijff, except *sru.py* which was adapted from the [KB 
 
 ## License
 
-Iromlab is released under the  Apache License 2.0. The KB Python API is released under the GNU GENERAL PUBLIC LICENSE. Libcdio, shntool and flac are released under the GNU GENERAL PUBLIC LICENSE. See the directories under `tools` for the respective license statements of these tools.
-
+Iromlab is released under the  Apache License 2.0. The KB Python API is released under the GNU GENERAL PUBLIC LICENSE. Libcdio, shntool and flac are released under the GNU GENERAL PUBLIC LICENSE. See the directories under `tools` for the respective license statements of these tools. dBpoweramp console rip tool: copyright Illustrate Ltd., 2017.
