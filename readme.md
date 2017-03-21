@@ -22,7 +22,7 @@ Iromlab is tailored specifically to the situation at the KB, which makes it unsu
 1. For each carrier it needs an identifier (PPN) that corresponds to a record in the KB catalogue. Iromlab also queries the catalogue using HTTP requests. This limits the usability of Iromlab for other users and institutions. 
 2. Iromlab is based on a pretty specific hardware/software setup (see sections below). 
 
-However, as for *1.* it should be fairly straightforward to adapt these parts of the software to other catalogues/databases. As for *2.*, most of the software dependencies are implemented using simple wrapper modules, so this is also something that can be modified quite easily. One noteworthy thing is that the dBpoweramp interface requires a command-line ripping tool that was developed tailor-made for the KB by dBpoweramp; this tool is not included in the standard dBpoweramp distribution!
+However, as for *1.* it should be fairly straightforward to adapt these parts of the software to other catalogues/databases. As for *2.*, most of the software dependencies are implemented using simple wrapper modules, so this is also something that can be modified quite easily. 
 
 ## Platform
 
@@ -38,7 +38,6 @@ Iromlab wraps around a number of existing software tools:
 
 * [IsoBuster](https://www.isobuster.com/)
 * dBpoweramp, dBpoweramp Batch Ripper and Nimbie Batch Ripper Driver; all available [from the dBpoweramp website](https://www.dbpoweramp.com/batch-ripper.htm). (Note: Iromlab wraps dBpoweramp's Nimbie driver binaries to control the disc loading / unloading process.)
-* dBpoweramp command-line ripping tool, which provides a command-line interface to dBpoweramp's ripper. Custom tool developed specially for KB, not included in dBpoweramp default installer!
 * [cd-info](https://linux.die.net/man/1/cd-info) - this tool is part of [libcdio](https://www.gnu.org/software/libcdio/),  the "GNU Compact Disc Input and Control Library".
 * [shntool](http://www.etree.org/shnutils/shntool/) - used to verify the integrity of created WAVE files.
 * [flac](https://xiph.org/flac/) - used to verify the integrity of created WAVE files.

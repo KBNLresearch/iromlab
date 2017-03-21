@@ -12,7 +12,7 @@ Download and install the following:
 * [dBpoweramp Batch Ripper](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper.exe)
 * [Nimbie Batch Ripper Driver](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper-Nimbie.exe)
 
-Finally, you need to install the console ripping tool. This tool was created specifically for the KB and is *not* part of the standard dBpoweramp distribution! It must be installed in the same directory where the *CDGrab.exe* is located.  This is typically dBpoweramp's top-level installation folder (*C:\Program Files\dBpoweramp*). Drop the executable of the console riping tool (*kb-nl-consolerip.exe*) in this folder, as shown below:
+Finally, you need the *dBpoweramp* console ripping tool. This is a custom tool that was developed specifically for the KB, but Illustrate Ltd. agreed to make it publicly available with *Iromlab*. You can [download a 64-bit Windows executable here](https://github.com/KBNLresearch/iromlab/raw/master/dBpowerampconsolerip/kb-nl-consolerip.exe) . Drop the file in the same directory where the *CDGrab.exe* is located.  This is typically dBpoweramp's top-level installation folder (*C:\Program Files\dBpoweramp*). Drop the executable of the console riping tool (*kb-nl-consolerip.exe*) in this folder, as shown below:
 
 ![](./img/dbpaCLI.png)
 
