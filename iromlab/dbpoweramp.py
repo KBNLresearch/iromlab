@@ -38,7 +38,7 @@ def consoleRipper(writeDirectory):
     
     # Read Secure Extraction log
     fSecureExtractionLogFile = open(secureExtractionLogFile, 'rb')
-    secureExtractionLog = fSecureExtractionLogFile.read().decode("utf-16-sig")
+    secureExtractionLog = fSecureExtractionLogFile.read().decode("utf-16")
     fSecureExtractionLogFile.close()
     os.remove(secureExtractionLogFile)
         
