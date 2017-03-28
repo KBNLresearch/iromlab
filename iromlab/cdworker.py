@@ -172,6 +172,7 @@ def processDisc(carrierData):
             resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
             statusdBpoweramp = str(resultdBpoweramp["status"])
             logdBpoweramp = resultdBpoweramp["log"]
+            secureExtractionLog = resultdBpoweramp["secureExtractionLog"]
               
             if statusdBpoweramp != "0":
                 success = False
@@ -182,6 +183,10 @@ def processDisc(carrierData):
             logging.info(''.join(['dBpoweramp-status: ', str(resultdBpoweramp['status'])]))
             logging.info("dBpoweramp log:")
             for line in logdBpoweramp:
+                logging.info(line.strip())
+                
+            logging.info("dBpoweramp secure extraction log:")
+            for line in secureExtractionLog:
                 logging.info(line.strip())
                                     
             # Verify that created audio files are not corrupt (using shntool / flac)

@@ -17,6 +17,7 @@ def consoleRipper(writeDirectory):
     #    
 
     logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    secureExtractionLogFile = os.path.join(writeDirectory, "extract.log")
        
     args = [config.dBpowerampConsoleRipExe]
     args.append("".join(["--drive=", config.cdDriveLetter]))
@@ -34,9 +35,16 @@ def consoleRipper(writeDirectory):
     log = fLog.read().decode("utf-8-sig")
     fLog.close()
     os.remove(logFile)
+    
+    # Read Secure Extraction log
+    fSecureExtractionLogFile = open(secureExtractionLogFile, 'rb')
+    secureExtractionLog = fSecureExtractionLogFile.read().decode("utf-16-sig")
+    fSecureExtractionLogFile.close()
+    os.remove(secureExtractionLogFile)
         
-    # Contents of log file to list
+    # Contents of log  & secure extraction log files to lists
     logAsList = log.splitlines()
+    secureExtractionLogAsList = secureExtractionLog.splitlines()
                 
     # All results to dictionary
     dictOut = {}
@@ -45,5 +53,6 @@ def consoleRipper(writeDirectory):
     dictOut["stdout"] = out
     dictOut["stderr"] = err
     dictOut["log"] = logAsList
+    dictOut["secureExtractionLog"] = secureExtractionLogAsList
         
     return(dictOut)
