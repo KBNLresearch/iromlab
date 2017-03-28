@@ -1,5 +1,5 @@
 # dBpoweramp setup and configuration
-
+Ripper Optio
 ## Installation
 
 Go to the dbPoweramp download page below:
@@ -81,7 +81,9 @@ Scrolling down we see the following options:
 * *When have to Re-Rip* - set to 100 frames
 * *After Ripping a Track For* - set to 10 minutes
 
-Finally, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options.
+Also, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. Finally, click to the right of *Log Filename* and change the value to:
+
+    [rippedtopath]\extract.log
 
 ## AccurateRip configuration
 
@@ -96,6 +98,16 @@ Press *Configure*. After a few seconds the result is:
 This value is automatically added to the CD-ROM settings:
 
 ![](./img/dbpaAccurateRip3.png)
+
+## Album art and metadata options
+
+Go back to *CD Ripper Options* and click on *Options* next to *Meta Data & ID Tag*:
+
+![](./img/dbpaMetaID.png)
+
+Click to the right of *Write to [output folder]*, and select *None*. This will disable the writing of any artwork JPEGs to the output folder.
+
+![](./img/dbpaAlbumArt.png)
 
 Close the *CD Ripper* application. Now dBpoweramp is configured and ready for use! 
 
