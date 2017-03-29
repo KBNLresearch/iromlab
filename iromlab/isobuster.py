@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 
 import os
+import io
+
 from isolyzer import isolyzer
 
 if __package__ == 'iromlab':
@@ -18,7 +20,7 @@ def extractData(writeDirectory, session):
     # Temporary name for ISO file; base name 
     isoFileTemp = os.path.join(writeDirectory, "disc.iso")
     #isoFile = os.path.join(writeDirectory, isoName)
-    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
+    logFile = os.path.join(writeDirectory, "isobuster.log")
 
     args = [config.isoBusterExe]
     args.append("".join(["/d:", config.cdDriveLetter, ":"]))
@@ -36,12 +38,16 @@ def extractData(writeDirectory, session):
     cmdStr = " ".join(args)
 
     status, out, err = shared.launchSubProcess(args)
-
-    fLog = open(logFile, 'r')
-    log = fLog.read()
-
+    
+    # Open and read log file
+    with io.open(logFile, "r", encoding="cp1252") as fLog:
+        log = fLog.read()
     fLog.close()
-    os.remove(logFile)
+
+    # Rewrite as UTF-8
+    with io.open(logFile, "w", encoding="utf-8") as fLog:
+        fLog.write(log)
+    fLog.close()
     
     # Run isolyzer ISO
     try:
@@ -79,44 +85,4 @@ def extractData(writeDirectory, session):
     dictOut["imageTruncated"] = imageTruncated
         
     return(dictOut)
-
-def ripAudio(writeDirectory, session):
-    # Rip audio to WAV (to be replaced by dBPoweramp wrapper in final version)
-    # IsoBuster /d:i /ei:"E:\nimbieTest\" /et:wav /ep:oea /ep:npc /c /m /nosplash /s:1 /t:audio /l:"E:\nimbieTest\ib.log"
-    # IMPORTANT: the /t:audio switch requires IsoBuster 3.9 (currently in beta) or above!    
     
-    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-
-    args = [config.isoBusterExe]
-    args.append("".join(["/d:", config.cdDriveLetter, ":"]))
-    args.append("".join(["/ei:", writeDirectory]))
-    args.append("/et:wav")
-    args.append("/ep:oea")
-    args.append("/ep:npc")
-    args.append("/c")
-    args.append("/m")
-    args.append("/nosplash")
-    args.append("".join(["/s:",str(session)]))
-    args.append("/t:audio")
-    args.append("".join(["/l:", logFile]))
-
-    # Command line as string (used for logging purposes only)
-    cmdStr = " ".join(args)
-
-    status, out, err = shared.launchSubProcess(args)
-
-    fLog = open(logFile, 'r')
-    log = fLog.read()
-
-    fLog.close()
-    os.remove(logFile)
-
-    # All results to dictionary
-    dictOut = {}
-    dictOut["cmdStr"] = cmdStr
-    dictOut["status"] = status
-    dictOut["stdout"] = out
-    dictOut["stderr"] = err
-    dictOut["log"] = log
-        
-    return(dictOut)    

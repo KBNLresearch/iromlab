@@ -83,7 +83,7 @@ Scrolling down we see the following options:
 
 Also, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. Finally, click to the right of *Log Filename* and change the value to:
 
-    [rippedtopath]\extract.log
+    [rippedtopath]\dbpoweramp.log
 
 ## AccurateRip configuration
 

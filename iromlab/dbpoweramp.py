@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+import io
 if __package__ == 'iromlab':
     from . import config
     from . import shared
@@ -16,8 +17,10 @@ def consoleRipper(writeDirectory):
     # dBpoweramp\kb-nl-consolerip.exe" --drive="D" --log=E:\cdBatchesTest\testconsolerip\log.txt --path=E:\cdBatchesTest\testconsolerip\
     #    
 
+    # NOTE: logFile doesn't offer anything that's not in the secure extraction log
+    # So it is simply discarded after ripping
     logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-    secureExtractionLogFile = os.path.join(writeDirectory, "extract.log")
+    secureExtractionLogFile = os.path.join(writeDirectory, "dbpoweramp.log")
        
     args = [config.dBpowerampConsoleRipExe]
     args.append("".join(["--drive=", config.cdDriveLetter]))
@@ -29,30 +32,27 @@ def consoleRipper(writeDirectory):
         
     status, out, err = shared.launchSubProcess(args)
     
-    # dBpoweramp writes UTF-8 BOM at start of file, open in binary mode and
-    # then decode gets rid of the BOM
-    fLog = open(logFile, 'rb')
-    log = fLog.read().decode("utf-8-sig")
+    with io.open(logFile, "r", encoding="utf-8-sig") as fLog:
+        log = fLog.read()
     fLog.close()
+    
+    # Remove log file
     os.remove(logFile)
     
-    # Read Secure Extraction log
-    fSecureExtractionLogFile = open(secureExtractionLogFile, 'rb')
-    secureExtractionLog = fSecureExtractionLogFile.read().decode("utf-16")
+    # Read Secure Extraction log and convert to UTF-8
+    with io.open(secureExtractionLogFile, "r", encoding="utf-16") as fSecureExtractionLogFile:
+        text = fSecureExtractionLogFile.read()
     fSecureExtractionLogFile.close()
-    os.remove(secureExtractionLogFile)
-        
-    # Contents of log  & secure extraction log files to lists
-    logAsList = log.splitlines()
-    secureExtractionLogAsList = secureExtractionLog.splitlines()
-                
+    with io.open(secureExtractionLogFile, "w", encoding="utf-8") as fSecureExtractionLogFile:
+        fSecureExtractionLogFile.write(text)
+    fSecureExtractionLogFile.close()
+    
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
-    dictOut["log"] = logAsList
-    dictOut["secureExtractionLog"] = secureExtractionLogAsList
-        
+    dictOut["log"] = log
+    
     return(dictOut)
