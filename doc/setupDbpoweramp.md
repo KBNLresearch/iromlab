@@ -1,5 +1,5 @@
 # dBpoweramp setup and configuration
-Ripper Optio
+
 ## Installation
 
 Go to the dbPoweramp download page below:
@@ -81,9 +81,15 @@ Scrolling down we see the following options:
 * *When have to Re-Rip* - set to 100 frames
 * *After Ripping a Track For* - set to 10 minutes
 
-Also, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. Finally, click to the right of *Log Filename* and change the value to:
+Also, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. 
+
+## Log filename
+
+Finally, click to the right of *Log Filename* and change the value to:
 
     [rippedtopath]\dbpoweramp.log
+
+Note: you **must** use **exactly this name**, since otherwise [*omSipCreator*](https://github.com/KBNLresearch/omSipCreator) (which uses the file for provenance metadata) won't recognise it!
 
 ## AccurateRip configuration
 
