@@ -152,7 +152,7 @@ class carrierEntry(tk.Frame):
             # loop to stop
                         
             jobFile = 'eob.txt' 
-            fJob = open(os.path.join(config.jobsFolder, jobFile), "w")
+            fJob = open(os.path.join(config.jobsFolder, jobFile), "w", encoding="utf-8")
             lineOut = 'EOB\n'
             fJob.write(lineOut)
             self.bFinalise.config(state = 'disabled')
@@ -212,7 +212,7 @@ class carrierEntry(tk.Frame):
                 
                 if sys.version.startswith('3'):
                     # Py3: csv.reader expects file opened in text mode
-                    fJob = open(jobFile,"w")
+                    fJob = open(jobFile,"w", encoding="utf-8")
                 elif sys.version.startswith('2'):
                     # Py2: csv.reader expects file opened in binary mode
                     fJob = open(jobFile,"wb")

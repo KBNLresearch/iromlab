@@ -74,7 +74,7 @@ def checksumDirectory(directory):
    
     # Write checksum file
     try:
-        fChecksum = open(os.path.join(directory, "checksums.md5"), "w")
+        fChecksum = open(os.path.join(directory, "checksums.md5"), "w", encoding="utf-8")
         for fName in checksums:
             lineOut = checksums[fName] + " " + os.path.basename(fName) + '\n'
             fChecksum.write(lineOut)
@@ -306,7 +306,7 @@ def processDisc(carrierData):
         # Open batch manifest in append mode
         if sys.version.startswith('3'):
             # Py3: csv.reader expects file opened in text mode
-            bm = open(config.batchManifest,"a")
+            bm = open(config.batchManifest,"a", encoding="utf-8")
         elif sys.version.startswith('2'):
             # Py2: csv.reader expects file opened in binary mode
             bm = open(config.batchManifest,"ab")
@@ -353,7 +353,7 @@ def processDiscTest(carrierData):
     # Open batch manifest in append mode
     if sys.version.startswith('3'):
         # Py3: csv.reader expects file opened in text mode
-        bm = open(config.batchManifest,"a")
+        bm = open(config.batchManifest,"a", encoding="utf-8")
     elif sys.version.startswith('2'):
         # Py2: csv.reader expects file opened in binary mode
         bm = open(config.batchManifest,"ab")
@@ -399,7 +399,7 @@ def cdWorker():
         # Open batch manifest in append mode
         if sys.version.startswith('3'):
             # Py3: csv.reader expects file opened in text mode
-            bm = open(config.batchManifest,"a")
+            bm = open(config.batchManifest,"a", encoding="utf-8")
         elif sys.version.startswith('2'):
             # Py2: csv.reader expects file opened in binary mode
             bm = open(config.batchManifest,"ab")
@@ -437,7 +437,7 @@ def cdWorker():
             
             if sys.version.startswith('3'):
                 # Py3: csv.reader expects file opened in text mode
-                fj = open(jobOldest,"r")
+                fj = open(jobOldest,"r", encoding="utf-8")
             elif sys.version.startswith('2'):
                 # Py2: csv.reader expects file opened in binary mode
                 fj = open(jobOldest,"rb")
