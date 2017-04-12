@@ -33,7 +33,7 @@ else:
     import cdworker
     import cdinfo
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 
 """
 Script for automated imaging / ripping of optical media using a Nimbie disc robot.
