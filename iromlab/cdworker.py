@@ -452,6 +452,7 @@ def cdWorker():
                 config.readyToStart = False
                 config.finishedBatch = True
                 os.remove(jobOldest)
+                # TODO: remove config.jobsFolder and config.jobsFailedFolder and their contents here
                 logging.info('*** End Of Batch job found, closing batch ***')
                 # This triggers a KeyboardInterrupt in the main thread
                 thread.interrupt_main()
