@@ -5,6 +5,7 @@
 # dBpoweramp
 
 import os
+import io
 if __package__ == 'iromlab':
     from . import config
     from . import shared
@@ -25,17 +26,17 @@ def prebatch():
     cmdStr = " ".join(args)
         
     status, out, err = shared.launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
     
-    # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.encode('utf-8').decode('utf-16le')
-    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
-    fLog.close()
-    fErr.close()
+    # Read log and error files. Encoding is little-Endian UTF-16
+    with io.open(logFile, "r", encoding="utf-16le") as fLog:
+        log = fLog.read()
+    with io.open(errorFile, "r", encoding="utf-16le") as fErr:
+        errors = fErr.read()   
+       
+    # Convert log and errors to UTF-8
+    logUTF8 = log.encode('utf-8')
+    errorsUTF8 = errors.encode('utf-8')
+   
     os.remove(logFile)
     os.remove(errorFile)
  
@@ -64,20 +65,20 @@ def load():
     cmdStr = " ".join(args)
     
     status, out, err = shared.launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    
-    # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.encode('utf-8').decode('utf-16le')
-    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
-    fLog.close()
-    fErr.close()
+
+    # Read log and error files. Encoding is little-Endian UTF-16
+    with io.open(logFile, "r", encoding="utf-16le") as fLog:
+        log = fLog.read()
+    with io.open(errorFile, "r", encoding="utf-16le") as fErr:
+        errors = fErr.read()   
+       
+    # Convert log and errors to UTF-8
+    logUTF8 = log.encode('utf-8')
+    errorsUTF8 = errors.encode('utf-8')
+   
     os.remove(logFile)
     os.remove(errorFile)
-        
+         
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -102,20 +103,20 @@ def unload():
     cmdStr = " ".join(args)
     
     status, out, err = shared.launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    
-    # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.encode('utf-8').decode('utf-16le')
-    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
-    fLog.close()
-    fErr.close()
+
+    # Read log and error files. Encoding is little-Endian UTF-16
+    with io.open(logFile, "r", encoding="utf-16le") as fLog:
+        log = fLog.read()
+    with io.open(errorFile, "r", encoding="utf-16le") as fErr:
+        errors = fErr.read()   
+       
+    # Convert log and errors to UTF-8
+    logUTF8 = log.encode('utf-8')
+    errorsUTF8 = errors.encode('utf-8')
+   
     os.remove(logFile)
     os.remove(errorFile)
-    
+     
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -140,20 +141,20 @@ def reject():
     cmdStr = " ".join(args)
     
     status, out, err = shared.launchSubProcess(args)
-    fLog = open(logFile, 'r')
-    fErr = open(errorFile, 'r')
-    log = fLog.read()
-    errors = fErr.read()
-    
-    # Convert log and errors from little-Endian UTF-16 to UTF-8
-    logUTF8 = log.encode('utf-8').decode('utf-16le')
-    errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
-    fLog.close()
-    fErr.close()
+
+    # Read log and error files. Encoding is little-Endian UTF-16
+    with io.open(logFile, "r", encoding="utf-16le") as fLog:
+        log = fLog.read()
+    with io.open(errorFile, "r", encoding="utf-16le") as fErr:
+        errors = fErr.read()   
+       
+    # Convert log and errors to UTF-8
+    logUTF8 = log.encode('utf-8')
+    errorsUTF8 = errors.encode('utf-8')
+   
     os.remove(logFile)
     os.remove(errorFile)
-    
+     
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
