@@ -4,7 +4,7 @@
 
 Download and install the following:
 
-* dBPoweramp Reference, 64-bit version. You can purchase it [here](https://www.dbpoweramp.com/purchase.htm). Use the download link in the order details e-mail that you received from dBpoweramp after you purchased the sodtware. 
+* dBPoweramp Reference, 64-bit version. You can purchase it [here](https://www.dbpoweramp.com/purchase.htm). Use the download link in the order details e-mail that you received from dBpoweramp after you purchased the software. 
 * [dBpoweramp Batch Ripper](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper.exe)
 * [Nimbie Batch Ripper Driver](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper-Nimbie.exe)
 
