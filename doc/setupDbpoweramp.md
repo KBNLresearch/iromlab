@@ -2,13 +2,9 @@
 
 ## Installation
 
-Go to the dbPoweramp download page below:
-
-<https://www.dbpoweramp.com/batch-ripper.htm>
-
 Download and install the following:
 
-* [dBPoweramp Reference](https://www.dbpoweramp.com/dmc.htm), 64-bit version (requires a license)
+* dBPoweramp Reference, 64-bit version. You can purchase it [here](https://www.dbpoweramp.com/purchase.htm). Use the download link in the order details e-mail that you received from dBpoweramp after you purtchased the sodtware. 
 * [dBpoweramp Batch Ripper](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper.exe)
 * [Nimbie Batch Ripper Driver](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper-Nimbie.exe)
 
