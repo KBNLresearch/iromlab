@@ -21,15 +21,15 @@ This is a bit tedious, but you only have to do this once. Each step is described
 
 ## Installation of Nimbie device driver
 
-For this you need the installation CD that is shipped with the Nimbie machine. 
+For this you need the installation disc that is shipped with the Nimbie machine. 
 
-* Insert the CD in the CD-drive (not the Nimbie!).
+* Insert the installation disc in the CD-drive (not the Nimbie!).
 * If the installer program does not launch automatically, navigate to the disc in Windows Explorer, right-click on *Autorun.exe* and select *Run as administrator*.
 * In the opening menu, click on *Nimbie USB*.
 * From the menu that appears, now select *Install Driver*.
 * The device driver is now installed!
 
-**Note:** you don't need to install any of the other software on the CD.
+**Note:** you don't need to install any of the other software on the installation disc.
 
 
 ## [Isobuster setup and configuration](./setupIsobuster.md)
