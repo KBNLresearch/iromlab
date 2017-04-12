@@ -12,6 +12,24 @@ Finally, you need the *dBpoweramp* console ripping tool. This is a custom tool t
 
 ![](./img/dbpaCLI.png)
 
+## Drive configuration
+
+After installing, locate the *dBpoweramp* item in the Windows Start Menu, and launch the *Batch Ripper - Configuration* application:
+
+![](./img/dbpaBatchripperConfig.png)
+
+Now the following window appears:
+
+![](./img/dbpaBatchripperConfig2.png)
+    
+Under *Unconfigured Drives*, locate the Nimbie's drive select the CD-drive that corresponds to the Nimbie discrobot (make sure *not* to select the computer's built-in drive here; the Nimbie has a *Teac* drive so you should be able to identify it from its description). Click on *Configure* to the right-hand side of the drive.
+
+Change *Loading Method* (top of the window) to *Nimbie* and then press *Configure Drive*:
+
+![](./img/dbpaBatchripperConfig2.png)
+
+If all went well the drive is now moved to the *Configured Drives* section on the opening screen. Press *OK* to close *Batch Ripper - Configuration*.
+
 ## Configure general settings
 
 After installing, locate the *dBpoweramp* item in the Windows Start Menu, and launch the *CD Ripper* application, as shown below: 
@@ -86,20 +104,38 @@ Finally, click to the right of *Log Filename* and change the value to:
     [rippedtopath]\dbpoweramp.log
 
 Note: you **must** use **exactly this name**, since otherwise [*omSipCreator*](https://github.com/KBNLresearch/omSipCreator) (which uses the file for provenance metadata) won't recognise it!
-
+    
 ## AccurateRip configuration
 
-AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) (CRC) of ripped audio tracks against an online database. This only works correctly if the read offset of the CD-drive is known. To so, load a (preferrably well-known/popular) audio CD into the disc robot. If all goes well the following dialog will pop up:
+AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) (CRC) of ripped audio tracks against an online database. This only works correctly if the read offset of the CD-drive is known. To so, follow the steps below:
 
-![](./img/dbpaAccurateRip.png)
+1. Insert a (preferrably well-known/popular) audio CD into the disc robot's loader.
+2. Load the CD using the *Load* command-line tool that is part of the Nimbie Batch Ripper Driver. It is typically located under `C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\`. To run it, open a Windows command prompt, and enter the following:
 
-Press *Configure*. After a few seconds the result is:
+    `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load" --drive= "I"`
 
-![](./img/dbpaAccurateRip2.png)
+    Make sure to replace "I" by the actual drive letter on your system.
 
-This value is automatically added to the CD-ROM settings:
+3. Wait until the CD has loaded and you can see its details in the *CD Ripper* window.
+4. Close *CD Ripper* and then re-start it.
 
-![](./img/dbpaAccurateRip3.png)
+    The following dialog will now pop up:
+
+    ![](./img/dbpaAccurateRip.png)
+
+    Press *Configure*. After a few seconds the result is:
+
+    ![](./img/dbpaAccurateRip2.png)
+
+    This value is automatically added to the CD-ROM settings:
+
+    ![](./img/dbpaAccurateRip3.png)
+
+    Press *OK* and then press the *Rip* button (top-left) to test the settings. Inspect the ripping information that is displayed once the CD is ripped. In particular, check if (most of) the tracks have an *accurate* status. If so, unload the CD by calling the *Unload.exe* driver application. Again you need to do this from the command prompt, using:
+
+    `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload" --drive= "I"`
+    
+    Again, replace "I" by your actual drive letter here.
 
 ## Album art and metadata options
 
