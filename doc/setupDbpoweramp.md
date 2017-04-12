@@ -32,7 +32,7 @@ If all went well the drive is now moved to the *Configured Drives* section on th
 
 ## Configure general settings
 
-After installing, locate the *dBpoweramp* item in the Windows Start Menu, and launch the *CD Ripper* application, as shown below: 
+Locate the *dBpoweramp* item in the Windows Start Menu, and launch the *CD Ripper* application, as shown below: 
 
 ![](./img/dbpaCDripper.png)
 
