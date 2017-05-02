@@ -13,6 +13,11 @@ def getCarrierInfo():
     # cd-info command line:
     # cd-info -C d: --no-header --no-device-info --no-cddb --dvd
     
+    ## TEST
+    config.cdInfoExe = "C:/Users/jkn010/iromlab/tools/libcdio/win64/cd-info.exe"
+    config.cdDriveLetter = "D"
+    ## TEST
+    
     args = [config.cdInfoExe]
     args.append( "-C")
     args.append("".join([config.cdDriveLetter, ":"]))
@@ -31,7 +36,7 @@ def getCarrierInfo():
     outAsList = out.splitlines()
    
     # Set up dictionary and list for storing track list and analysis report
-    trackList = {}
+    trackList = []
     analysisReport = []
     
     # Locate track list and analysis report in cd-info output
@@ -45,13 +50,31 @@ def getCarrierInfo():
             thisTrack = thisTrack.split(": ")
             trackNumber = int(thisTrack[0].strip())
             trackDetails = thisTrack[1].split()
+            trackMSFStart = trackDetails[0] # Minute:Second:Frame
+            trackLSNStart = trackDetails[1] # Logical Sector Number
             trackType = trackDetails[2]
-            trackList[trackNumber] = trackType
+            trackProperties = {}
+            trackProperties['trackNumber'] = trackNumber
+            trackProperties['trackMSFStart'] = trackMSFStart
+            trackProperties['trackLSNStart'] = trackLSNStart
+            trackProperties['trackType'] = trackType
+            trackList.append(trackProperties)
+            #trackList[trackNumber] = trackType
         
     # Flags for presence of audio / data tracks
-    containsAudio = "audio" in trackList.values()
-    containsData = "data" in trackList.values()
-        
+    containsAudio = False
+    containsData = False
+    dataTrackLSNStart = '0'
+    
+    for track in trackList:
+        if "audio" in track.values():
+            containsAudio = True
+        if "data" in track.values():
+            containsData = True
+            dataTrackLSNStart = track['trackLSNStart']
+
+    print(containsAudio, containsData, dataTrackLSNStart)
+    
     # Parse analysis report
     for i in range(startIndexAnalysisReport + 1, len(outAsList), 1):
         thisLine = outAsList[i]
@@ -118,4 +141,13 @@ def getDrives():
     dictOut["stdout"] = out
     dictOut["stderr"] = err
     
-    return(dictOut)    
+    return(dictOut)
+    
+def main():
+    getCarrierInfo()
+    
+ 
+ 
+main()
+ 
+ 
