@@ -14,7 +14,7 @@ else:
     
 # Wrapper module for IsoBuster
 
-def extractData(writeDirectory, session):
+def extractData(writeDirectory, session, dataTrackLSNStart):
     # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /s:1 /l:"E:\nimbieTest\ib.log"
     
     # Temporary name for ISO file; base name 
@@ -51,7 +51,11 @@ def extractData(writeDirectory, session):
     
     # Run isolyzer ISO
     try:
-        isolyzerResult = isolyzer.processImage(isoFileTemp)
+        isolyzerResult = isolyzer.processImage(isoFileTemp, dataTrackLSNStart)
+        ## TEST
+        print(isolyzerResult)
+        ## TEST
+        
         # Isolyzer status
         isolyzerSuccess = isolyzerResult.find('statusInfo/success').text       
         # Is ISO image smaller than expected (if True, this indicates the image may be truncated)

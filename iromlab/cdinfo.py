@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+import os
+import io
 if __package__ == 'iromlab':
     from . import config
     from . import shared
@@ -8,15 +10,17 @@ else:
     
 # Wrapper module for cdinfo
 
-def getCarrierInfo():
+def getCarrierInfo(writeDirectory):
     # Determine carrier type and number of sessions on carrier
     # cd-info command line:
     # cd-info -C d: --no-header --no-device-info --no-cddb --dvd
     
     ## TEST
-    config.cdInfoExe = "C:/Users/jkn010/iromlab/tools/libcdio/win64/cd-info.exe"
-    config.cdDriveLetter = "D"
+    #config.cdInfoExe = "C:/Users/jkn010/iromlab/tools/libcdio/win64/cd-info.exe"
+    #config.cdDriveLetter = "D"
     ## TEST
+    
+    cdInfoLogFile = os.path.join(writeDirectory, "cd-info.log")
     
     args = [config.cdInfoExe]
     args.append( "-C")
@@ -59,7 +63,6 @@ def getCarrierInfo():
             trackProperties['trackLSNStart'] = trackLSNStart
             trackProperties['trackType'] = trackType
             trackList.append(trackProperties)
-            #trackList[trackNumber] = trackType
         
     # Flags for presence of audio / data tracks
     containsAudio = False
@@ -67,13 +70,11 @@ def getCarrierInfo():
     dataTrackLSNStart = '0'
     
     for track in trackList:
-        if "audio" in track.values():
+        if track['trackType'] == 'audio':
             containsAudio = True
-        if "data" in track.values():
+        if track['trackType'] == 'data':
             containsData = True
             dataTrackLSNStart = track['trackLSNStart']
-
-    print(containsAudio, containsData, dataTrackLSNStart)
     
     # Parse analysis report
     for i in range(startIndexAnalysisReport + 1, len(outAsList), 1):
@@ -88,6 +89,11 @@ def getCarrierInfo():
     cdExtra = shared.index_startswith_substring(analysisReport, "CD-Plus/Extra") != -1
     multiSession = shared.index_startswith_substring(analysisReport, "session #") != -1
     mixedMode = shared.index_startswith_substring(analysisReport, "mixed mode CD") != -1
+    
+    # Write cd-info output to log file
+    with io.open(cdInfoLogFile, "w", encoding="utf-8") as fCdInfoLogFile:
+        fCdInfoLogFile.write(out)
+    fCdInfoLogFile.close()
 
     # Main results to dictionary
     dictOut = {}
@@ -97,6 +103,7 @@ def getCarrierInfo():
     dictOut["mixedMode"] = mixedMode
     dictOut["containsAudio"] = containsAudio
     dictOut["containsData"] = containsData
+    dictOut["dataTrackLSNStart"] = dataTrackLSNStart
     dictOut["status"] = status
     dictOut["stdout"] = out
     dictOut["stderr"] = err
@@ -143,11 +150,9 @@ def getDrives():
     
     return(dictOut)
     
-def main():
-    getCarrierInfo()
-    
- 
- 
-main()
+#def main():
+#    getCarrierInfo()
+#
+#main()
  
  

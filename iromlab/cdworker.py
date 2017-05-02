@@ -152,7 +152,7 @@ def processDisc(carrierData):
 
         # Get disc info
         logging.info('*** Running cd-info ***')
-        carrierInfo = cdinfo.getCarrierInfo()
+        carrierInfo = cdinfo.getCarrierInfo(dirDisc)
         logging.info(''.join(['cd-info command: ', carrierInfo['cmdStr']]))
         logging.info(''.join(['cd-info-status: ', str(carrierInfo['status'])]))
         logging.info(''.join(['cdExtra: ', str(carrierInfo['cdExtra'])]))
@@ -203,8 +203,9 @@ def processDisc(carrierData):
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 # Create ISO file from data on 2nd session
                 dirOut = dirDisc
+                dataTrackLSNStart = carrierInfo['dataTrackLSNStart']
                                 
-                resultIsoBuster = isobuster.extractData(dirOut, 2)                
+                resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)                
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
                 imageTruncated = resultIsoBuster['imageTruncated']               
@@ -236,7 +237,7 @@ def processDisc(carrierData):
             # Create ISO image of first session
             dirOut = dirDisc
                 
-            resultIsoBuster = isobuster.extractData(dirOut, 1)
+            resultIsoBuster = isobuster.extractData(dirOut, 1, 0)
             
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
