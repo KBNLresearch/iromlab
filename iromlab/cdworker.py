@@ -203,7 +203,7 @@ def processDisc(carrierData):
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 # Create ISO file from data on 2nd session
                 dirOut = dirDisc
-                dataTrackLSNStart = carrierInfo['dataTrackLSNStart']
+                dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
                                 
                 resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)                
                 statusIsoBuster = resultIsoBuster["log"].strip()
