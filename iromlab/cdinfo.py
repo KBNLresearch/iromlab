@@ -150,11 +150,6 @@ def getDrives():
     dictOut["stderr"] = err
     
     return(dictOut)
-    
-#def main():
-#    writeDirectory = os.path.normpath("E:/testiromlab")
-#    getCarrierInfo(writeDirectory)
 
-#main()
  
  

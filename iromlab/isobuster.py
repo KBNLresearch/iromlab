@@ -52,9 +52,6 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     # Run isolyzer ISO
     try:
         isolyzerResult = isolyzer.processImage(isoFileTemp, dataTrackLSNStart)
-        ## TEST
-        print(isolyzerResult)
-        ## TEST
         
         # Isolyzer status
         isolyzerSuccess = isolyzerResult.find('statusInfo/success').text       
