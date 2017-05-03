@@ -131,13 +131,14 @@ The batch manifest is a comma-delimited text file named *manifest.csv* which is 
 7. *success* - True/False flag that indicates status of *iromlab*'s imaging process. 
 8. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   
 9. *containsData* - True/False flag that indicates the disc contains data tracks (detected by cd-info)
+9. *cdExtra* - True/False flag that indicates if the disc is [*cd-Extra*](https://en.wikipedia.org/wiki/Blue_Book_(CD_standard)) (Blue Book) disc (detected by cd-info)
 
 The first line of the file contains column headers.
 
 Example:
 
-    jobID,PPN,volumeNo,carrierType,title,volumeID,success,containsAudio,containsData
-    8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,cd-rom,(Bijna) alles over bestandsformaten,Handbook,True,False,True
+    jobID,PPN,volumeNo,carrierType,title,volumeID,success,containsAudio,containsData,cdExtra
+    8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,cd-rom,(Bijna) alles over bestandsformaten,Handbook,True,False,True,False
 
 ## The log file
 
