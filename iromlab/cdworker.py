@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import sys
 import os
+import shutil
 import time
 import glob
 import csv
@@ -460,7 +461,8 @@ def cdWorker():
                 config.readyToStart = False
                 config.finishedBatch = True
                 os.remove(jobOldest)
-                # TODO: remove config.jobsFolder and config.jobsFailedFolder and their contents here
+                shutil.rmtree(config.jobsFolder)
+                shutil.rmtree(config.jobsFailedFolder)
                 logging.info('*** End Of Batch job found, closing batch ***')
                 # This triggers a KeyboardInterrupt in the main thread
                 thread.interrupt_main()
