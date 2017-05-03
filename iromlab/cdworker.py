@@ -94,6 +94,12 @@ def processDisc(carrierData):
     # Initialise reject and success status
     reject = False
     success = True
+    
+    # Create output folder for this disc
+    dirDisc = os.path.join(config.batchFolder, jobID)
+    logging.info(''.join(['disc directory: ',dirDisc]))
+    if not os.path.exists(dirDisc):
+        os.makedirs(dirDisc)
        
     # Load disc
     logging.info('*** Loading disc ***')
@@ -142,14 +148,13 @@ def processDisc(carrierData):
         #
         # (Can still go wrong if items are entered in queue w/o loading any CDs, but
         # this is an edge case)
+        
+        # Create dummy carrierInfo dictionary (values are needed for batch manifest)
+        carrierInfo = {}
+        carrierInfo['containsAudio'] = False
+        carrierInfo['containsData'] = False
+        carrierInfo['cdExtra'] = False
     else:
-        # Create output folder for this disc
-        dirDisc = os.path.join(config.batchFolder, jobID)
-        logging.info(''.join(['disc directory: ',dirDisc]))
-    
-        if not os.path.exists(dirDisc):
-            os.makedirs(dirDisc)
-
         # Get disc info
         logging.info('*** Running cd-info ***')
         carrierInfo = cdinfo.getCarrierInfo(dirDisc)
@@ -280,45 +285,45 @@ def processDisc(carrierData):
             logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
             logging.info(''.join(['reject command output: ', resultReject['log'].strip()]))
 
-        # Create comma-delimited batch manifest entry for this carrier
-        
-        # VolumeIdentifier only defined for ISOs, not for pure audio CDs!
-        if carrierInfo["containsData"] == True:
-            try:
-                volumeID = resultIsoBuster['volumeIdentifier'].strip()
-            except:
-                volumeID = ''
-        else:
+    # Create comma-delimited batch manifest entry for this carrier
+    
+    # VolumeIdentifier only defined for ISOs, not for pure audio CDs!
+    if discLoaded == True and carrierInfo["containsData"] == True:
+        try:
+            volumeID = resultIsoBuster['volumeIdentifier'].strip()
+        except:
             volumeID = ''
-        
-        # Put all items for batch manifest entry in a list
-        rowBatchManifest = ([jobID, 
-                            carrierData['PPN'], 
-                            carrierData['volumeNo'], 
-                            carrierData['carrierType'],
-                            carrierData['title'], 
-                            volumeID,
-                            str(success),
-                            str(carrierInfo['containsAudio']),
-                            str(carrierInfo['containsData'])])
-                            
-        # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
-        
-        # Open batch manifest in append mode
-        if sys.version.startswith('3'):
-            # Py3: csv.reader expects file opened in text mode
-            bm = open(config.batchManifest,"a", encoding="utf-8")
-        elif sys.version.startswith('2'):
-            # Py2: csv.reader expects file opened in binary mode
-            bm = open(config.batchManifest,"ab")
-       
-        # Create CSV writer object
-        csvBm = csv.writer(bm, lineterminator='\n')
-        
-        # Write row to batch manifest and close file
-        csvBm.writerow(rowBatchManifest)
-        bm.close()
-        return(success)
+    else:
+        volumeID = ''
+    
+    # Put all items for batch manifest entry in a list
+    rowBatchManifest = ([jobID, 
+                        carrierData['PPN'], 
+                        carrierData['volumeNo'], 
+                        carrierData['carrierType'],
+                        carrierData['title'], 
+                        volumeID,
+                        str(success),
+                        str(carrierInfo['containsAudio']),
+                        str(carrierInfo['containsData'])])
+                        
+    # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
+    
+    # Open batch manifest in append mode
+    if sys.version.startswith('3'):
+        # Py3: csv.reader expects file opened in text mode
+        bm = open(config.batchManifest,"a", encoding="utf-8")
+    elif sys.version.startswith('2'):
+        # Py2: csv.reader expects file opened in binary mode
+        bm = open(config.batchManifest,"ab")
+   
+    # Create CSV writer object
+    csvBm = csv.writer(bm, lineterminator='\n')
+    
+    # Write row to batch manifest and close file
+    csvBm.writerow(rowBatchManifest)
+    bm.close()
+    return(success)
         
 def processDiscTest(carrierData):
     # Dummy version of processDisc function that doesn't do any actual imaging
