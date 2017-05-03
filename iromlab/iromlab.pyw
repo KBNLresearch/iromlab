@@ -197,7 +197,16 @@ class carrierEntry(tk.Frame):
         else:
             # Matching record found. Display title and ask for confirmation
             record = next(response.records)
-            title = record.titles[0]
+            
+            # Title can be in either title element OR in title element with maintitle attribute
+            titlesMain = record.titlesMain
+            titles = record.titles
+            
+            if titlesMain != []:
+                title = titlesMain[0]
+            else:
+                title = titles[0]
+            
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
                 # Prompt operator to insert carrier in disc robot

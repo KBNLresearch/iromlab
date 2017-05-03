@@ -175,13 +175,23 @@ class response():
         return(self.getElementText('{http://purl.org/dc/elements/1.1/}contributor',
             '', 
             ''))
-
     @property
     def titles(self):
         return(self.getElementText('{http://purl.org/dc/elements/1.1/}title',
             '', 
             ''))
-
+            
+    @property
+    def titlesMain(self):
+        return(self.getElementText('{http://purl.org/dc/elements/1.1/}title',
+            '{http://www.w3.org/2001/XMLSchema-instance}type', 
+            'dcx:maintitle'))
+    @property
+    def titlesIntermediate(self):
+        return(self.getElementText('{http://purl.org/dc/elements/1.1/}title',
+            '{http://www.w3.org/2001/XMLSchema-instance}type', 
+            'dcx:intermediatetitle'))
+            
     @property
     def publishers(self):
         return(self.getElementText('{http://purl.org/dc/elements/1.1/}publisher',
