@@ -35,7 +35,7 @@ def getCarrierInfo(writeDirectory):
     cmdStr = " ".join(args)
      
     status, out, err = shared.launchSubProcess(args)
-
+    
     # Output lines to list
     outAsList = out.splitlines()
    
@@ -92,9 +92,10 @@ def getCarrierInfo(writeDirectory):
     
     # Write cd-info output to log file
     with io.open(cdInfoLogFile, "w", encoding="utf-8") as fCdInfoLogFile:
-        fCdInfoLogFile.write(out)
+        for line in outAsList:
+            fCdInfoLogFile.write(line + "\n" )            
     fCdInfoLogFile.close()
-
+    
     # Main results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -151,8 +152,9 @@ def getDrives():
     return(dictOut)
     
 #def main():
-#    getCarrierInfo()
-#
+#    writeDirectory = os.path.normpath("E:/testiromlab")
+#    getCarrierInfo(writeDirectory)
+
 #main()
  
  
