@@ -43,7 +43,7 @@ Features:
 * Automated load / unload  / reject using dBpoweramp driver binaries
 * Disc type detection using libcdio's cd-info tool
 * Data CDs and DVDs are imaged to ISO file using IsoBuster
-* Audio CDs are ripped to WAV using IsoBuster (to be replaced with dBpoweramp later)  
+* Audio CDs are ripped to WAV or FLAC using dBpoweramp  
 
 Author: Johan van der Knijff
 Research department,  KB / National Library of the Netherlands
@@ -66,6 +66,7 @@ class carrierEntry(tk.Frame):
         # finished, and quit (batch can be resumed by opening it in the File dialog)
         config.quitFlag = True
         self.bExit.config(state = 'disabled')
+        self.bFinalise.config(state = 'disabled')
         msg = 'User pressed Exit, quitting after current disc has been processed'
         tkMessageBox.showinfo("Info", msg)
         if config.readyToStart == False:
@@ -158,8 +159,8 @@ class carrierEntry(tk.Frame):
             lineOut = 'EOB\n'
             fJob.write(lineOut)
             self.bFinalise.config(state = 'disabled')
+            self.bExit.config(state = 'disabled')
             self.submit_button.config(state = 'disabled')
-            #quit()
  
     def on_submit(self, event=None):
             
