@@ -464,6 +464,8 @@ def cdWorker():
                 shutil.rmtree(config.jobsFolder)
                 shutil.rmtree(config.jobsFailedFolder)
                 logging.info('*** End Of Batch job found, closing batch ***')
+                # Wait 2 seconds to avoid race condition between logging and KeyboardInterrupt
+                time.sleep(2)
                 # This triggers a KeyboardInterrupt in the main thread
                 thread.interrupt_main()
             else:
