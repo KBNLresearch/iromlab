@@ -374,7 +374,14 @@ def processDiscTest(carrierData):
     bm.close()
     
     return(success)
-        
+
+def quitIromlab():
+    logging.info('*** Quitting because user pressed Exit ***')
+    # Wait 2 seconds to avoid race condition between logging and KeyboardInterrupt
+    time.sleep(2)
+    # This triggers a KeyboardInterrupt in the main thread
+    thread.interrupt_main()
+
 def cdWorker():
 
     # Worker function that monitors the job queue and processes the discs in FIFO order
@@ -429,8 +436,13 @@ def cdWorker():
     # Flag that marks end of batch (main processing loop keeps running while False)
     endOfBatchFlag = False
     
+    # Check if user pressed Exit, and quit if so ...
+    if config.quitFlag == True:
+        quitIromlab()
+            
     while endOfBatchFlag == False and config.quitFlag == False:
         time.sleep(2)
+                
         # Get directory listing, sorted by creation time
         # List conversion because in Py3 a filter object is not a list!
         files = list(filter(os.path.isfile, glob.glob(config.jobsFolder + '/*')))
@@ -488,6 +500,7 @@ def cdWorker():
                 # Move job file to failed jobs folder
                 baseName = os.path.basename(jobOldest)
                 os.rename(jobOldest, os.path.join(config.jobsFailedFolder, baseName))
+
+        # Check if user pressed Exit, and quit if so ...
         if config.quitFlag == True:
-            logging.info('*** Quitting because user pressed Exit ***')
-            
+            quitIromlab()

@@ -66,14 +66,14 @@ class carrierEntry(tk.Frame):
         # finished, and quit (batch can be resumed by opening it in the File dialog)
         config.quitFlag = True
         self.bExit.config(state = 'disabled')
-        msg = 'Quitting because user pressed Exit!'
-        tkMessageBox.showinfo("Finished", msg)
-        # Pause for 2 seconds to avoid race condition with logging
-        time.sleep(2)
+        msg = 'User pressed Exit, quitting after current disc has been processed'
+        tkMessageBox.showinfo("Info", msg)
         if config.readyToStart == False:
+            # Wait 2 seconds to avoid race condition
+            time.sleep(2)
+            msg = 'Quitting because user pressed Exit, click OK to exit'
+            tkMessageBox.showinfo("Exit", msg)
             os._exit(0)
-        else:
-            quit()
   
     def on_create(self, event=None):
         # Create new batch in rootDir
@@ -530,5 +530,9 @@ def main():
             # Batch finished: notify user
             msg = 'Completed processing this batch, click OK to exit'
             tkMessageBox.showinfo("Finished", msg)
+        elif config.quitFlag == True:
+            # User pressed exit; notify user
+            msg = 'Quitting because user pressed Exit, click OK to exit'
+            tkMessageBox.showinfo("Exit", msg)
         os._exit(0)
 main()
