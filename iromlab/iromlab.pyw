@@ -68,6 +68,8 @@ class carrierEntry(tk.Frame):
         self.bExit.config(state = 'disabled')
         msg = 'Quitting because user pressed Exit!'
         tkMessageBox.showinfo("Finished", msg)
+        # Pause for 2 seconds to avoid race condition with logging
+        time.sleep(2)
         if config.readyToStart == False:
             os._exit(0)
         else:
