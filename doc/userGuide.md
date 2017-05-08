@@ -60,7 +60,7 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 2. Analyze the disc with [cd-info](https://linux.die.net/man/1/cd-info) to determine whether it contains data, audio, or both
 3. Extract the contents of the disc. In this case we have a cd-rom that only contains a data track, which is extracted to an ISO image with Isobuster. Beware that Isobuster will launch in a separate window (the window automatically disappears after Isobuster is finished).
 4. Verify the ISO image with Isolyzer; verify audio tracks with Shntool or flac (depending on the format that was set in the configuration)
-5. Compute MD5 checksums for all generated files (ISO images, audio files)
+5. Compute SHA-512 checksums for all generated files (ISO images, audio files)
 6. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
 7. Finally, an entry is added to the *batch manifest* (explained further below).
 
