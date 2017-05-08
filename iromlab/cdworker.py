@@ -62,6 +62,21 @@ def generate_file_md5(fileIn):
             m.update(buf)
     return m.hexdigest()
 
+def generate_file_sha512(fileIn):
+    # Generate sha512 hash of file
+    # fileIn is read in chunks to ensure it will work with (very) large files as well
+    # Adapted from: http://stackoverflow.com/a/1131255/1209004
+
+    blocksize = 2**20
+    m = hashlib.sha512()
+    with open(fileIn, "rb") as f:
+        while True:
+            buf = f.read(blocksize)
+            if not buf:
+                break
+            m.update(buf)
+    return m.hexdigest()
+
 def checksumDirectory(directory):
     # All files in directory
     allFiles = glob.glob(directory + "/*")
@@ -70,12 +85,12 @@ def checksumDirectory(directory):
     checksums = {}
     
     for fName in allFiles:
-        md5 = generate_file_md5(fName)
-        checksums[fName] = md5
+        hash = generate_file_sha512(fName)
+        checksums[fName] = hash
    
     # Write checksum file
     try:
-        fChecksum = open(os.path.join(directory, "checksums.md5"), "w", encoding="utf-8")
+        fChecksum = open(os.path.join(directory, "checksums.sha512"), "w", encoding="utf-8")
         for fName in checksums:
             lineOut = checksums[fName] + " " + os.path.basename(fName) + '\n'
             fChecksum.write(lineOut)
@@ -271,7 +286,7 @@ def processDisc(carrierData):
             logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
-        # Generate MD5 checksum file
+        # Generate checksum file
         checksumDirectory(dirOut)
 
         # Unload or reject disc
