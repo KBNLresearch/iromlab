@@ -112,29 +112,3 @@ def verifyCD(directory, format):
                             
         return(hasErrors, errorsList)
         
-def main():
-
-    import os
-    import glob
-    
-    dirAudio = os.path.normpath("E:/detectDamagedAudio/data/")
-
-    filesWav = glob.glob(dirAudio + "/*.wav")
-    filesFlac = glob.glob(dirAudio + "/*.flac")
-
-    """ 
-    for fileWav in filesWav:
-        isOK, status, errors = checkAudioFile(fileWav, "wav")
-        print(fileWav, isOK, status)
-        for error in errors:
-            print(error)
-    """
-    
-    for fileFlac in filesFlac:
-        isOK, status, errors = verifyAudioFile(fileFlac, "wav")
-        print(fileFlac, isOK, status)
-        for error in errors:
-            print(error)
-
-if __name__ == "__main__":
-    main()
