@@ -247,9 +247,11 @@ class carrierEntry(tk.Frame):
           
         # Set up log-related settings 
         logFile = os.path.join(config.batchFolder, 'batch.log')
-        logging.basicConfig(filename=logFile, 
-            level=logging.INFO, 
-            format='%(asctime)s - %(levelname)s - %(message)s')
+        
+        logging.basicConfig(handlers=[logging.FileHandler(logFile, 'w', 'utf-8')], 
+                    level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+                    
         # Add the handler to logger
         logger = logging.getLogger()
         logger.addHandler(handler)
