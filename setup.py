@@ -36,7 +36,7 @@ def get_reg(name, path):
     # From http://stackoverflow.com/a/35286642
     try:
         registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
-                                       winreg.KEY_READ)
+                                      winreg.KEY_READ)
         value, regtype = winreg.QueryValueEx(registry_key, name)
         winreg.CloseKey(registry_key)
         return value
@@ -69,10 +69,10 @@ def post_install():
             errorExit(msg)
 
     # Config file name
-    configFileUser = os.path.join(configDirUser,'config.xml')
+    configFileUser = os.path.join(configDirUser, 'config.xml')
 
     if os.path.isfile(configFileUser) == False:
-        # No config file in user dir, so copy it from location in package. Location 
+        # No config file in user dir, so copy it from location in package. Location
         # is /iromlab/conf/config.xml in 'site-packages' directory (if installed with pip)
 
         # Locate site-packages dir (this returns multiple entries)
@@ -84,8 +84,8 @@ def post_install():
                 sitePackageDir = dir
 
         # Construct path to config file
-        configFilePackage = os.path.join(sitePackageDir,packageName, 'conf', 'config.xml')
-      
+        configFilePackage = os.path.join(sitePackageDir, packageName, 'conf', 'config.xml')
+
         if os.path.isfile(configFilePackage) == True:
             try:
                 copyfile(configFilePackage, configFileUser)
@@ -100,7 +100,7 @@ def post_install():
     # Part 2: install tools
 
     # Tools directory
-    toolsDirUser = os.path.join(configDirUser,'tools')
+    toolsDirUser = os.path.join(configDirUser, 'tools')
 
     if os.path.isdir(toolsDirUser) == False:
         # No tools directory in user dir, so copy it from location in source or package. Location is
@@ -115,9 +115,9 @@ def post_install():
                 sitePackageDir = dir
 
         # Construct path to tools dir
-        toolsDirPackage = os.path.join(sitePackageDir,'iromlab', 'tools')
+        toolsDirPackage = os.path.join(sitePackageDir, 'iromlab', 'tools')
 
-        # If package tools dir exists, copy it to the user directory        
+        # If package tools dir exists, copy it to the user directory
         if os.path.isdir(toolsDirPackage) == True:
             try:
                 copytree(toolsDirPackage, toolsDirUser)
@@ -143,7 +143,7 @@ def post_install():
     # Read location of Windows desktop folder from registry
     regName = 'Desktop'
     regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
-    desktopFolder = os.path.normpath(get_reg(regName,regPath))
+    desktopFolder = os.path.normpath(get_reg(regName, regPath))
 
     # Path to location of link file
     pathLink = os.path.join(desktopFolder, linkName)
@@ -171,7 +171,8 @@ setup(name='iromlab',
       install_requires=install_requires,
       platforms=['Windows'],
       description='Image and Rip Optical Media Like A Boss',
-      long_description='Loader software for automated imaging of optical media with Nimbie disc robot ',
+      long_description='Loader software for automated imaging of optical media with Nimbie \
+        disc robot ',
       author='Johan van der Knijff',
       author_email='johan.vanderknijff@kb.nl',
       maintainer='Johan van der Knijff',
