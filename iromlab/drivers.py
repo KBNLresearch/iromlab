@@ -1,41 +1,42 @@
 #! /usr/bin/env python
-
-# Driver functions for Nimbie disc robot. These are all wrappers around
-# the pre-batch, load, unload and reject utilities that are shipped with
-# dBpoweramp
+"""Driver functions for Nimbie disc robot. These are all wrappers around the pre-batch,
+load, unload and reject utilities that are shipped with dBpoweramp
+"""
 
 import os
 from . import config
 from . import shared
 
-    
+
 def prebatch():
-    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
-    
+    """Run the prebatch command"""
+
+    logFile = os.path.join(config.tempDir, shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir, shared.randomString(12) + ".err")
+
     args = [config.prebatchExe]
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--logfile=" + logFile)
     args.append("--passerrorsback=" + errorFile)
-    
+
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
-        
+
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
     fErr = open(errorFile, 'r')
     log = fLog.read()
     errors = fErr.read()
-    
+
     # Convert log and errors from little-Endian UTF-16 to UTF-8
     logUTF8 = log.encode('utf-8').decode('utf-16le')
     errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
+
     fLog.close()
     fErr.close()
     os.remove(logFile)
     os.remove(errorFile)
- 
+
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -44,13 +45,16 @@ def prebatch():
     dictOut["stderr"] = err
     dictOut["log"] = logUTF8
     dictOut["errors"] = errorsUTF8
-    
-    return(dictOut)
-    
+
+    return dictOut
+
+
 def load():
-    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
-    
+    """Load a disc"""
+
+    logFile = os.path.join(config.tempDir, shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir, shared.randomString(12) + ".err")
+
     args = [config.loadExe]
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--rejectifnodisc")
@@ -59,22 +63,22 @@ def load():
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
-    
+
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
     fErr = open(errorFile, 'r')
     log = fLog.read()
     errors = fErr.read()
-    
+
     # Convert log and errors from little-Endian UTF-16 to UTF-8
     logUTF8 = log.encode('utf-8').decode('utf-16le')
     errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
+
     fLog.close()
     fErr.close()
     os.remove(logFile)
     os.remove(errorFile)
-        
+
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -83,13 +87,16 @@ def load():
     dictOut["stderr"] = err
     dictOut["log"] = logUTF8
     dictOut["errors"] = errorsUTF8
-    
-    return(dictOut)
+
+    return dictOut
+
 
 def unload():
-    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
-    
+    """Unload a disc"""
+
+    logFile = os.path.join(config.tempDir, shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir, shared.randomString(12) + ".err")
+
     args = [config.unloadExe]
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--logfile=" + logFile)
@@ -97,22 +104,22 @@ def unload():
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
-    
+
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
     fErr = open(errorFile, 'r')
     log = fLog.read()
     errors = fErr.read()
-    
+
     # Convert log and errors from little-Endian UTF-16 to UTF-8
     logUTF8 = log.encode('utf-8').decode('utf-16le')
     errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
+
     fLog.close()
     fErr.close()
     os.remove(logFile)
     os.remove(errorFile)
-    
+
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -121,13 +128,16 @@ def unload():
     dictOut["stderr"] = err
     dictOut["log"] = logUTF8
     dictOut["errors"] = errorsUTF8
-    
-    return(dictOut)
+
+    return dictOut
+
 
 def reject():
-    logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
-    errorFile = os.path.join(config.tempDir,shared.randomString(12) + ".err")
-    
+    """Reject a failed disc"""
+
+    logFile = os.path.join(config.tempDir, shared.randomString(12) + ".log")
+    errorFile = os.path.join(config.tempDir, shared.randomString(12) + ".err")
+
     args = [config.rejectExe]
     args.append("--drive=" + config.cdDriveLetter)
     args.append("--logfile=" + logFile)
@@ -135,22 +145,22 @@ def reject():
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
-    
+
     status, out, err = shared.launchSubProcess(args)
     fLog = open(logFile, 'r')
     fErr = open(errorFile, 'r')
     log = fLog.read()
     errors = fErr.read()
-    
+
     # Convert log and errors from little-Endian UTF-16 to UTF-8
     logUTF8 = log.encode('utf-8').decode('utf-16le')
     errorsUTF8 = errors.encode('utf-8').decode('utf-16le')
-    
+
     fLog.close()
     fErr.close()
     os.remove(logFile)
     os.remove(errorFile)
-    
+
     # All results to dictionary
     dictOut = {}
     dictOut["cmdStr"] = cmdStr
@@ -159,5 +169,5 @@ def reject():
     dictOut["stderr"] = err
     dictOut["log"] = logUTF8
     dictOut["errors"] = errorsUTF8
-    
-    return(dictOut)
+
+    return dictOut
