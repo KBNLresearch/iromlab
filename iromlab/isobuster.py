@@ -1,18 +1,18 @@
 #! /usr/bin/env python
 """Wrapper module for Isobuster"""
+
 import os
 import io
 from isolyzer import isolyzer
 from . import config
 from . import shared
 
+
 def extractData(writeDirectory, session, dataTrackLSNStart):
     """Extract data to ISO image using specified session number"""
-    # IsoBuster /d:i /ei:"E:\nimbieTest\myDiskIB.iso" /et:u /ep:oea /ep:npc /c /m /nosplash /s:1 /l:"E:\nimbieTest\ib.log"
 
-    # Temporary name for ISO file; base name 
+    # Temporary name for ISO file; base name
     isoFileTemp = os.path.join(writeDirectory, "disc.iso")
-    #isoFile = os.path.join(writeDirectory, isoName)
     logFile = os.path.join(writeDirectory, "isobuster.log")
 
     args = [config.isoBusterExe]
@@ -24,7 +24,7 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     args.append("/c")
     args.append("/m")
     args.append("/nosplash")
-    args.append("".join(["/s:",str(session)]))
+    args.append("".join(["/s:", str(session)]))
     args.append("".join(["/l:", logFile]))
 
     # Command line as string (used for logging purposes only)
@@ -42,17 +42,18 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
         fLog.write(log)
     fLog.close()
 
-    # Run isolyzer ISO
+    # Run isolyzer to verify if ISO is complete and extract volume identifier text string
     try:
         isolyzerResult = isolyzer.processImage(isoFileTemp, dataTrackLSNStart)
-
         # Isolyzer status
-        isolyzerSuccess = isolyzerResult.find('statusInfo/success').text       
+        isolyzerSuccess = isolyzerResult.find('statusInfo/success').text
         # Is ISO image smaller than expected (if True, this indicates the image may be truncated)
-        imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text               
+        imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text
         # Volume identifier from ISO's Primary Volume Descriptor
         # TODO: make this work for other fs types as well (UDF, HFS, HFS+)
-        volumeIdentifier = isolyzerResult.find("fileSystems/fileSystem[@TYPE='ISO 9660']/primaryVolumeDescriptor/volumeIdentifier").text.strip()
+        volumeIdentifier = isolyzerResult.find("fileSystems/fileSystem[@TYPE='ISO 9660']"
+                                               "/primaryVolumeDescriptor/"
+                                               "volumeIdentifier").text.strip()
 
     except IOError or AttributeError:
         volumeIdentifier = ''
@@ -61,13 +62,9 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
 
     if volumeIdentifier != '':
         # Rename ISO image using volumeIdentifier as a base name
-        # Any spaces in volumeIdentifier are replaced with dashes 
+        # Any spaces in volumeIdentifier are replaced with dashes
         isoFile = os.path.join(writeDirectory, volumeIdentifier.replace(' ', '-') + '.iso')
         os.rename(isoFileTemp, isoFile)
-
-    # TODO: for added security we could also verify the ISO's MD5 against MD5 of physical disc. But this 
-    # is slow + implementation under Windows will be ugly (with possible dependency on Cygwin because
-    # not clear if Windows supports Unix-syle device paths)
 
     # All results to dictionary
     dictOut = {}
@@ -80,4 +77,4 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     dictOut["isolyzerSuccess"] = isolyzerSuccess
     dictOut["imageTruncated"] = imageTruncated
 
-    return(dictOut)
+    return dictOut
