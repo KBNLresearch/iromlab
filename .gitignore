@@ -34,6 +34,10 @@ var/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# PEP8/Pylint output
+pep8.txt
+pylint.txt
+
 # Unit test / coverage reports
 htmlcov/
 .tox/

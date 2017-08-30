@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Setup script for Iromlab"""
 
 import codecs
 import os
@@ -10,19 +11,23 @@ import sys
 import sysconfig
 from setuptools import setup, find_packages
 
+
 def errorExit(msg):
+    """Send error message to stderr and exit"""
     msgString = ("Error: " + msg + "\n")
     sys.stderr.write(msgString)
     sys.exit()
 
 
 def read(*parts):
+    """Read file and return contents"""
     path = os.path.join(os.path.dirname(__file__), *parts)
     with codecs.open(path, encoding='utf-8') as fobj:
         return fobj.read()
 
 
 def find_version(*file_paths):
+    """Return version number from main module"""
     version_file = read(*file_paths)
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
@@ -31,7 +36,7 @@ def find_version(*file_paths):
 
 
 def get_reg(name, path):
-    # Read variable from Windows Registry
+    """Read variable from Windows Registry"""
     import winreg
     # From http://stackoverflow.com/a/35286642
     try:
@@ -45,8 +50,9 @@ def get_reg(name, path):
 
 
 def post_install():
-    # Install config file + pre-packaged tools to user dir +
-    # Create a Desktop shortcut to the installed software
+    """Install config file + pre-packaged tools to user dir +
+    Create a Desktop shortcut to the installed software
+    """
 
     from win32com.client import Dispatch
 
@@ -61,7 +67,7 @@ def post_install():
     configDirUser = os.path.join(userDir, packageName)
 
     # Create config directory if it doesn't exist
-    if os.path.isdir(configDirUser) == False:
+    if not os.path.isdir(configDirUser):
         try:
             os.makedirs(configDirUser)
         except IOError:
@@ -71,7 +77,7 @@ def post_install():
     # Config file name
     configFileUser = os.path.join(configDirUser, 'config.xml')
 
-    if os.path.isfile(configFileUser) == False:
+    if not os.path.isfile(configFileUser):
         # No config file in user dir, so copy it from location in package. Location
         # is /iromlab/conf/config.xml in 'site-packages' directory (if installed with pip)
 
@@ -79,14 +85,14 @@ def post_install():
         sitePackageDirs = site.getsitepackages()
 
         # Assumptions: site package dir is called 'site-packages' and is unique (?)
-        for dir in sitePackageDirs:
-            if 'site-packages' in dir:
-                sitePackageDir = dir
+        for directory in sitePackageDirs:
+            if 'site-packages' in directory:
+                sitePackageDir = directory
 
         # Construct path to config file
         configFilePackage = os.path.join(sitePackageDir, packageName, 'conf', 'config.xml')
 
-        if os.path.isfile(configFilePackage) == True:
+        if os.path.isfile(configFilePackage):
             try:
                 copyfile(configFilePackage, configFileUser)
             except IOError:
@@ -102,7 +108,7 @@ def post_install():
     # Tools directory
     toolsDirUser = os.path.join(configDirUser, 'tools')
 
-    if os.path.isdir(toolsDirUser) == False:
+    if not os.path.isdir(toolsDirUser):
         # No tools directory in user dir, so copy it from location in source or package. Location is
         # /iromlab/conf/tools in 'site-packages' directory (if installed with pip)
 
@@ -110,15 +116,15 @@ def post_install():
         sitePackageDirs = site.getsitepackages()
 
         # Assumptions: site package dir is called 'site-packages' and is unique (?)
-        for dir in sitePackageDirs:
-            if 'site-packages'in dir:
-                sitePackageDir = dir
+        for directory in sitePackageDirs:
+            if 'site-packages'in directory:
+                sitePackageDir = directory
 
         # Construct path to tools dir
         toolsDirPackage = os.path.join(sitePackageDir, 'iromlab', 'tools')
 
         # If package tools dir exists, copy it to the user directory
-        if os.path.isdir(toolsDirPackage) == True:
+        if os.path.isdir(toolsDirPackage):
             try:
                 copytree(toolsDirPackage, toolsDirUser)
             except IOError:
@@ -155,7 +161,7 @@ def post_install():
     shortcut.save()
 
 
-install_requires = [
+INSTALL_REQUIRES = [
     'requests',
     'setuptools',
     'wmi',
@@ -168,7 +174,7 @@ setup(name='iromlab',
       packages=find_packages(),
       version=find_version('iromlab', 'iromlab.pyw'),
       license='Apache License 2.0',
-      install_requires=install_requires,
+      install_requires=INSTALL_REQUIRES,
       platforms=['Windows'],
       description='Image and Rip Optical Media Like A Boss',
       long_description='Loader software for automated imaging of optical media with Nimbie \
@@ -178,19 +184,29 @@ setup(name='iromlab',
       maintainer='Johan van der Knijff',
       maintainer_email='johan.vanderknijff@kb.nl',
       url='https://github.com/KBNLresearch/iromlab',
-      download_url='https://github.com/KBNLresearch/iromlab/archive/' + find_version('iromlab', 'iromlab.pyw') + '.tar.gz',
-      package_data={'iromlab': ['*.*', 'conf/*.*', 'tools/*.*','tools/flac/*.*','tools/flac/win64/*.*','tools/flac/html/*.*','tools/flac/html/images/*.*','tools/flac/win32/*.*','tools/shntool/*.*','tools/shntool/doc/*.*', 'tools/libcdio/*.*','tools/libcdio/win64/*.*']},
+      download_url=('https://github.com/KBNLresearch/iromlab/archive/' +
+                    find_version('iromlab', 'iromlab.pyw') + '.tar.gz'),
+      package_data={'iromlab': ['*.*', 'conf/*.*',
+                                'tools/*.*', 'tools/flac/*.*',
+                                'tools/flac/win64/*.*',
+                                'tools/flac/html/*.*',
+                                'tools/flac/html/images/*.*',
+                                'tools/flac/win32/*.*',
+                                'tools/shntool/*.*',
+                                'tools/shntool/doc/*.*',
+                                'tools/libcdio/*.*',
+                                'tools/libcdio/win64/*.*']},
       zip_safe=False,
       entry_points={'gui_scripts': [
-        'iromlab = iromlab.iromlab:main',
+          'iromlab = iromlab.iromlab:main',
       ]},
       classifiers=[
-        'Environment :: Console',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3'
-    ]
-    )
+          'Environment :: Console',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+      ]
+     )
 
 if sys.argv[1] == 'install' and sys.platform == 'win32':
     post_install()
