@@ -1,4 +1,19 @@
 #! /usr/bin/env python
+"""
+Script for automated imaging / ripping of optical media using a Nimbie disc robot.
+
+Features:
+
+* Automated load / unload  / reject using dBpoweramp driver binaries
+* Disc type detection using libcdio's cd-info tool
+* Data CDs and DVDs are imaged to ISO file using IsoBuster
+* Audio CDs are ripped to WAV or FLAC using dBpoweramp
+
+Author: Johan van der Knijff
+Research department,  KB / National Library of the Netherlands
+
+"""
+
 import site
 import sys
 import os
@@ -22,33 +37,15 @@ except ImportError:
     import tkFileDialog
     import ScrolledText
     import tkMessageBox
-if __package__ == 'iromlab':    
-    from . import config
-    from .kbapi import sru
-    from . import cdworker
-    from . import cdinfo
-else:
-    import config
-    from kbapi import sru
-    import cdworker
-    import cdinfo
+from . import config
+from .kbapi import sru
+from . import cdworker
+from . import cdinfo
+
 
 __version__ = '0.6.0'
 
-"""
-Script for automated imaging / ripping of optical media using a Nimbie disc robot.
 
-Features:
-
-* Automated load / unload  / reject using dBpoweramp driver binaries
-* Disc type detection using libcdio's cd-info tool
-* Data CDs and DVDs are imaged to ISO file using IsoBuster
-* Audio CDs are ripped to WAV or FLAC using dBpoweramp  
-
-Author: Johan van der Knijff
-Research department,  KB / National Library of the Netherlands
-
-"""
 class carrierEntry(tk.Frame):
 
     # This class defines the graphical user interface + associated functions

@@ -1,11 +1,8 @@
 #! /usr/bin/env python
 import glob
-if __package__ == 'iromlab':
-    from . import config
-    from . import shared
-else:
-    import config
-    import shared
+from . import config
+from . import shared
+
     
 def verifyAudioFile(audioFile, format):
     # Verify integrity of an audio file (check for missing / truncated bytes)

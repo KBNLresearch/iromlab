@@ -2,15 +2,9 @@
 """Wrapper module for Isobuster"""
 import os
 import io
-
 from isolyzer import isolyzer
-
-if __package__ == 'iromlab':
-    from . import config
-    from . import shared
-else:
-    import config
-    import shared
+from . import config
+from . import shared
 
 def extractData(writeDirectory, session, dataTrackLSNStart):
     """Extract data to ISO image using specified session number"""

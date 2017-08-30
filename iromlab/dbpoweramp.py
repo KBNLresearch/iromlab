@@ -2,12 +2,9 @@
 
 import os
 import io
-if __package__ == 'iromlab':
-    from . import config
-    from . import shared
-else:
-    import config
-    import shared
+from . import config
+from . import shared
+
     
 # Wrapper module for dBpoweramp
 

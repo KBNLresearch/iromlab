@@ -5,12 +5,9 @@
 # dBpoweramp
 
 import os
-if __package__ == 'iromlab':
-    from . import config
-    from . import shared
-else:
-    import config
-    import shared
+from . import config
+from . import shared
+
     
 def prebatch():
     logFile = os.path.join(config.tempDir,shared.randomString(12) + ".log")
