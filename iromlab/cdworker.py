@@ -37,7 +37,7 @@ def mediumLoaded(driveName):
     for cdrom in c.Win32_CDROMDrive():
         if cdrom.Drive == driveName:
             foundDriveName = True
-            loaded = cdrom.MediaLoaded       
+            loaded = cdrom.MediaLoaded
 
     return(foundDriveName, loaded)
 
@@ -61,7 +61,7 @@ def generate_file_md5(fileIn):
 
 def generate_file_sha512(fileIn):
     """Generate sha512 hash of file"""
-    
+
     # fileIn is read in chunks to ensure it will work with (very) large files as well
     # Adapted from: http://stackoverflow.com/a/1131255/1209004
 
@@ -86,8 +86,8 @@ def checksumDirectory(directory):
     checksums = {}
 
     for fName in allFiles:
-        hash = generate_file_sha512(fName)
-        checksums[fName] = hash
+        hashString = generate_file_sha512(fName)
+        checksums[fName] = hashString
 
     # Write checksum file
     try:
@@ -105,9 +105,9 @@ def processDisc(carrierData):
     jobID = carrierData['jobID']
 
     logging.info(''.join(['### Job identifier: ', jobID]))
-    logging.info(''.join(['PPN: ',carrierData['PPN']]))
-    logging.info(''.join(['Title: ',carrierData['title']]))
-    logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
+    logging.info(''.join(['PPN: ', carrierData['PPN']]))
+    logging.info(''.join(['Title: ', carrierData['title']]))
+    logging.info(''.join(['Volume number: ', carrierData['volumeNo']]))
 
     # Initialise reject and success status
     reject = False
@@ -115,7 +115,7 @@ def processDisc(carrierData):
 
     # Create output folder for this disc
     dirDisc = os.path.join(config.batchFolder, jobID)
-    logging.info(''.join(['disc directory: ',dirDisc]))
+    logging.info(''.join(['disc directory: ', dirDisc]))
     if not os.path.exists(dirDisc):
         os.makedirs(dirDisc)
 
@@ -123,7 +123,7 @@ def processDisc(carrierData):
     logging.info('*** Loading disc ***')
     resultLoad = drivers.load()
     logging.info(''.join(['load command: ', resultLoad['cmdStr']]))
-    logging.info(''.join(['load command output: ',resultLoad['log'].strip()]))
+    logging.info(''.join(['load command output: ', resultLoad['log'].strip()]))
 
     # Test if disc is loaded
     discLoaded = False
@@ -144,7 +144,7 @@ def processDisc(carrierData):
         resultReject = drivers.reject()
         logging.error('no disc loaded')
         logging.info(''.join(['reject command: ', resultReject['cmdStr']]))
-        logging.info(''.join(['reject command output: ',resultReject['log'].strip()]))
+        logging.info(''.join(['reject command output: ', resultReject['log'].strip()]))
         #
         # !!IMPORTANT!!: we can end up here b/c of 2 situations:
         #
@@ -156,7 +156,7 @@ def processDisc(carrierData):
         # is loaded it can be linked to next catalog identifier in queue). However, in case
         # 2. the failed disc corresponds to the next identifier in the queue! So somehow
         # we need to distinguish these cases in order to keep discs in sync with identifiers!
-        # 
+        #
         # UPDATE: Case 1. can be eliminated if loading of a CD is made dependent of
         # a queue of disc ids (which are entered by operator at time of adding a CD)
         #
@@ -166,7 +166,7 @@ def processDisc(carrierData):
         #
         # (Can still go wrong if items are entered in queue w/o loading any CDs, but
         # this is an edge case)
-        
+
         # Create dummy carrierInfo dictionary (values are needed for batch manifest)
         carrierInfo = {}
         carrierInfo['containsAudio'] = False
@@ -190,7 +190,7 @@ def processDisc(carrierData):
         if carrierInfo["containsAudio"] == True:
             logging.info('*** Ripping audio ***')
             # Rip audio using dBpoweramp console ripper
-            dirOut = dirDisc       
+            dirOut = dirDisc
             resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
             statusdBpoweramp = str(resultdBpoweramp["status"])
             logdBpoweramp = resultdBpoweramp["log"]
@@ -204,7 +204,7 @@ def processDisc(carrierData):
             logging.info(''.join(['dBpoweramp command: ', resultdBpoweramp['cmdStr']]))
             logging.info(''.join(['dBpoweramp-status: ', str(resultdBpoweramp['status'])]))
             logging.info("dBpoweramp log:\n" + logdBpoweramp)
-          
+
             # Verify that created audio files are not corrupt (using shntool / flac)
             logging.info('*** Verifying audio ***')
             audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, config.audioFormat)
@@ -220,17 +220,17 @@ def processDisc(carrierData):
             for audioFile in audioErrorsList:
                 for item in audioFile:
                     logging.info(item)
-        
+
             if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 # Create ISO file from data on 2nd session
                 dirOut = dirDisc
                 dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
 
-                resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)                
+                resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
-                imageTruncated = resultIsoBuster['imageTruncated']               
+                imageTruncated = resultIsoBuster['imageTruncated']
 
                 if statusIsoBuster != "0":
                     success = False
@@ -250,7 +250,8 @@ def processDisc(carrierData):
                 logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
                 logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
                 logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
-                logging.info(''.join(['volumeIdentifier: ', str(resultIsoBuster['volumeIdentifier'])]))
+                logging.info(''.join(['volumeIdentifier: ',
+                                      str(resultIsoBuster['volumeIdentifier'])]))
                 logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
                 logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
@@ -264,7 +265,7 @@ def processDisc(carrierData):
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
             imageTruncated = resultIsoBuster['imageTruncated']
-                                
+
             if statusIsoBuster != "0":
                 success = False
                 reject = True
@@ -295,7 +296,7 @@ def processDisc(carrierData):
             logging.info('*** Unloading disc ***')
             resultUnload = drivers.unload()
             logging.info(''.join(['unload command: ', resultUnload['cmdStr']]))
-            logging.info(''.join(['unload command output: ',resultUnload['log'].strip()]))
+            logging.info(''.join(['unload command output: ', resultUnload['log'].strip()]))
         else:
             logging.info('*** Rejecting disc ***')
             resultReject = drivers.reject()
@@ -314,26 +315,26 @@ def processDisc(carrierData):
         volumeID = ''
 
     # Put all items for batch manifest entry in a list
-    rowBatchManifest = ([jobID, 
-                        carrierData['PPN'], 
-                        carrierData['volumeNo'], 
-                        carrierData['carrierType'],
-                        carrierData['title'], 
-                        volumeID,
-                        str(success),
-                        str(carrierInfo['containsAudio']),
-                        str(carrierInfo['containsData']),
-                        str(carrierInfo['cdExtra'])])
+    rowBatchManifest = ([jobID,
+                         carrierData['PPN'],
+                         carrierData['volumeNo'],
+                         carrierData['carrierType'],
+                         carrierData['title'],
+                         volumeID,
+                         str(success),
+                         str(carrierInfo['containsAudio']),
+                         str(carrierInfo['containsData']),
+                         str(carrierInfo['cdExtra'])])
 
     # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
 
     # Open batch manifest in append mode
     if sys.version.startswith('3'):
         # Py3: csv.reader expects file opened in text mode
-        bm = open(config.batchManifest,"a", encoding="utf-8")
+        bm = open(config.batchManifest, "a", encoding="utf-8")
     elif sys.version.startswith('2'):
         # Py2: csv.reader expects file opened in binary mode
-        bm = open(config.batchManifest,"ab")
+        bm = open(config.batchManifest, "ab")
 
     # Create CSV writer object
     csvBm = csv.writer(bm, lineterminator='\n')
@@ -350,9 +351,9 @@ def processDiscTest(carrierData):
     """
     jobID = carrierData['jobID']
     logging.info(''.join(['### Job identifier: ', jobID]))
-    logging.info(''.join(['PPN: ',carrierData['PPN']]))
-    logging.info(''.join(['Title: ',carrierData['title']]))
-    logging.info(''.join(['Volume number: ',carrierData['volumeNo']]))
+    logging.info(''.join(['PPN: ', carrierData['PPN']]))
+    logging.info(''.join(['Title: ', carrierData['title']]))
+    logging.info(''.join(['Volume number: ', carrierData['volumeNo']]))
 
     dirDisc = os.path.join(config.batchFolder, jobID)
 
@@ -360,29 +361,29 @@ def processDiscTest(carrierData):
 
     # Create comma-delimited batch manifest entry for this carrier
 
-    # Dummy value for VolumeIdentifier 
+    # Dummy value for VolumeIdentifier
     volumeID = 'DUMMY'
 
     # Put all items for batch manifest entry in a list
-    rowBatchManifest = ([jobID, 
-                        carrierData['PPN'], 
-                        carrierData['volumeNo'], 
-                        carrierData['carrierType'],
-                        carrierData['title'], 
-                        volumeID,
-                        str(success),
-                        str(carrierInfo['containsAudio']),
-                        str(carrierInfo['containsData'])])
-         
+    rowBatchManifest = ([jobID,
+                         carrierData['PPN'],
+                         carrierData['volumeNo'],
+                         carrierData['carrierType'],
+                         carrierData['title'],
+                         volumeID,
+                         str(success),
+                         str(carrierInfo['containsAudio']),
+                         str(carrierInfo['containsData'])])
+
     # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
 
     # Open batch manifest in append mode
     if sys.version.startswith('3'):
         # Py3: csv.reader expects file opened in text mode
-        bm = open(config.batchManifest,"a", encoding="utf-8")
+        bm = open(config.batchManifest, "a", encoding="utf-8")
     elif sys.version.startswith('2'):
         # Py2: csv.reader expects file opened in binary mode
-        bm = open(config.batchManifest,"ab")
+        bm = open(config.batchManifest, "ab")
 
     # Create CSV writer object
     csvBm = csv.writer(bm, lineterminator='\n')
@@ -406,38 +407,38 @@ def cdWorker():
     """Worker function that monitors the job queue and processes the discs in FIFO order"""
 
     # Initialise 'success' flag to prevent run-time error in case user
-    # finalizes batch before entering any carriers (edge case) 
+    # finalizes batch before entering any carriers (edge case)
     success = True
 
     # Loop periodically scans value of config.batchFolder
     while config.readyToStart == False:
         time.sleep(2)
 
-    logging.info(''.join(['batchFolder set to ', config.batchFolder])) 
+    logging.info(''.join(['batchFolder set to ', config.batchFolder]))
 
     # Define batch manifest (CSV file with minimal metadata on each carrier)
     config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
 
     # Write header row if batch manifest doesn't exist already
     if os.path.isfile(config.batchManifest) == False:
-        headerBatchManifest = (['jobID', 
-                            'PPN', 
-                            'volumeNo', 
-                            'carrierType',
-                            'title', 
-                            'volumeID',
-                            'success',
-                            'containsAudio',
-                            'containsData',
-                            'cdExtra'])
+        headerBatchManifest = (['jobID',
+                                'PPN',
+                                'volumeNo',
+                                'carrierType',
+                                'title',
+                                'volumeID',
+                                'success',
+                                'containsAudio',
+                                'containsData',
+                                'cdExtra'])
 
         # Open batch manifest in append mode
         if sys.version.startswith('3'):
             # Py3: csv.reader expects file opened in text mode
-            bm = open(config.batchManifest,"a", encoding="utf-8")
+            bm = open(config.batchManifest, "a", encoding="utf-8")
         elif sys.version.startswith('2'):
             # Py2: csv.reader expects file opened in binary mode
-            bm = open(config.batchManifest,"ab")
+            bm = open(config.batchManifest, "ab")
 
         # Create CSV writer object
         csvBm = csv.writer(bm, lineterminator='\n')
@@ -450,7 +451,7 @@ def cdWorker():
     logging.info('*** Initialising batch ***')
     resultPrebatch = drivers.prebatch()
     logging.info(''.join(['prebatch command: ', resultPrebatch['cmdStr']]))
-    logging.info(''.join(['prebatch command output: ',resultPrebatch['log'].strip()]))
+    logging.info(''.join(['prebatch command output: ', resultPrebatch['log'].strip()]))
 
     # Flag that marks end of batch (main processing loop keeps running while False)
     endOfBatchFlag = False
@@ -477,10 +478,10 @@ def cdWorker():
 
             if sys.version.startswith('3'):
                 # Py3: csv.reader expects file opened in text mode
-                fj = open(jobOldest,"r", encoding="utf-8")
+                fj = open(jobOldest, "r", encoding="utf-8")
             elif sys.version.startswith('2'):
                 # Py2: csv.reader expects file opened in binary mode
-                fj = open(jobOldest,"rb")
+                fj = open(jobOldest, "rb")
 
             fjCSV = csv.reader(fj)
             jobList = next(fjCSV)
