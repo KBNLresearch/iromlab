@@ -96,8 +96,11 @@ def checksumDirectory(directory):
             lineOut = checksums[fName] + " " + os.path.basename(fName) + '\n'
             fChecksum.write(lineOut)
         fChecksum.close()
+        wroteChecksums = True
     except IOError:
-        errorExit("Cannot write " + fChecksum)
+        wroteChecksums = False
+
+    return wroteChecksums
 
 def processDisc(carrierData):
     """Process one disc / job"""
@@ -289,7 +292,12 @@ def processDisc(carrierData):
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
         # Generate checksum file
-        checksumDirectory(dirOut)
+        successChecksum = checksumDirectory(dirOut)
+        
+        if not successChecksum:
+            success = False
+            reject = True
+            logging.error("Writing of checksum file resulted in an error")
 
         # Unload or reject disc
         if reject == False:
