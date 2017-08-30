@@ -9,10 +9,10 @@ import shutil
 import time
 import glob
 import csv
-import wmi
-import pythoncom
 import hashlib
 import logging
+import pythoncom
+import wmi
 try:
     import thread  # Python 2.x
 except ImportError:
@@ -102,6 +102,7 @@ def checksumDirectory(directory):
 
     return wroteChecksums
 
+
 def processDisc(carrierData):
     """Process one disc / job"""
 
@@ -133,16 +134,16 @@ def processDisc(carrierData):
 
     # Reject if no CD is found after 20 s
     timeout = time.time() + int(config.secondsToTimeout)
-    while discLoaded == False and time.time() < timeout:
+    while not discLoaded and time.time() < timeout:
         # Timeout value prevents infinite loop in case of unreadable disc
         time.sleep(2)
         foundDrive, discLoaded = mediumLoaded(config.cdDriveLetter + ":")
 
-    if foundDrive == False:
+    if not foundDrive:
         success = False
         logging.error(''.join(['drive ', config.cdDriveLetter, ' does not exist']))
 
-    if discLoaded == False:
+    if not discLoaded:
         success = False
         resultReject = drivers.reject()
         logging.error('no disc loaded')
@@ -190,14 +191,14 @@ def processDisc(carrierData):
         # Assumptions in below workflow:
         # 1. Audio tracks are always part of 1st session
         # 2. If disc is of CD-Extra type, there's one data track on the 2nd session
-        if carrierInfo["containsAudio"] == True:
+        if carrierInfo["containsAudio"]:
             logging.info('*** Ripping audio ***')
             # Rip audio using dBpoweramp console ripper
             dirOut = dirDisc
             resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
             statusdBpoweramp = str(resultdBpoweramp["status"])
             logdBpoweramp = resultdBpoweramp["log"]
-            #secureExtractionLog = resultdBpoweramp["secureExtractionLog"]
+            # secureExtractionLog = resultdBpoweramp["secureExtractionLog"]
 
             if statusdBpoweramp != "0":
                 success = False
@@ -213,7 +214,7 @@ def processDisc(carrierData):
             audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, config.audioFormat)
             logging.info(''.join(['audioHasErrors: ', str(audioHasErrors)]))
 
-            if audioHasErrors == True:
+            if audioHasErrors:
                 success = False
                 reject = True
                 logging.error("Verification of audio files resulted in error(s)")
@@ -224,7 +225,7 @@ def processDisc(carrierData):
                 for item in audioFile:
                     logging.info(item)
 
-            if carrierInfo["cdExtra"] == True and carrierInfo["containsData"] == True:
+            if carrierInfo["cdExtra"] and carrierInfo["containsData"]:
                 logging.info('*** Extracting data session of cdExtra to ISO ***')
                 # Create ISO file from data on 2nd session
                 dirOut = dirDisc
@@ -240,12 +241,12 @@ def processDisc(carrierData):
                     reject = True
                     logging.error("Isobuster exited with error(s)")
 
-                elif isolyzerSuccess == False:
+                elif not isolyzerSuccess:
                     success = False
                     reject = True
                     logging.error("Isolyzer exited with error(s)")
 
-                elif imageTruncated == True:
+                elif imageTruncated:
                     success = False
                     reject = True
                     logging.error("Isolyzer detected truncated ISO image")
@@ -258,7 +259,7 @@ def processDisc(carrierData):
                 logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
                 logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
-        elif carrierInfo["containsData"] == True:
+        elif carrierInfo["containsData"]:
             logging.info('*** Extract data session to ISO ***')
             # Create ISO image of first session
             dirOut = dirDisc
@@ -274,12 +275,12 @@ def processDisc(carrierData):
                 reject = True
                 logging.error("Isobuster exited with error(s)")
 
-            elif isolyzerSuccess == False:
+            elif not isolyzerSuccess:
                 success = False
                 reject = True
                 logging.error("Isolyzer exited with error(s)")
 
-            elif imageTruncated == True:
+            elif imageTruncated:
                 success = False
                 reject = True
                 logging.error("Isolyzer detected truncated ISO image")
@@ -293,14 +294,14 @@ def processDisc(carrierData):
 
         # Generate checksum file
         successChecksum = checksumDirectory(dirOut)
-        
+
         if not successChecksum:
             success = False
             reject = True
             logging.error("Writing of checksum file resulted in an error")
 
         # Unload or reject disc
-        if reject == False:
+        if not reject:
             logging.info('*** Unloading disc ***')
             resultUnload = drivers.unload()
             logging.info(''.join(['unload command: ', resultUnload['cmdStr']]))
@@ -314,10 +315,10 @@ def processDisc(carrierData):
     # Create comma-delimited batch manifest entry for this carrier
 
     # VolumeIdentifier only defined for ISOs, not for pure audio CDs!
-    if discLoaded == True and carrierInfo["containsData"] == True:
+    if discLoaded and carrierInfo["containsData"]:
         try:
             volumeID = resultIsoBuster['volumeIdentifier'].strip()
-        except:
+        except Exception:
             volumeID = ''
     else:
         volumeID = ''
@@ -363,7 +364,11 @@ def processDiscTest(carrierData):
     logging.info(''.join(['Title: ', carrierData['title']]))
     logging.info(''.join(['Volume number: ', carrierData['volumeNo']]))
 
-    dirDisc = os.path.join(config.batchFolder, jobID)
+    # Create dummy carrierInfo dictionary (values are needed for batch manifest)
+    carrierInfo = {}
+    carrierInfo['containsAudio'] = False
+    carrierInfo['containsData'] = False
+    carrierInfo['cdExtra'] = False
 
     success = True
 
@@ -373,6 +378,7 @@ def processDiscTest(carrierData):
     volumeID = 'DUMMY'
 
     # Put all items for batch manifest entry in a list
+
     rowBatchManifest = ([jobID,
                          carrierData['PPN'],
                          carrierData['volumeNo'],
@@ -381,7 +387,8 @@ def processDiscTest(carrierData):
                          volumeID,
                          str(success),
                          str(carrierInfo['containsAudio']),
-                         str(carrierInfo['containsData'])])
+                         str(carrierInfo['containsData']),
+                         str(carrierInfo['cdExtra'])])
 
     # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
 
@@ -402,6 +409,7 @@ def processDiscTest(carrierData):
 
     return success
 
+
 def quitIromlab():
     """Send KeyboardInterrupt after user pressed Exit button"""
     logging.info('*** Quitting because user pressed Exit ***')
@@ -419,7 +427,7 @@ def cdWorker():
     success = True
 
     # Loop periodically scans value of config.batchFolder
-    while config.readyToStart == False:
+    while not config.readyToStart:
         time.sleep(2)
 
     logging.info(''.join(['batchFolder set to ', config.batchFolder]))
@@ -428,7 +436,7 @@ def cdWorker():
     config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
 
     # Write header row if batch manifest doesn't exist already
-    if os.path.isfile(config.batchManifest) == False:
+    if not os.path.isfile(config.batchManifest):
         headerBatchManifest = (['jobID',
                                 'PPN',
                                 'volumeNo',
@@ -465,10 +473,10 @@ def cdWorker():
     endOfBatchFlag = False
 
     # Check if user pressed Exit, and quit if so ...
-    if config.quitFlag == True:
+    if config.quitFlag:
         quitIromlab()
 
-    while endOfBatchFlag == False and config.quitFlag == False:
+    while not endOfBatchFlag and not config.quitFlag:
         time.sleep(2)
 
         # Get directory listing, sorted by creation time
@@ -519,16 +527,16 @@ def cdWorker():
 
                 # Process the carrier
                 success = processDisc(carrierData)
-                #success = processDiscTest(carrierData)
+                # success = processDiscTest(carrierData)
 
-            if success == True and endOfBatchFlag == False:
+            if success and not endOfBatchFlag:
                 # Remove job file
                 os.remove(jobOldest)
-            elif endOfBatchFlag == False:
+            elif not endOfBatchFlag:
                 # Move job file to failed jobs folder
                 baseName = os.path.basename(jobOldest)
                 os.rename(jobOldest, os.path.join(config.jobsFailedFolder, baseName))
 
         # Check if user pressed Exit, and quit if so ...
-        if config.quitFlag == True:
+        if config.quitFlag:
             quitIromlab()

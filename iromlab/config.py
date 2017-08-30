@@ -19,6 +19,7 @@ jobsFolder = ""
 secondsToTimeout = ""
 prefixBatch = ""
 audioFormat = ""
+jobsFailedFolder= ""
 quitFlag = False
 readyToStart = False
 finishedBatch = False
