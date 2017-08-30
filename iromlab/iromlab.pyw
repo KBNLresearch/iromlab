@@ -14,26 +14,22 @@ Research department,  KB / National Library of the Netherlands
 
 """
 
-import site
 import sys
 import os
 import csv
 import imp
-import glob
 import time
 import xml.etree.ElementTree as ETree
 import threading
 import uuid
 import logging
 try:
-    import tkinter as tk #Python 3.x
-    from tkinter import ttk as ttk
+    import tkinter as tk  # Python 3.x
     from tkinter import filedialog as tkFileDialog
     from tkinter import scrolledtext as ScrolledText
     from tkinter import messagebox as tkMessageBox
 except ImportError:
-    import Tkinter as tk # Python 2.x
-    import ttk as ttk
+    import Tkinter as tk  # Python 2.x
     import tkFileDialog
     import ScrolledText
     import tkMessageBox
@@ -61,15 +57,15 @@ class carrierEntry(tk.Frame):
         self.build_gui()
 
     def on_quit(self, event=None):
-        """Wait until the disc that is currently being pocessed has 
+        """Wait until the disc that is currently being pocessed has
         finished, and quit (batch can be resumed by opening it in the File dialog)
         """
         config.quitFlag = True
-        self.bExit.config(state = 'disabled')
-        self.bFinalise.config(state = 'disabled')
+        self.bExit.config(state='disabled')
+        self.bFinalise.config(state='disabled')
         msg = 'User pressed Exit, quitting after current disc has been processed'
         tkMessageBox.showinfo("Info", msg)
-        if config.readyToStart == False:
+        if not config.readyToStart:
             # Wait 2 seconds to avoid race condition
             time.sleep(2)
             msg = 'Quitting because user pressed Exit, click OK to exit'
@@ -115,12 +111,12 @@ class carrierEntry(tk.Frame):
         # Notify user
         msg = 'Created batch ' + batchName
         tkMessageBox.showinfo("Created batch", msg)
- 
+
         # Update state of buttons
-        self.bNew.config(state = 'disabled')
-        self.bOpen.config(state = 'disabled')
-        self.bFinalise.config(state = 'normal')
-        self.submit_button.config(state = 'normal')
+        self.bNew.config(state='disabled')
+        self.bOpen.config(state='disabled')
+        self.bFinalise.config(state='normal')
+        self.submit_button.config(state='normal')
         config.readyToStart = True
 
     def on_open(self, event=None):
@@ -141,10 +137,10 @@ class carrierEntry(tk.Frame):
 
         if config.batchFolder != '':
             # Update state of buttons
-            self.bNew.config(state = 'disabled')
-            self.bOpen.config(state = 'disabled')
-            self.bFinalise.config(state = 'normal')
-            self.submit_button.config(state = 'normal')
+            self.bNew.config(state='disabled')
+            self.bOpen.config(state='disabled')
+            self.bFinalise.config(state='normal')
+            self.submit_button.config(state='normal')
             config.readyToStart = True
 
     def on_finalise(self, event=None):
@@ -152,21 +148,21 @@ class carrierEntry(tk.Frame):
         msg = ("This will finalise the current batch.\n After finalising no further"
                "carriers can be \nadded. Are you really sure you want to do this?")
         if tkMessageBox.askyesno("Confirm", msg):
-            # Create End Of Batch job file; this will tell the main worker processing 
+            # Create End Of Batch job file; this will tell the main worker processing
             # loop to stop
 
-            jobFile = 'eob.txt' 
+            jobFile = 'eob.txt'
             fJob = open(os.path.join(config.jobsFolder, jobFile), "w", encoding="utf-8")
             lineOut = 'EOB\n'
             fJob.write(lineOut)
-            self.bFinalise.config(state = 'disabled')
-            self.bExit.config(state = 'disabled')
-            self.submit_button.config(state = 'disabled')
+            self.bFinalise.config(state='disabled')
+            self.bExit.config(state='disabled')
+            self.submit_button.config(state='disabled')
 
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
 
-        # Fetch entered values (strip any leading / tralue whitespace characters)   
+        # Fetch entered values (strip any leading / tralue whitespace characters)
         catid = self.catid_entry.get().strip()
         volumeNo = self.volumeNo_entry.get().strip()
         carrierTypeCode = self.v.get()
@@ -178,17 +174,17 @@ class carrierEntry(tk.Frame):
 
         # Lookup catalog identifier
         sruSearchString = '"PPN=' + str(catid) + '"'
-        response = sru.search(sruSearchString,"GGC")
+        response = sru.search(sruSearchString, "GGC")
 
-        if response == False:
+        if not response:
             noGGCRecords = 0
         else:
             noGGCRecords = response.sru.nr_of_records
 
-        if config.readyToStart == False:
+        if not config.readyToStart:
             msg = "You must first create a batch or open an existing batch"
             tkMessageBox.showerror("Not ready", msg)
-        elif representsInt(volumeNo) == False:
+        elif not representsInt(volumeNo):
             msg = "Volume number must be integer value"
             tkMessageBox.showerror("Type mismatch", msg)
         elif int(volumeNo) < 1:
@@ -196,8 +192,8 @@ class carrierEntry(tk.Frame):
             tkMessageBox.showerror("Value error", msg)
         elif noGGCRecords == 0:
             # No matching record found
-            msg = ("Search for PPN=" + str(catid) + " returned " + \
-                "no matching record in catalog!")
+            msg = ("Search for PPN=" + str(catid) + " returned " +
+                   "no matching record in catalog!")
             tkMessageBox.showerror("PPN not found", msg)
         else:
             # Matching record found. Display title and ask for confirmation
@@ -221,15 +217,15 @@ class carrierEntry(tk.Frame):
 
                 # Create unique identifier for this job (UUID, based on host ID and current time)
                 jobID = str(uuid.uuid1())
-                # Create and populate Job file                      
+                # Create and populate Job file
                 jobFile = os.path.join(config.jobsFolder, jobID + ".txt")
 
                 if sys.version.startswith('3'):
                     # Py3: csv.reader expects file opened in text mode
-                    fJob = open(jobFile,"w", encoding="utf-8")
+                    fJob = open(jobFile, "w", encoding="utf-8")
                 elif sys.version.startswith('2'):
                     # Py2: csv.reader expects file opened in binary mode
-                    fJob = open(jobFile,"wb")
+                    fJob = open(jobFile, "wb")
 
                 # Create CSV writer object
                 jobCSV = csv.writer(fJob, lineterminator='\n')
@@ -240,24 +236,22 @@ class carrierEntry(tk.Frame):
                 # Write row to job and close file
                 jobCSV.writerow(rowItems)
                 fJob.close()
-            
-                # Reset entry fields        
+
+                # Reset entry fields
                 self.catid_entry.delete(0, tk.END)
                 self.volumeNo_entry.delete(0, tk.END)
 
-                
     def setupLogging(self, handler):
-        """Set up logging-related settings""" 
+        """Set up logging-related settings"""
         logFile = os.path.join(config.batchFolder, 'batch.log')
 
-        logging.basicConfig(handlers=[logging.FileHandler(logFile, 'w', 'utf-8')], 
-                    level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+        logging.basicConfig(handlers=[logging.FileHandler(logFile, 'w', 'utf-8')],
+                            level=logging.INFO,
+                            format='%(asctime)s - %(levelname)s - %(message)s')
 
         # Add the handler to logger
         logger = logging.getLogger()
         logger.addHandler(handler)
-
 
     def build_gui(self):
         """Build the GUI"""
@@ -269,30 +263,48 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(2, weight=1, uniform='a')
         self.grid_columnconfigure(3, weight=1, uniform='a')
 
-        # Batch toolbar     
-        self.bNew = tk.Button(self, text="New", height=2, width=4, underline=0, command=self.on_create)
+        # Batch toolbar
+        self.bNew = tk.Button(self,
+                              text="New",
+                              height=2,
+                              width=4,
+                              underline=0,
+                              command=self.on_create)
         self.bNew.grid(column=0, row=1, sticky='ew')
-        self.bOpen = tk.Button(self, text="Open", height=2, width=4, underline=0, command=self.on_open)
+        self.bOpen = tk.Button(self,
+                               text="Open",
+                               height=2,
+                               width=4,
+                               underline=0,
+                               command=self.on_open)
         self.bOpen.grid(column=1, row=1, sticky='ew')
-        self.bFinalise = tk.Button(self, text="Finalize", height=2, width=4, underline=0, command=self.on_finalise)
+        self.bFinalise = tk.Button(self,
+                                   text="Finalize",
+                                   height=2,
+                                   width=4,
+                                   underline=0,
+                                   command=self.on_finalise)
         self.bFinalise.grid(column=2, row=1, sticky='ew')
-        self.bExit = tk.Button(self, text="Exit", height=2, width=4, underline=0, command=self.on_quit)
+        self.bExit = tk.Button(self,
+                               text="Exit",
+                               height=2,
+                               width=4,
+                               underline=0,
+                               command=self.on_quit)
         self.bExit.grid(column=3, row=1, sticky='ew')
 
         # Disable finalise button on startup
-        self.bFinalise.config(state = 'disabled')
-    
+        self.bFinalise.config(state='disabled')
+
         # Entry elements for each carrier
 
-        # Catalog ID        
-        tk.Label(self, text='PPN').grid(column=0, row=4,
-                sticky='w')
+        # Catalog ID
+        tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
         self.catid_entry = tk.Entry(self, width=12)
-        self.catid_entry.grid(column=1, row = 4, sticky='w')
+        self.catid_entry.grid(column=1, row=4, sticky='w')
 
         # Volume number
-        tk.Label(self, text='Volume number').grid(column=0, row=5,
-                sticky='w')
+        tk.Label(self, text='Volume number').grid(column=0, row=5, sticky='w')
         self.volumeNo_entry = tk.Entry(self, width=5)
         self.volumeNo_entry.grid(column=1, row=5, sticky='w')
 
@@ -300,37 +312,45 @@ class carrierEntry(tk.Frame):
         self.v = tk.IntVar()
         self.v.set(1)
 
-        # List with all possible carrier types, corresponding button codes, keyboard shortcut character
-        # (keyboard shortcuts not actually used yet)
+        # List with all possible carrier types, corresponding button codes, keyboard
+        # shortcut character (keyboard shortcuts not actually used yet)
         self.carrierTypes = [
-            ['cd-rom',1,0],
-            ['cd-audio',2,3],
-            ['dvd-rom',3,0],
-            ['dvd-video',4,4]
-        ]        
+            ['cd-rom', 1, 0],
+            ['cd-audio', 2, 3],
+            ['dvd-rom', 3, 0],
+            ['dvd-video', 4, 4]
+        ]
 
-        tk.Label(self, text='Carrier type').grid(column=0, row=6,
-                sticky='w', columnspan=4)
+        tk.Label(self, text='Carrier type').grid(column=0, row=6, sticky='w', columnspan=4)
 
         rowValue = 6
 
         for carrierType in self.carrierTypes:
-            self.rb = tk.Radiobutton(self, text=carrierType[0], variable=self.v, value=carrierType[1])
+            self.rb = tk.Radiobutton(self,
+                                     text=carrierType[0],
+                                     variable=self.v,
+                                     value=carrierType[1])
             self.rb.grid(column=1, row=rowValue, sticky='w')
             rowValue += 1
 
-        self.submit_button = tk.Button(self, text='Submit', height=2, width=4, underline=0, bg = '#ded4db', state = 'disabled',
-                command=self.on_submit)
+        self.submit_button = tk.Button(self,
+                                       text='Submit',
+                                       height=2,
+                                       width=4,
+                                       underline=0,
+                                       bg='#ded4db',
+                                       state='disabled',
+                                       command=self.on_submit)
         self.submit_button.grid(column=1, row=13, sticky='ew')
 
         # Add ScrolledText widget to display logging info
-        st = ScrolledText.ScrolledText(self, state='disabled', height = 15)
+        st = ScrolledText.ScrolledText(self, state='disabled', height=15)
         st.configure(font='TkFixedFont')
         st.grid(column=0, row=15, sticky='w', columnspan=4)
 
         # Create textLogger
         self.text_handler = TextHandler(st)
-                  
+
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
         self.root.bind_all('<Control-Key-o>', self.on_open)
@@ -351,7 +371,7 @@ class TextHandler(logging.Handler):
     """This class allows you to log to a Tkinter Text or ScrolledText widget
     Adapted from: https://gist.github.com/moshekaplan/c425f861de7bbf28ef06
     """
-    
+
     def __init__(self, text):
         """Run the regular Handler __init__"""
         logging.Handler.__init__(self)
@@ -361,7 +381,9 @@ class TextHandler(logging.Handler):
     def emit(self, record):
         """Add a record to the widget"""
         msg = self.format(record)
+
         def append():
+            """Append text"""
             self.text.configure(state='normal')
             self.text.insert(tk.END, msg + '\n')
             self.text.configure(state='disabled')
@@ -374,27 +396,25 @@ class TextHandler(logging.Handler):
 def representsInt(s):
     """Return True if s is an integer, False otherwise"""
     # Source: http://stackoverflow.com/a/1267145
-    try: 
+    try:
         int(s)
         return True
     except ValueError:
         return False
 
-        
+
 def checkFileExists(fileIn):
     """Check if file exists and exit if not"""
-    if os.path.isfile(fileIn) == False:
+    if not os.path.isfile(fileIn):
         msg = "file " + fileIn + " does not exist!"
-        #errorExit(msg)
         tkMessageBox.showerror("Error", msg)
         sys.exit()
 
 
 def checkDirExists(dirIn):
     """Check if directory exists and exit if not"""
-    if os.path.isdir(dirIn) == False:
+    if not os.path.isdir(dirIn):
         msg = "directory " + dirIn + " does not exist!"
-        #errorExit(msg)
         tkMessageBox.showerror("Error", msg)
         sys.exit()
 
@@ -404,12 +424,12 @@ def errorExit(error):
     tkMessageBox.showerror("Error", error)
     sys.exit()
 
-    
+
 def main_is_frozen():
     """Return True if application is frozen (Py2Exe), and False otherwise"""
-    return (hasattr(sys, "frozen") or # new py2exe
-            hasattr(sys, "importers") # old py2exe
-            or imp.is_frozen("__main__")) # tools/freeze
+    return (hasattr(sys, "frozen") or  # new py2exe
+            hasattr(sys, "importers") or  # old py2exe
+            imp.is_frozen("__main__"))  # tools/freeze
 
 
 def get_main_dir():
@@ -418,14 +438,15 @@ def get_main_dir():
         return os.path.dirname(sys.executable)
     return os.path.dirname(sys.argv[0])
 
+
 def findElementText(elt, elementPath):
     """Returns element text if it exists, errorExit if it doesn't exist"""
     elementText = elt.findtext(elementPath)
-    if elementText == None:
+    if elementText is None:
         msg = 'no element found at ' + elementPath
         errorExit(msg)
     else:
-        return(elementText)
+        return elementText
 
 
 def getConfiguration():
@@ -439,19 +460,19 @@ def getConfiguration():
     # Locate Windows user directory
     userDir = os.path.expanduser('~')
     # Config directory
-    configDirUser = os.path.join(userDir,'iromlab')
-    configFileUser = os.path.join(configDirUser,'config.xml')    
+    configDirUser = os.path.join(userDir, 'iromlab')
+    configFileUser = os.path.join(configDirUser, 'config.xml')
     # Tools directory
-    toolsDirUser = os.path.join(configDirUser,'tools')
+    toolsDirUser = os.path.join(configDirUser, 'tools')
 
     # Check if user config file exists and exit if not
-    if os.path.isfile(configFileUser) == False:
+    if not os.path.isfile(configFileUser):
         msg = 'configuration file not found'
         errorExit(msg)
 
     # Read contents to bytes object
     try:
-        fConfig = open(configFileUser,"rb")
+        fConfig = open(configFileUser, "rb")
         configBytes = fConfig.read()
         fConfig.close()
     except IOError:
@@ -495,9 +516,9 @@ def getConfiguration():
     config.dBpowerampConsoleRipExe = os.path.normpath(config.dBpowerampConsoleRipExe)
 
     # Paths to pre-packaged tools
-    config.shntoolExe = os.path.join(toolsDirUser, 'shntool','shntool.exe')
-    config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64','flac.exe')
-    config.cdInfoExe = os.path.join(toolsDirUser, 'libcdio', 'win64','cd-info.exe')
+    config.shntoolExe = os.path.join(toolsDirUser, 'shntool', 'shntool.exe')
+    config.flacExe = os.path.join(toolsDirUser, 'flac', 'win64', 'flac.exe')
+    config.cdInfoExe = os.path.join(toolsDirUser, 'libcdio', 'win64', 'cd-info.exe')
 
     # Check if all files and directories exist, and exit if not
     checkDirExists(config.rootDir)
@@ -512,7 +533,7 @@ def getConfiguration():
     checkFileExists(config.flacExe)
     checkFileExists(config.cdInfoExe)
 
-    # Check that cdDriveLetter points to an existing optical drive  
+    # Check that cdDriveLetter points to an existing optical drive
     resultGetDrives = cdinfo.getDrives()
     cdDrives = resultGetDrives["drives"]
     if config.cdDriveLetter not in cdDrives:
@@ -524,10 +545,11 @@ def getConfiguration():
         msg = '"' + config.audioFormat + '" is not a valid audio format (expected "wav" or "flac")!'
         errorExit(msg)
 
+
 def main():
     """Main function"""
 
-    try:           
+    try:
         root = tk.Tk()
         carrierEntry(root)
 
@@ -537,11 +559,11 @@ def main():
         root.mainloop()
         t1.join()
     except KeyboardInterrupt:
-        if config.finishedBatch == True:
+        if config.finishedBatch:
             # Batch finished: notify user
             msg = 'Completed processing this batch, click OK to exit'
             tkMessageBox.showinfo("Finished", msg)
-        elif config.quitFlag == True:
+        elif config.quitFlag:
             # User pressed exit; notify user
             msg = 'Quitting because user pressed Exit, click OK to exit'
             tkMessageBox.showinfo("Exit", msg)
