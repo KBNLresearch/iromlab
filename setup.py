@@ -207,10 +207,10 @@ setup(name='iromlab',
           'Programming Language :: Python :: 3',]
      )
 
-print("TEST Exiting setup)
+print("TEST Exiting setup")
 print("TEST sys.argv[1] = " + sys.argv[1])
 print("TEST sys.platform = " +sys.platform)
 
 if sys.argv[1] == 'install' and sys.platform == 'win32':
-    print("TEST entering post_install)
+    print("TEST entering post_install")
     post_install()
