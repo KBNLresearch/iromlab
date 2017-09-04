@@ -169,12 +169,14 @@ INSTALL_REQUIRES = [
     'lxml',
     'pypiwin32'
 ]
+PYTHON_REQUIRES = '>=3.2'
 
 setup(name='iromlab',
       packages=find_packages(),
       version=find_version('iromlab', 'iromlab.pyw'),
       license='Apache License 2.0',
       install_requires=INSTALL_REQUIRES,
+      python_requires=PYTHON_REQUIRES,
       platforms=['Windows'],
       description='Image and Rip Optical Media Like A Boss',
       long_description='Loader software for automated imaging of optical media with Nimbie \
@@ -202,10 +204,7 @@ setup(name='iromlab',
       ]},
       classifiers=[
           'Environment :: Console',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3',
-      ]
+          'Programming Language :: Python :: 3',]
      )
 
 if sys.argv[1] == 'install' and sys.platform == 'win32':
