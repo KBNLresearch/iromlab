@@ -39,7 +39,7 @@ from . import cdworker
 from . import cdinfo
 
 
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 
 
 class carrierEntry(tk.Frame):
