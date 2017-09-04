@@ -1,4 +1,5 @@
-import sys
+#! /usr/bin/env python
+"""Shared configuration constants"""
 
 cdDriveLetter = ""
 cdDeviceName = ""
@@ -12,14 +13,14 @@ dBpowerampConsoleRipExe = ""
 shntoolExe = ""
 flacExe = ""
 tempDir = ""
-rootDir= ""
+rootDir = ""
 batchFolder = ""
 batchManifest = ""
 jobsFolder = ""
 secondsToTimeout = ""
 prefixBatch = ""
 audioFormat = ""
-jobsFailedFolder= ""
+jobsFailedFolder = ""
 quitFlag = False
 readyToStart = False
 finishedBatch = False
