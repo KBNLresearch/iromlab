@@ -39,7 +39,7 @@ from . import cdworker
 from . import cdinfo
 
 
-__version__ = '0.7.2'
+__version__ = '0.7.3'
 
 
 class carrierEntry(tk.Frame):
@@ -459,11 +459,13 @@ def getConfiguration():
     rootPath = os.path.abspath(get_main_dir())
     # Locate Windows user directory
     userDir = os.path.expanduser('~')
+    # Locate package directory
+    packageDir = os.path.dirname(os.path.abspath(__file__))
     # Config directory
     configDirUser = os.path.join(userDir, 'iromlab')
     configFileUser = os.path.join(configDirUser, 'config.xml')
     # Tools directory
-    toolsDirUser = os.path.join(configDirUser, 'tools')
+    toolsDirUser = os.path.join(packageDir, 'tools')
 
     # Check if user config file exists and exit if not
     if not os.path.isfile(configFileUser):
