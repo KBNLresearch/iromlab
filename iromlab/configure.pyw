@@ -77,6 +77,8 @@ def post_install():
         if os.path.isfile(configFilePackage):
             try:
                 copyfile(configFilePackage, configFileUser)
+                msg = 'Copied configuration file to ' + configFileUser
+                tkMessageBox.showinfo("Info", msg)
             except IOError:
                 msg = 'could not copy configuration file to ' + configFileUser
                 errorExit(msg)
@@ -109,6 +111,9 @@ def post_install():
     shortcut.WorkingDirectory = scriptsDir
     shortcut.IconLocation = target
     shortcut.save()
+    
+    msg = 'Created desktop shortcut'
+    tkMessageBox.showinfo("Info", msg)
 
 def main():
     """Main function"""
