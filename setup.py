@@ -103,39 +103,7 @@ def post_install():
             msg = 'no configuration file found in package'
             errorExit(msg)
 
-    # Part 2: install tools
-
-    # Tools directory
-    toolsDirUser = os.path.join(configDirUser, 'tools')
-
-    if not os.path.isdir(toolsDirUser):
-        # No tools directory in user dir, so copy it from location in source or package. Location is
-        # /iromlab/conf/tools in 'site-packages' directory (if installed with pip)
-
-        # Locate site-packages dir (this returns multiple entries)
-        sitePackageDirs = site.getsitepackages()
-
-        # Assumptions: site package dir is called 'site-packages' and is unique (?)
-        for directory in sitePackageDirs:
-            if 'site-packages'in directory:
-                sitePackageDir = directory
-
-        # Construct path to tools dir
-        toolsDirPackage = os.path.join(sitePackageDir, 'iromlab', 'tools')
-
-        # If package tools dir exists, copy it to the user directory
-        if os.path.isdir(toolsDirPackage):
-            try:
-                copytree(toolsDirPackage, toolsDirUser)
-            except IOError:
-                msg = 'could not copy tools directory to ' + toolsDirUser
-                errorExit(msg)
-        # This should never happen but who knows ...
-        else:
-            msg = 'no tools directory found in package'
-            errorExit(msg)
-
-    # Part 3: create Desktop shortcut
+    # Part 2: create Desktop shortcut
 
     # Scripts directory (location of launcher script)
     scriptsDir = sysconfig.get_path('scripts')
