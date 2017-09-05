@@ -63,7 +63,7 @@ setup(name='iromlab',
       zip_safe=False,
       entry_points={'gui_scripts': [
           'iromlab = iromlab.iromlab:main',
-          'iromlab-configure = iromlab-configure:main',
+          'iromlab-configure = iromlab.configure:main',
       ]},
       classifiers=[
           'Programming Language :: Python :: 3',]
