@@ -19,11 +19,25 @@ The above steps will install Iromlab and all required libraries. It also install
 * [shntool](http://www.etree.org/shnutils/shntool/) - used to verify the integrity of created WAVE files.
 * [flac](https://xiph.org/flac/) - used to verify the integrity of created WAVE files.
 
-Finally it also creates a shortcut to the main Iromlab application on the Windows Desktop.
-        
 ## Configuration
 
-Before Iromlab is ready to use it is necessary to apply some configuration settings. You can do this by editing a configuration file. To find it you first need to locate the Windows User Profile directory[^1]. Open a Command Prompt window and type:
+Before Iromlab is ready for use you need to configure it. As a first step, locate the *iromlab-configure.exe* application which you can find directly under the *Scripts* directory of the *Python* installation folder:
+
+![](./img/iromlab-configure-location.png)
+
+Run the configuration application by double-clicking on it. The application will create a configuration directory in your Windows user directory, copy a default configuration file to it, and create a shortcut to the main Iromlab application on the Windows Desktop [^1]. If all goes well the following window appears:
+
+![](./img/iromlab-configure-1.png) 
+
+Click on the *OK* button on the messagebox to close the configuration application:
+
+![](./img/iromlab-configure-2.png) 
+
+The automatically generated configuration file needs some further manual editing, which is explained in the sections below.
+
+## Finding the configuration file
+
+Locate the Windows User Profile directory[^2]. Open a Command Prompt window and type:
 
     set USERPROFILE
 
@@ -39,7 +53,9 @@ Open the folder, and you will see this:
 
 ![](./img/userDir2.png)
 
-Now open *config.xml* in a text editor (e.g. Notepad), or alternatively use a dedicated XML editor. Carefully go through all the variables (which are defined as XML elements), and modify them if necessary. Here is an explanation of all variables.
+## Editing the configuration file
+
+Now open the configuration file *config.xml* in a text editor (e.g. Notepad), or alternatively use a dedicated XML editor. Carefully go through all the variables (which are defined as XML elements), and modify them if necessary. Here is an explanation of all variables.
 
 ### cdDriveLetter
 
@@ -111,4 +127,6 @@ If all went well, Iromlab will now be ready to use!
 |:--|
 |[Back to Setup Guide](./setupGuide.md)|
 
-[^1]: To be more precise: the profile of the user that installed Iromlab (in case of multiple user profiles)
+[^1]: This will *not* overwrite any pre-existing configuration files.
+
+[^2]: To be more precise: the profile of the user that installed Iromlab (in case of multiple user profiles)
