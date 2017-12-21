@@ -457,8 +457,10 @@ def getConfiguration():
 
     # From where is this script executed?)
     rootPath = os.path.abspath(get_main_dir())
-    # Locate Windows user directory
-    userDir = os.path.expanduser('~')
+    # Locate Windows profile directory
+    # userDir = os.path.expanduser('~') 
+    userDir = os.environ['USERPROFILE']
+    
     # Locate package directory
     packageDir = os.path.dirname(os.path.abspath(__file__))
     # Config directory
@@ -469,6 +471,7 @@ def getConfiguration():
 
     # Check if user config file exists and exit if not
     if not os.path.isfile(configFileUser):
+        print(configFileUser)
         msg = 'configuration file not found'
         errorExit(msg)
 

@@ -26,6 +26,7 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     args.append("/nosplash")
     args.append("".join(["/s:", str(session)]))
     args.append("".join(["/l:", logFile]))
+    #args.append("".join(["/l:txt:","status:%%u"]))
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
