@@ -503,6 +503,7 @@ def getConfiguration():
     config.secondsToTimeout = findElementText(configElt, './config/secondsToTimeout')
     config.prefixBatch = findElementText(configElt, './config/prefixBatch')
     config.audioFormat = findElementText(configElt, './config/audioFormat')
+    config.reportFormatString = findElementText(configElt, './config/reportFormatString')
     config.prebatchExe = findElementText(configElt, './config/prebatchExe')
     config.loadExe = findElementText(configElt, './config/loadExe')
     config.unloadExe = findElementText(configElt, './config/unloadExe')

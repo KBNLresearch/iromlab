@@ -3,6 +3,7 @@
 
 cdDriveLetter = ""
 cdDeviceName = ""
+reportFormatString = ""
 cdInfoExe = ""
 prebatchExe = ""
 loadExe = ""
