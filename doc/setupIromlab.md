@@ -102,7 +102,7 @@ Defines the maximum number of seconds that Iromlab will wait while trying to loa
 
 ### reportFormatString
 
-Defines the format of the output report that is generated  by IsoBuster. The format is described in the [IsoBuster documentation](ttps://www.isobuster.com/tips/build_custom_lists_and_reports_via_gui_or_cmd). By default reports are generated in [Digital Forensics XML (DFXML)](http://www.forensicswiki.org/wiki/Category:Digital_Forensics_XML) format. Note that the IsoBuster format string must be wrapped inside a [CDATA section](https://en.wikipedia.org/wiki/CDATA).
+Defines the format of the output report that is generated  by IsoBuster. The format is described in the [IsoBuster documentation](https://www.isobuster.com/tips/build_custom_lists_and_reports_via_gui_or_cmd). By default reports are generated in [Digital Forensics XML (DFXML)](http://www.forensicswiki.org/wiki/Category:Digital_Forensics_XML) format. Note that the IsoBuster format string must be wrapped inside a [CDATA section](https://en.wikipedia.org/wiki/CDATA).
     
 ### Location of disc robot drivers
 
