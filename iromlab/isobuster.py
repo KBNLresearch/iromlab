@@ -30,7 +30,7 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     args.append("/nosplash")
     args.append("".join(["/s:", str(session)]))
     args.append("".join(["/l:", logFile]))
-    args.append("".join(["/tree:all:", reportFile, '?"', reportFormatString, '"']))
+    args.append("".join(["/tree:all:", reportFile, '?', reportFormatString]))
 
     # Command line as string (used for logging purposes only)
     cmdStr = " ".join(args)
