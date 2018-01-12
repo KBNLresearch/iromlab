@@ -301,11 +301,18 @@ class carrierEntry(tk.Frame):
         self.bFinalise.config(state='disabled')
 
         # Entry elements for each carrier
+        print(config.disablePPNLookup)
 
-        # Catalog ID
-        tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
-        self.catid_entry = tk.Entry(self, width=12)
-        self.catid_entry.grid(column=1, row=4, sticky='w')
+        if config.disablePPNLookup == "False":
+            # Catalog ID
+            tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
+            self.catid_entry = tk.Entry(self, width=20)
+            self.catid_entry.grid(column=1, row=4, sticky='w')
+        else:
+            # Title field
+            tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
+            self.title_entry = tk.Entry(self, width=60)
+            self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
 
         # Volume number
         tk.Label(self, text='Volume number').grid(column=0, row=5, sticky='w')
@@ -503,6 +510,7 @@ def getConfiguration():
     config.rootDir = findElementText(configElt, './config/rootDir')
     config.tempDir = findElementText(configElt, './config/tempDir')
     config.secondsToTimeout = findElementText(configElt, './config/secondsToTimeout')
+    config.disablePPNLookup = findElementText(configElt, './config/disablePPNLookup')
     config.prefixBatch = findElementText(configElt, './config/prefixBatch')
     config.audioFormat = findElementText(configElt, './config/audioFormat')
     config.reportFormatString = findElementText(configElt, './config/reportFormatString')
