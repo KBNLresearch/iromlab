@@ -163,7 +163,11 @@ class carrierEntry(tk.Frame):
         """Process one record and add it to the queue after user pressed submit button"""
 
         # Fetch entered values (strip any leading / tralue whitespace characters)
-        catid = self.catid_entry.get().strip()
+        if config.enablePPNLookup:
+            catid = self.catid_entry.get().strip()
+        else:
+            catid = ""
+            title = self.title_entry.get().strip()
         volumeNo = self.volumeNo_entry.get().strip()
         carrierTypeCode = self.v.get()
 
@@ -172,14 +176,17 @@ class carrierEntry(tk.Frame):
             if i[1] == carrierTypeCode:
                 carrierType = i[0]
 
-        # Lookup catalog identifier
-        sruSearchString = '"PPN=' + str(catid) + '"'
-        response = sru.search(sruSearchString, "GGC")
+        if config.enablePPNLookup:
+            # Lookup catalog identifier
+            sruSearchString = '"PPN=' + str(catid) + '"'
+            response = sru.search(sruSearchString, "GGC")
 
-        if not response:
-            noGGCRecords = 0
+            if not response:
+                noGGCRecords = 0
+            else:
+                noGGCRecords = response.sru.nr_of_records
         else:
-            noGGCRecords = response.sru.nr_of_records
+            noGGCRecords = 1
 
         if not config.readyToStart:
             msg = "You must first create a batch or open an existing batch"
@@ -196,17 +203,18 @@ class carrierEntry(tk.Frame):
                    "no matching record in catalog!")
             tkMessageBox.showerror("PPN not found", msg)
         else:
-            # Matching record found. Display title and ask for confirmation
-            record = next(response.records)
+            if config.enablePPNLookup:
+                # Matching record found. Display title and ask for confirmation
+                record = next(response.records)
 
-            # Title can be in either title element OR in title element with maintitle attribute
-            titlesMain = record.titlesMain
-            titles = record.titles
+                # Title can be in either title element OR in title element with maintitle attribute
+                titlesMain = record.titlesMain
+                titles = record.titles
 
-            if titlesMain != []:
-                title = titlesMain[0]
-            else:
-                title = titles[0]
+                if titlesMain != []:
+                    title = titlesMain[0]
+                else:
+                    title = titles[0]
 
             msg = "Found title:\n\n'" + title + "'.\n\n Is this correct?"
             if tkMessageBox.askyesno("Confirm", msg):
@@ -238,7 +246,10 @@ class carrierEntry(tk.Frame):
                 fJob.close()
 
                 # Reset entry fields
-                self.catid_entry.delete(0, tk.END)
+                if config.enablePPNLookup:
+                    self.catid_entry.delete(0, tk.END)
+                else:
+                    self.title_entry.delete(0, tk.END)
                 self.volumeNo_entry.delete(0, tk.END)
 
     def setupLogging(self, handler):
