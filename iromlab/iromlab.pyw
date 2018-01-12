@@ -301,18 +301,17 @@ class carrierEntry(tk.Frame):
         self.bFinalise.config(state='disabled')
 
         # Entry elements for each carrier
-        print(config.disablePPNLookup)
 
-        if config.disablePPNLookup:
-            # Title field
-            tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
-            self.title_entry = tk.Entry(self, width=60)
-            self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
-        else:
-            # Catalog ID
+        if config.enablePPNLookup:
+            # Catalog ID (PPN)
             tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
             self.catid_entry = tk.Entry(self, width=20)
             self.catid_entry.grid(column=1, row=4, sticky='w')
+        else:
+            # PPN lookup disabled, so present Title entry field
+            tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
+            self.title_entry = tk.Entry(self, width=60)
+            self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
 
         # Volume number
         tk.Label(self, text='Volume number').grid(column=0, row=5, sticky='w')
@@ -519,10 +518,10 @@ def getConfiguration():
     config.rejectExe = findElementText(configElt, './config/rejectExe')
     config.isoBusterExe = findElementText(configElt, './config/isoBusterExe')
     config.dBpowerampConsoleRipExe = findElementText(configElt, './config/dBpowerampConsoleRipExe')
-    if findElementText(configElt, './config/disablePPNLookup') == "True":
-        config.disablePPNLookup = True
+    if findElementText(configElt, './config/enablePPNLookup') == "True":
+        config.enablePPNLookup = True
     else:
-        config.disablePPNLookup = False
+        config.enablePPNLookup = False
 
     # Normalise all file paths
     config.rootDir = os.path.normpath(config.rootDir)
