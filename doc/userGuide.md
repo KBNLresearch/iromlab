@@ -32,7 +32,7 @@ The batch name is automatically generated. It contains of a prefix (defined by t
 
 ## Process a disc
 
-Now let's process a disc. We'll assume here that the disc you're using is part of the KB collection, and has a known PPN identifier associated with it. In this example we'll assume we're using the CD-ROM that is supplemental to the book "(Bijna) alles over bestandsformaten". Its catalogue record can be found here:
+Now let's process a disc. We'll assume here that the *enablePPNLookup* flag in the configuration file is set to *True*: the disc is part of the KB collection, and has a known PPN identifier associated with it. In this example we'll assume we're using the CD-ROM that is supplemental to the book "(Bijna) alles over bestandsformaten". Its catalogue record can be found here:
 
 <http://opc4.kb.nl/DB=1/PPN?PPN=155658050>
 
@@ -114,19 +114,29 @@ It is absolutely vital that Iromlab's job queue and the "physical" queue (i.e. t
 
 It's probably impossible to eliminate synchronisation errors altogether. Since batches with synchronisation errors have to be re-processed from scratch, it is a good idea to limit the size of a batch somewhat. For example, in case of a synchronisation error in a batch with hundreds of discs that took a whole day to create, a whole day's work will have to be re-done. For a smaller batch that only took two hours, much less time will be lost.  
 
+## Processing discs that are not part of the KB collection
+
+For discs that are not part of the KB collection, it is recommended to set the *enablePPNLookup* flag in Iromlab's configuration file to *False*:
+
+    <enablePPNLookup>False</enablePPNLookup>
+
+With this setting, the *PPN* widget in the Iromlab interface is replaced by a *Title* entry widget. You can use it to manually enter a title (or other description) for each disc:
+
+![](./img/iromTitlewidget.png)
+
 ## The batch manifest
 
 The batch manifest is a comma-delimited text file named *manifest.csv* which is located at the root of a batch. It contains all information that is needed to process the batch into ingest-ready Submission Information Packages further down the processing chain (using [omSipCreator](https://github.com/KBNLresearch/omSipCreator)). For each processed disc, it contains the following fields:
 
 1. *jobID* - internal carrier-level identifier. The image file(s) of this disc are stored in an eponymous directory within the batch.
-2. *PPN* - identifier of the physical item in the KB Collection to which this disc belongs. For the KB case this is the PPN identifier in the KB catalogue (GGC).
+2. *PPN* - identifier of the physical item in the KB Collection to which this disc belongs. For the KB case this is the PPN identifier in the KB catalogue (GGC). If *enablePPNLookup* is set to *False*, it will be an empty (zero-length) string.
 3. *volumeNo* - for intellectual entities that span multiple discs, this defines the volume number (1 for single-volume items). Values must be unique within each *carrierType* (see below)  
 4. *carrierType* - code that specifies the disc type. Currently the following values are permitted:
     - cd-rom
     - dvd-rom
     - cd-audio
     - dvd-video
-5. *title* - text string with the title of the disc (or the publication it is part of).
+5. *title* - text string with the title of the disc (or the publication it is part of). If *enablePPNLookup* is *True* the title field is extracted from the KB catalogue record. If *enablePPNLookup* is *False* the manually entered *Title* value is used.
 6. *volumeID* - text string, extracted from Primary Volume descriptor, empty if cd-audio.
 7. *success* - True/False flag that indicates status of *iromlab*'s imaging process. 
 8. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   

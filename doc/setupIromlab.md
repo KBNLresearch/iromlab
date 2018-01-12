@@ -75,7 +75,6 @@ This defines the root directory where Iromlab will write its data. Iromlab outpu
 
     <rootDir>E:\nimbieTest</rootDir>
 
-
 ### tempDir
 
 This is the directory that is used for writing temporary files. It must be an existing directory; in most cases you can use the default value (*C:\Temp*). Example:
@@ -99,6 +98,18 @@ This defines the audio ripping format. Permitted values are  *wav* or *flac*. Th
 Defines the maximum number of seconds that Iromlab will wait while trying to load a new disc. This will prevent iromlab from entering an infinite loop if e.g. a disc cannot be loaded properly because its is badly damaged.
 
     <secondsToTimeout>20</secondsToTimeout>
+
+### enablePPNLookup
+
+Flag that controls whether PPN lookup is enabled. If set to *True*, the Iromlab interface contains a widget for entering a *PPN* identifier. After submitting, Iromlab then performs a lookup on the PPN in the KB catalogue, and automatically extracts the title of the corresponding entry (which is then added to the batch manifest). If set to *False*, the Iromlab interface contains a widget in which an operator can manually enter a *Title* string; the entered value is written to the batch manifest. In this case no PPN lookup is performed, and the PPN-value in the batch manifest will be a zero-length string.
+
+Allowed values:
+
+    <enablePPNLookup>True</enablePPNLookup>
+
+and:
+
+    <enablePPNLookup>False</enablePPNLookup>
 
 ### reportFormatString
 
