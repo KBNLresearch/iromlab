@@ -255,6 +255,10 @@ class carrierEntry(tk.Frame):
 
     def build_gui(self):
         """Build the GUI"""
+        
+        # Read configuration file
+        getConfiguration()
+        
         self.root.title('iromlab')
         self.root.option_add('*tearOff', 'FALSE')
         self.grid(column=0, row=0, sticky='ew')
@@ -363,8 +367,6 @@ class carrierEntry(tk.Frame):
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
 
-        # Read configuration file
-        getConfiguration()
 
 
 class TextHandler(logging.Handler):
