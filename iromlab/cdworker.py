@@ -293,6 +293,7 @@ def processDisc(carrierData):
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
         # Generate checksum file
+        logging.info('*** Computing checksums ***')
         successChecksum = checksumDirectory(dirOut)
 
         if not successChecksum:
