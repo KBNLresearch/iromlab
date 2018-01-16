@@ -245,11 +245,13 @@ class carrierEntry(tk.Frame):
                 jobCSV.writerow(rowItems)
                 fJob.close()
 
-                # Reset entry fields
+                # Reset entry fields and set focus on PPN / Title field
                 if config.enablePPNLookup:
                     self.catid_entry.delete(0, tk.END)
+                    self.catid_entry.focus_set()
                 else:
                     self.title_entry.delete(0, tk.END)
+                    self.title_entry.focus_set()
                 self.volumeNo_entry.delete(0, tk.END)
 
     def setupLogging(self, handler):
