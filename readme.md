@@ -36,7 +36,7 @@ Iromlab was created to be used in conjuction with Acronova Nimbie disc autoloade
 
 Iromlab wraps around a number of existing software tools:
 
-* [IsoBuster](https://www.isobuster.com/)
+* [IsoBuster](https://www.isobuster.com/) (note: Iromlab needs version 4.1 or more recent!) 
 * dBpoweramp, dBpoweramp Batch Ripper and Nimbie Batch Ripper Driver; all available [from the dBpoweramp website](https://www.dbpoweramp.com/batch-ripper.htm). (Note: Iromlab wraps dBpoweramp's Nimbie driver binaries to control the disc loading / unloading process.)
 * [cd-info](https://linux.die.net/man/1/cd-info) - this tool is part of [libcdio](https://www.gnu.org/software/libcdio/),  the "GNU Compact Disc Input and Control Library".
 * [shntool](http://www.etree.org/shnutils/shntool/) - used to verify the integrity of created WAVE files.

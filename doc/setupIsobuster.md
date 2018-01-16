@@ -2,7 +2,7 @@
 
 ## Installation and registration
 
-Go to the Isobuster download page below:
+Iromlab requires Isobuster 4.1 or more (older versions don't support DFXML reports). Go to the Isobuster download page below:
 
 <https://www.isobuster.com/download.php>
 
