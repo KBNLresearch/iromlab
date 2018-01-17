@@ -41,7 +41,7 @@ Iromlab wraps around a number of existing software tools:
 * [shntool](http://www.etree.org/shnutils/shntool/) - used to verify the integrity of created WAVE files.
 * [flac](https://xiph.org/flac/) - used to verify the integrity of created WAVE files.
 
-Both IsoBuster and dBpoweramp require a license, and they must be installed separately. Binaries of cd-info, shntool and flac are included in the iromlab installation, and they are automatically copied to directory `iromlab/tools' in the Windows user directory during the setup process.
+Both IsoBuster and dBpoweramp require a license, and they must be installed separately. Binaries of cd-info, shntool and flac are included in the iromlab installation, and they are automatically copied to the iromlab package directory during the setup process.
 
 ## Documentation
 
