@@ -17,12 +17,11 @@ These batches can be further processed into ingest-ready Submission Information 
 
 ## Using Iromlab outside the KB
 
-Iromlab is tailored specifically to the situation at the KB, which makes it unsuitable as a general-purpose workflow solution. This is because:
+By default, Iromlab expects each carrier to be associated with a record in the KB catalogue by means of an identifier (PPN). This identifier is then used to fetch title information from the KB catalogue using a HTTP request. This effectively constrains the use of Iromlab to materials in the KB collection. To overcome this constraint, you can disable the PPN lookup by setting the value of *enablePPNLookup* in the configuration file to *False*. More details can be found in the [setup and configuration documentation](./doc/setupIromlab.md#enableppnlookup). If *enablePPNLookup* is disabled, the *PPN* data entry widget in Iromlab's data entry GUI is replaced with a *Title* widget, which can be used for entering a free text description of each carrier. See also the section about [Processing discs that are not part of the KB collection](./doc/userGuide.md#processing-discs-that-are-not-part-of-the-kb-collection) in the User Guide.
 
-1. For each carrier it needs an identifier (PPN) that corresponds to a record in the KB catalogue. Iromlab also queries the catalogue using HTTP requests. This limits the usability of Iromlab for other users and institutions. 
-2. Iromlab is based on a pretty specific hardware/software setup (see sections below). 
+Moreover, it would be fairly straightforward to replace the PPN lookup by some alternative identifier that is linked to another catalogue/database (especially if it can be queried using HTTP-requests).
 
-However, as for *1.* it should be fairly straightforward to adapt these parts of the software to other catalogues/databases. As for *2.*, most of the software dependencies are implemented using simple wrapper modules, so this is also something that can be modified quite easily. 
+Also, Iromlab is based on a pretty specific hardware/software setup (see sections below). However, most of the software dependencies are implemented using simple wrapper modules, so this is also something that could be modified quite easily.
 
 ## Platform
 
