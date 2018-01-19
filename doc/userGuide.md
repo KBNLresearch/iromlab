@@ -58,13 +58,23 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 
 1. Load the disc.
 2. Analyze the disc with [cd-info](https://linux.die.net/man/1/cd-info) to determine whether it contains data, audio, or both
-3. Extract the contents of the disc. In this case we have a cd-rom that only contains a data track, which is extracted to an ISO image with Isobuster. Beware that Isobuster will launch in a separate window (the window automatically disappears after Isobuster is finished).
+3. Extract the contents of the disc. In this case we have a cd-rom that only contains a data track, which is extracted to an ISO image with Isobuster. Beware that Isobuster will launch in a separate window (the window minimizes briefly after Isobuster starts, and it automatically disappears after Isobuster is finished). Audio tracks are ripped to WAV or FLAC using dBpoweramp.
 4. Verify the ISO image with Isolyzer; verify audio tracks with Shntool or flac (depending on the format that was set in the configuration)
 5. Compute SHA-512 checksums for all generated files (ISO images, audio files)
 6. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
 7. Finally, an entry is added to the *batch manifest* (explained further below).
 
-For each disc, Iromlab creates a folder in the batch folder. The name of each folder is (again) a [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is based on the hardware address and the current time ("version 1" UUID).
+## Created files for each disc 
+
+For each disc, Iromlab creates a folder in the batch folder. The name of each folder is (again) a [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is based on the hardware address and the current time ("version 1" UUID). Each of these folders contain the following files:
+
+* *cd-info.log* - output of the cd-info tool. Contains general information about the disc, including its sector layout.
+* *xxx.iso* - ISO image (only if disc contains a data session).
+* *isobuster.log* - log file with Isobuster log error code; see *Log Error* section in the [Isobuster documentation](https://www.isobuster.com/help/use_of_command_line_parameters) (only if disc contains a data session).
+* *isobuster-report.xml* - report file in [Digital Forensics XML](https://en.wikipedia.org/wiki/Digital_Forensics_XML) format; includes listing of all files on the disc (only if disc contains a data session).
+* *xxx.wav* / *xxx.flac* - audio files in WAV or FLAC format (only if disc contains audio).
+* *dbpoweramp.log* - dbpoweramp log file (only if disc contains audio).
+* *checksums.sha512* - checksum file with SHA-512 hashes of all the above files in this directory.
 
 ## Process more discs
 
@@ -94,7 +104,7 @@ If you press the *Exit* while a batch is being processed, Iromlab will finish th
 
 ## Opening an existing batch
 
-After pressing the *Open* button upon startup you will see a file dialog that shows all batch folders in Iromlab's root directory (*rootDir*):  
+After pressing the *Open* button upon startup you will see a file dialog that shows all batch folders in Iromlab's root directory (*rootDir*):
 
 ![](./img/iromlabOpenBatch.png)
 
@@ -158,7 +168,7 @@ Each batch contains a log file *batch.log*. It contains detailed information abo
  
 ## How to use the Volume number and Carrier type fields
 
-The correct use of the *Volume number* field in the Iromlab interface needs some explaining. First of, it is important to understand that one *PPN* (catalogue entry) can contain multiple discs. Moreover, there can be multiple disc *types* inside one *PPN*. Here's an example:  
+The correct use of the *Volume number* field in the Iromlab interface needs some explaining. First of, it is important to understand that one *PPN* (catalogue entry) can contain multiple discs. Moreover, there can be multiple disc *types* inside one *PPN*. Here's an example:
 
 ![](./img/cataloguePPN.png)
 
@@ -167,7 +177,7 @@ In this case the *PPN* contains:
 1. one set of 3 audio CDs
 2. one set of 2 DVDs
 
-Now, the *Volume number* values apply to discs *within each of these sets*. So for each *Carrier type* we start numbering at 1 again. In this case: 
+Now, the *Volume number* values apply to discs *within each of these sets*. So for each *Carrier type* we start numbering at 1 again. In this case:
 
 |Disc|Volume number|Carrier type|
 |:--|:--|:--|
