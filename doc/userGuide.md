@@ -64,18 +64,6 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 6. If no errors occurred in the above steps, unload the disc. In case of errors, reject it. Rejected discs will come out underneath the Nimbie unit (unlike unloaded discs, which exit through the slot on the front). 
 7. Finally, an entry is added to the *batch manifest* (explained further below).
 
-## Created files for each disc 
-
-For each disc, Iromlab creates a folder in the batch folder. The name of each folder is (again) a [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is based on the hardware address and the current time ("version 1" UUID). Each of these folders contain the following files:
-
-* *cd-info.log* - output of the cd-info tool. Contains general information about the disc, including its sector layout.
-* *xxx.iso* - ISO image (only if disc contains a data session).
-* *isobuster.log* - log file with Isobuster log error code; see *Log Error* section in the [Isobuster documentation](https://www.isobuster.com/help/use_of_command_line_parameters) (only if disc contains a data session).
-* *isobuster-report.xml* - report file in [Digital Forensics XML](https://en.wikipedia.org/wiki/Digital_Forensics_XML) format; includes listing of all files on the disc (only if disc contains a data session).
-* *xxx.wav* / *xxx.flac* - audio files in WAV or FLAC format (only if disc contains audio).
-* *dbpoweramp.log* - dbpoweramp log file (only if disc contains audio).
-* *checksums.sha512* - checksum file with SHA-512 hashes of all the above files in this directory.
-
 ## Process more discs
 
 In order to process additional discs, simply repeat the steps from the previous section for each disc. You can add new discs while the Nimbie is busy processing a disc; in fact you can keep adding discs until the disc loader is full (which is at 30 discs by default, and 100 if the extension rods are used). For each disc, Iromlab creates a *job file* that contains the fields that were entered by the operator (PPN, volume number, carrier type). The job file is then placed in a ["first in first out"](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) (FIFO)  queue. The job files are physically written to the *jobs* directory inside the batch. 
@@ -165,7 +153,19 @@ Example:
 Each batch contains a log file *batch.log*. It contains detailed information about the detection, imaging and ripping subprocesses (including the exit status and output of wrapped tools). If a disc gets rejected or if anything unexpected happens, checking the batch log will help you identify the problem.
 
 <!-- TODO: link to some example log files -->
- 
+
+## Created files for each disc
+
+For each disc, Iromlab creates a folder in the batch folder. The name of each folder is (again) a [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is based on the hardware address and the current time ("version 1" UUID). Each of these folders contain the following files:
+
+* *cd-info.log* - output of the cd-info tool. Contains general information about the disc, including its sector layout.
+* *xxx.iso* - ISO image (only if disc contains a data session).
+* *isobuster.log* - log file with Isobuster log error code; see *Log Error* section in the [Isobuster documentation](https://www.isobuster.com/help/use_of_command_line_parameters) (only if disc contains a data session).
+* *isobuster-report.xml* - report file in [Digital Forensics XML](https://en.wikipedia.org/wiki/Digital_Forensics_XML) format; includes listing of all files on the disc (only if disc contains a data session).
+* *xxx.wav* / *xxx.flac* - audio files in WAV or FLAC format (only if disc contains audio).
+* *dbpoweramp.log* - dbpoweramp log file (only if disc contains audio).
+* *checksums.sha512* - checksum file with SHA-512 hashes of all the above files in this directory.
+
 ## How to use the Volume number and Carrier type fields
 
 The correct use of the *Volume number* field in the Iromlab interface needs some explaining. First of, it is important to understand that one *PPN* (catalogue entry) can contain multiple discs. Moreover, there can be multiple disc *types* inside one *PPN*. Here's an example:
