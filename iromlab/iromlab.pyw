@@ -156,7 +156,6 @@ class carrierEntry(tk.Frame):
             lineOut = 'EOB\n'
             fJob.write(lineOut)
             self.bFinalise.config(state='disabled')
-            self.bExit.config(state='disabled')
             self.submit_button.config(state='disabled')
 
     def on_submit(self, event=None):
