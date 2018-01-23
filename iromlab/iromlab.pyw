@@ -136,11 +136,18 @@ class carrierEntry(tk.Frame):
         self.setupLogging(self.text_handler)
 
         if config.batchFolder != '':
-            # Update state of buttons
+            # Update state of buttons, taking into account whether batch was
+            # finalized by user
             self.bNew.config(state='disabled')
             self.bOpen.config(state='disabled')
-            self.bFinalise.config(state='normal')
-            self.submit_button.config(state='normal')
+            if os.path.isfile(os.path.join(config.jobsFolder, 'eob.txt')):
+                self.bFinalise.config(state='disabled')
+                self.submit_button.config(state='disabled')
+            else:
+                self.bFinalise.config(state='normal')
+                self.submit_button.config(state='normal')
+            
+            # Set readyToStart
             config.readyToStart = True
 
     def on_finalise(self, event=None):
