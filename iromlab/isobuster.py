@@ -105,6 +105,8 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
             volumeLabel = volumeName
         elif volumeIdentifier == '' and partitionName != '':
             volumeLabel = partitionName
+        else:
+            volumeLabel = ''
 
     except IOError:
         volumeLabel = ''
