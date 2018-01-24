@@ -132,23 +132,31 @@ class carrierEntry(tk.Frame):
         config.jobsFolder = os.path.join(config.batchFolder, 'jobs')
         config.jobsFailedFolder = os.path.join(config.batchFolder, 'jobsFailed')
 
-        # Set up logging
-        self.setupLogging(self.text_handler)
+        # Check if batch was already finalized, and exit if so 
+        if not os.path.isdir(config.jobsFolder):
+            msg = 'cannot open finalized batch'
+            tkMessageBox.showerror("Error", msg)
+            #errorExit(msg)
+            #quit()
+            #os._exit(0)
+        else:
+            # Set up logging
+            self.setupLogging(self.text_handler)
 
-        if config.batchFolder != '':
-            # Update state of buttons, taking into account whether batch was
-            # finalized by user
-            self.bNew.config(state='disabled')
-            self.bOpen.config(state='disabled')
-            if os.path.isfile(os.path.join(config.jobsFolder, 'eob.txt')):
-                self.bFinalise.config(state='disabled')
-                self.submit_button.config(state='disabled')
-            else:
-                self.bFinalise.config(state='normal')
-                self.submit_button.config(state='normal')
-            
-            # Set readyToStart
-            config.readyToStart = True
+            if config.batchFolder != '':
+                # Update state of buttons, taking into account whether batch was
+                # finalized by user
+                self.bNew.config(state='disabled')
+                self.bOpen.config(state='disabled')
+                if os.path.isfile(os.path.join(config.jobsFolder, 'eob.txt')):
+                    self.bFinalise.config(state='disabled')
+                    self.submit_button.config(state='disabled')
+                else:
+                    self.bFinalise.config(state='normal')
+                    self.submit_button.config(state='normal')
+                
+                # Set readyToStart
+                config.readyToStart = True
 
     def on_finalise(self, event=None):
         """Finalise batch after user pressed finalise button"""
