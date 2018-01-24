@@ -51,24 +51,70 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     try:
         isolyzerResult = isolyzer.processImage(isoFileTemp, dataTrackLSNStart)
         # Isolyzer status
-        isolyzerSuccess = isolyzerResult.find('statusInfo/success').text
+        try:
+            isolyzerSuccess = isolyzerResult.find('statusInfo/success').text
+        except AttributeError:
+            isolyzerSuccess = False
+
         # Is ISO image smaller than expected (if True, this indicates the image may be truncated)
-        imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text
+        try:
+            imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text
+        except AttributeError:
+            imageTruncated = True
+
         # Volume identifier from ISO's Primary Volume Descriptor
-        # TODO: make this work for other fs types as well (UDF, HFS, HFS+)
-        volumeIdentifier = isolyzerResult.find("fileSystems/fileSystem[@TYPE='ISO 9660']"
+        try:
+            volumeIdentifier = isolyzerResult.find("fileSystems/fileSystem[@TYPE='ISO 9660']"
                                                "/primaryVolumeDescriptor/"
                                                "volumeIdentifier").text.strip()
+        except AttributeError:
+            volumeIdentifier = ''
 
-    except IOError or AttributeError:
-        volumeIdentifier = ''
+        # Logical Volume identifier from UDF Logical Volume Descriptor
+        # NOTE: beware of possible encoding issues due to use of "OSTA compressed
+        # Unicode", the meaning of which is not entirely clear to me!
+        try:
+            logicalVolumeIdentifier = isolyzerResult.find("fileSystems/fileSystem[@TYPE='UDF']"
+                                               "/logicalVolumeDescriptor/"
+                                               "logicalVolumeIdentifier").text.strip()
+        except AttributeError:
+            logicalVolumeIdentifier = ''
+
+        # Volume Name from HFS Master Directory Block
+        try:
+            volumeName = isolyzerResult.find("fileSystems/fileSystem[@TYPE='HFS']"
+                                               "/masterDirectoryBlock/"
+                                               "volumeName").text.strip()
+        except AttributeError:
+            volumeName = ''
+
+        # Partition Name from HFS Apple Partition Map. NOTE: there may be
+        # multiple Partition Maps; this will only get value from first one!
+        try:
+            partitionName = isolyzerResult.find("fileSystems/fileSystem[@TYPE='HFS']"
+                                               "/applePartitionMap/"
+                                               "partitionName").text.strip()
+        except AttributeError:
+            partitionName = ''
+
+        if volumeIdentifier != '':
+            volumeLabel = volumeIdentifier
+        elif volumeIdentifier == '' and logicalVolumeIdentifier != '':
+            volumeLabel = logicalVolumeIdentifier
+        elif volumeIdentifier == '' and volumeName != '':
+            volumeLabel = volumeName
+        elif volumeIdentifier == '' and partitionName != '':
+            volumeLabel = partitionName
+
+    except IOError:
+        volumeLabel = ''
         isolyzerSuccess = False
         imageTruncated = True
 
-    if volumeIdentifier != '':
-        # Rename ISO image using volumeIdentifier as a base name
-        # Any spaces in volumeIdentifier are replaced with dashes
-        isoFile = os.path.join(writeDirectory, volumeIdentifier.replace(' ', '-') + '.iso')
+    if volumeLabel != '':
+        # Rename ISO image using volumeLabel as a base name
+        # Any spaces in volumeLabel are replaced with dashes
+        isoFile = os.path.join(writeDirectory, volumeLabel.replace(' ', '-') + '.iso')
         os.rename(isoFileTemp, isoFile)
 
     # All results to dictionary
@@ -78,7 +124,7 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     dictOut["stdout"] = out
     dictOut["stderr"] = err
     dictOut["log"] = log
-    dictOut["volumeIdentifier"] = volumeIdentifier
+    dictOut["volumeIdentifier"] = volumeLabel
     dictOut["isolyzerSuccess"] = isolyzerSuccess
     dictOut["imageTruncated"] = imageTruncated
 
