@@ -142,6 +142,7 @@ class carrierEntry(tk.Frame):
         else:
             # Set up logging
             self.setupLogging(self.text_handler)
+            logging.info(''.join(['*** Opening existing batch ', config.batchFolder, ' ***']))
 
             if config.batchFolder != '':
                 # Update state of buttons, taking into account whether batch was
@@ -154,7 +155,7 @@ class carrierEntry(tk.Frame):
                 else:
                     self.bFinalise.config(state='normal')
                     self.submit_button.config(state='normal')
-                
+
                 # Set readyToStart
                 config.readyToStart = True
 
@@ -272,7 +273,7 @@ class carrierEntry(tk.Frame):
         """Set up logging-related settings"""
         logFile = os.path.join(config.batchFolder, 'batch.log')
 
-        logging.basicConfig(handlers=[logging.FileHandler(logFile, 'w', 'utf-8')],
+        logging.basicConfig(handlers=[logging.FileHandler(logFile, 'a', 'utf-8')],
                             level=logging.INFO,
                             format='%(asctime)s - %(levelname)s - %(message)s')
 
