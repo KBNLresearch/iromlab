@@ -88,23 +88,12 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
         except AttributeError:
             volumeName = ''
 
-        # Partition Name from HFS Apple Partition Map. NOTE: there may be
-        # multiple Partition Maps; this will only get value from first one!
-        try:
-            partitionName = isolyzerResult.find("fileSystems/fileSystem[@TYPE='HFS']"
-                                               "/applePartitionMap/"
-                                               "partitionName").text.strip()
-        except AttributeError:
-            partitionName = ''
-
         if volumeIdentifier != '':
             volumeLabel = volumeIdentifier
         elif volumeIdentifier == '' and logicalVolumeIdentifier != '':
             volumeLabel = logicalVolumeIdentifier
         elif volumeIdentifier == '' and volumeName != '':
             volumeLabel = volumeName
-        elif volumeIdentifier == '' and partitionName != '':
-            volumeLabel = partitionName
         else:
             volumeLabel = ''
 
