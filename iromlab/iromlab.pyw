@@ -55,6 +55,7 @@ class carrierEntry(tk.Frame):
         config.readyToStart = False
         config.finishedBatch = False
         self.catidOld = ""
+        self.titleOld = ""
         self.build_gui()
 
     def on_quit(self, event=None):
@@ -179,6 +180,10 @@ class carrierEntry(tk.Frame):
         """Add previously entered PPN to entry field"""
         self.catid_entry.insert(tk.END, self.catidOld)
 
+    def on_usepreviousTitle(self, event=None):
+        """Add previously entered title to title field"""
+        self.title_entry.insert(tk.END, self.titleOld)
+
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
 
@@ -189,6 +194,7 @@ class carrierEntry(tk.Frame):
         else:
             catid = ""
             title = self.title_entry.get().strip()
+            self.titleOld = title
         volumeNo = self.volumeNo_entry.get().strip()
         carrierTypeCode = self.v.get()
 
@@ -340,8 +346,8 @@ class carrierEntry(tk.Frame):
             # Catalog ID (PPN)
             tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
             self.catid_entry = tk.Entry(self, width=20)
-            ## TEST
-            # Presses this button adds previously entered PPN to entry field
+
+            # Pressing this button adds previously entered PPN to entry field
             self.usepreviousPPN_button = tk.Button(self,
                                text='Use previous',
                                height=1,
@@ -351,12 +357,23 @@ class carrierEntry(tk.Frame):
                                state='normal',
                                command=self.on_usepreviousPPN)
             self.usepreviousPPN_button.grid(column=2, row=4, sticky='ew')
-            ## TEST
+
             self.catid_entry.grid(column=1, row=4, sticky='w')
         else:
             # PPN lookup disabled, so present Title entry field
             tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
             self.title_entry = tk.Entry(self, width=60)
+
+            # Pressing this button adds previously entered title to entry field
+            self.usepreviousTitle_button = tk.Button(self,
+                               text='Use previous',
+                               height=1,
+                               width=2,
+                               underline=0,
+                               bg='#ded4db',
+                               state='normal',
+                               command=self.on_usepreviousTitle)
+            self.usepreviousTitle_button.grid(column=2, row=4, sticky='ew')
             self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
 
         # Volume number
