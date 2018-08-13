@@ -54,6 +54,7 @@ class carrierEntry(tk.Frame):
         self.root = parent
         config.readyToStart = False
         config.finishedBatch = False
+        self.catidOld = ""
         self.build_gui()
 
     def on_quit(self, event=None):
@@ -174,12 +175,17 @@ class carrierEntry(tk.Frame):
             self.bFinalise.config(state='disabled')
             self.submit_button.config(state='disabled')
 
+    def on_usepreviousPPN(self, event=None):
+        """Add previously entered PPN to entry field"""
+        self.catid_entry.insert(tk.END, self.catidOld)
+
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
 
         # Fetch entered values (strip any leading / tralue whitespace characters)
         if config.enablePPNLookup:
             catid = self.catid_entry.get().strip()
+            self.catidOld = catid
         else:
             catid = ""
             title = self.title_entry.get().strip()
@@ -334,6 +340,18 @@ class carrierEntry(tk.Frame):
             # Catalog ID (PPN)
             tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
             self.catid_entry = tk.Entry(self, width=20)
+            ## TEST
+            # Presses this button adds previously entered PPN to entry field
+            self.usepreviousPPN_button = tk.Button(self,
+                               text='Use previous',
+                               height=1,
+                               width=2,
+                               underline=0,
+                               bg='#ded4db',
+                               state='normal',
+                               command=self.on_usepreviousPPN)
+            self.usepreviousPPN_button.grid(column=2, row=4, sticky='ew')
+            ## TEST
             self.catid_entry.grid(column=1, row=4, sticky='w')
         else:
             # PPN lookup disabled, so present Title entry field
