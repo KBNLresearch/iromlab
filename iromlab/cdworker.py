@@ -23,6 +23,7 @@ from . import cdinfo
 from . import isobuster
 from . import dbpoweramp
 from . import verifyaudio
+from . import mdo
 
 
 def mediumLoaded(driveName):
@@ -107,6 +108,7 @@ def processDisc(carrierData):
     """Process one disc / job"""
 
     jobID = carrierData['jobID']
+    PPN = carrierData['PPN']
 
     logging.info(''.join(['### Job identifier: ', jobID]))
     logging.info(''.join(['PPN: ', carrierData['PPN']]))
@@ -291,6 +293,15 @@ def processDisc(carrierData):
             logging.info(''.join(['volumeIdentifier: ', str(resultIsoBuster['volumeIdentifier'])]))
             logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
+
+        # Fetch metadata from KBMDO and store as file
+        logging.info('*** Writing metadata from KB-MDO to file ***')
+        wroteMDORecord = mdo.writeMDORecord(PPN, dirOut)
+
+        if not wroteMDORecord:
+            success = False
+            reject = True
+            logging.error("Could not write metadata from KB-MDO")
 
         # Generate checksum file
         logging.info('*** Computing checksums ***')
