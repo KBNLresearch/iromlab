@@ -390,7 +390,7 @@ class carrierEntry(tk.Frame):
         else:
             # PPN lookup disabled, so present Title entry field
             tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
-            self.title_entry = tk.Entry(self, width=60)
+            self.title_entry = tk.Entry(self, width=45)
 
             # Pressing this button adds previously entered title to entry field
             self.usepreviousTitle_button = tk.Button(self,
@@ -401,7 +401,7 @@ class carrierEntry(tk.Frame):
                                bg='#ded4db',
                                state='normal',
                                command=self.on_usepreviousTitle)
-            self.usepreviousTitle_button.grid(column=2, row=4, sticky='ew')
+            self.usepreviousTitle_button.grid(column=3, row=4, sticky='ew')
             self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
 
         # Volume number
@@ -417,7 +417,7 @@ class carrierEntry(tk.Frame):
                            bg='#ded4db',
                            state='normal',
                            command=self.on_increaseVolumeNumber)
-        self.increaseVolumeNumber_button.grid(column=2, row=5, sticky='ew')
+        self.increaseVolumeNumber_button.grid(column=3, row=5, sticky='ew')
 
         self.volumeNo_entry.grid(column=1, row=5, sticky='w')
 
