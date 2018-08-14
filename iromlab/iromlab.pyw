@@ -56,6 +56,7 @@ class carrierEntry(tk.Frame):
         config.finishedBatch = False
         self.catidOld = ""
         self.titleOld = ""
+        self.volumeNoOld = ""
         self.build_gui()
 
     def on_quit(self, event=None):
@@ -184,6 +185,32 @@ class carrierEntry(tk.Frame):
         """Add previously entered title to title field"""
         self.title_entry.insert(tk.END, self.titleOld)
 
+    def on_increaseVolumeNumber(self, event=None):
+        """Increase volume number from previous value"""
+        if self.volumeNoOld == "":
+            # No previous volume number
+            msg = "Previous volume number is not defined"
+            tkMessageBox.showerror("Cannot increase previous", msg)
+        elif config.enablePPNLookup and self.catid_entry.get().strip() == "":
+            # No PPN entered
+            msg = "PPN is not defined"
+            tkMessageBox.showerror("No PPN", msg)
+        elif config.enablePPNLookup and self.catid_entry.get().strip() != self.catidOld:
+            # New PPN
+            msg = "New PPN, cannot increase from previous"
+            tkMessageBox.showerror("New PPN", msg)
+        elif not config.enablePPNLookup and self.title_entry.get().strip() == "":
+            # No title entered
+            msg = "Title is not defined"
+            tkMessageBox.showerror("No title", msg)
+        elif not config.enablePPNLookup and self.title_entry.get().strip() != self.titleOld:
+            # New title
+            msg = "New title, cannot increase from previous"
+            tkMessageBox.showerror("New title", msg)
+        else:
+            volumeNoNew = str(int(self.volumeNoOld) + 1)
+            self.volumeNo_entry.insert(tk.END, volumeNoNew)
+
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
 
@@ -196,6 +223,7 @@ class carrierEntry(tk.Frame):
             title = self.title_entry.get().strip()
             self.titleOld = title
         volumeNo = self.volumeNo_entry.get().strip()
+        self.volumeNoOld = volumeNo
         carrierTypeCode = self.v.get()
 
         # Lookup carrierType for carrierTypeCode value
@@ -379,6 +407,18 @@ class carrierEntry(tk.Frame):
         # Volume number
         tk.Label(self, text='Volume number').grid(column=0, row=5, sticky='w')
         self.volumeNo_entry = tk.Entry(self, width=5)
+        
+        # Pressing this button increases volume number from previous value
+        self.increaseVolumeNumber_button = tk.Button(self,
+                           text='Increase previous',
+                           height=1,
+                           width=2,
+                           underline=0,
+                           bg='#ded4db',
+                           state='normal',
+                           command=self.on_increaseVolumeNumber)
+        self.increaseVolumeNumber_button.grid(column=2, row=5, sticky='ew')
+
         self.volumeNo_entry.grid(column=1, row=5, sticky='w')
 
         # Carrier type (radio button select)
