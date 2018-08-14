@@ -182,15 +182,15 @@ In this case the *PPN* contains:
 1. one set of 3 audio CDs
 2. one set of 2 DVDs
 
-Now, the *Volume number* values apply to discs *within each of these sets*. So for each *Carrier type* we start numbering at 1 again. In this case:
+The *Volume number* values apply to discs *within each PPN*. So, in the above example we appply the numbers like this:
 
 |Disc|Volume number|Carrier type|
 |:--|:--|:--|
 |First audio CD|1|cd-audio|
 |Second audio CD|2|cd-audio|
 |Third audio CD|3|cd-audio|
-|First DVD|1|dvd-rom|
-|Second DVD|2|dvd-rom|
+|First DVD|4|dvd-rom|
+|Second DVD|5|dvd-rom|
 
 ### Impact of data entry errors
  
