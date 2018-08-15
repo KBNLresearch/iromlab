@@ -25,7 +25,6 @@ from . import dbpoweramp
 from . import verifyaudio
 from . import mdo
 
-
 def mediumLoaded(driveName):
     """Returns True if medium is loaded (also if blank/unredable), False if not"""
 
@@ -296,9 +295,9 @@ def processDisc(carrierData):
 
         # Fetch metadata from KBMDO and store as file
         logging.info('*** Writing metadata from KB-MDO to file ***')
-        wroteMDORecord = mdo.writeMDORecord(PPN, dirOut)
 
-        if not wroteMDORecord:
+        successMdoWrite = mdo.writeMDORecord(PPN, dirOut)
+        if not successMdoWrite:
             success = False
             reject = True
             logging.error("Could not write metadata from KB-MDO")
