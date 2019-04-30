@@ -514,12 +514,9 @@ class carrierEntry(tk.Frame):
         self.submit_button.grid(column=1, row=13, sticky='ew')
 
         # Add ScrolledText widget to display logging info
-        st = ScrolledText.ScrolledText(self, state='disabled', height=15)
-        st.configure(font='TkFixedFont')
-        st.grid(column=0, row=15, sticky='w', columnspan=4)
-
-        # Create Logger instance
-        self.queue_handler = QueueHandler(st)
+        self.st = ScrolledText.ScrolledText(self, state='disabled', height=15)
+        self.st.configure(font='TkFixedFont')
+        self.st.grid(column=0, row=15, sticky='w', columnspan=4)
 
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
