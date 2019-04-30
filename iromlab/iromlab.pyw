@@ -719,25 +719,30 @@ def getConfiguration():
 def main():
     """Main function"""
 
-    try:
-        root = tk.Tk()
-        carrierEntry(root)
+    root = tk.Tk()
+    carrierEntry(root)
+    # This ensures application quits normally if user closes window
+    root.protocol('WM_DELETE_WINDOW', carrierEntry.on_quit)
+    t1 = threading.Thread(target=cdworker.cdWorker, args=[])
+    t1.start()
 
-        t1 = threading.Thread(target=cdworker.cdWorker, args=[])
-        t1.start()
+    while True:
+        try:
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if config.finishedBatch:
+                # Batch finished: notify user
+                msg = 'Completed processing this batch, click OK to exit'
+                tkMessageBox.showinfo("Finished", msg)
+            elif config.quitFlag:
+                # User pressed exit; notify user
+                msg = 'Quitting because user pressed Exit, click OK to exit'
+                tkMessageBox.showinfo("Exit", msg)
 
-        root.mainloop()
-        t1.join()
-    except KeyboardInterrupt:
-        if config.finishedBatch:
-            # Batch finished: notify user
-            msg = 'Completed processing this batch, click OK to exit'
-            tkMessageBox.showinfo("Finished", msg)
-        elif config.quitFlag:
-            # User pressed exit; notify user
-            msg = 'Quitting because user pressed Exit, click OK to exit'
-            tkMessageBox.showinfo("Exit", msg)
-        os._exit(0)
+            t1.join()
+            os._exit(0)
 
 if __name__ == "__main__":
     main()
