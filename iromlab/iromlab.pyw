@@ -23,6 +23,7 @@ import xml.etree.ElementTree as ETree
 import threading
 import uuid
 import logging
+import queue
 try:
     import tkinter as tk  # Python 3.x
     from tkinter import filedialog as tkFileDialog
@@ -52,6 +53,11 @@ class carrierEntry(tk.Frame):
         """Initiate class"""
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.root = parent
+        # Logging stuff
+        self.logger = logging.getLogger()
+        # Create a logging handler using a queue
+        self.log_queue = queue.Queue(-1)
+        self.queue_handler = QueueHandler(self.log_queue)
         config.readyToStart = False
         config.finishedBatch = False
         self.catidOld = ""
@@ -109,18 +115,30 @@ class carrierEntry(tk.Frame):
             tkMessageBox.showerror("Error", msg)
 
         # Set up logging
-        self.setupLogging(self.text_handler)
+        successLogger = True
 
-        # Notify user
-        msg = 'Created batch ' + batchName
-        tkMessageBox.showinfo("Created batch", msg)
+        try:
+            self.setupLogger()
+            # Start polling log messages from the queue
+            self.after(100, self.poll_log_queue)
+        except OSError:
+            # Something went wrong while trying to write to lof file
+            msg = ('error trying to write log file')
+            tkMessageBox.showerror("ERROR", msg)
+            successLogger = False
 
-        # Update state of buttons
-        self.bNew.config(state='disabled')
-        self.bOpen.config(state='disabled')
-        self.bFinalise.config(state='normal')
-        self.submit_button.config(state='normal')
-        config.readyToStart = True
+        if successLogger:
+            # Notify user
+            msg = 'Created batch ' + batchName
+            tkMessageBox.showinfo("Created batch", msg)
+
+            # Update state of buttons
+            self.bNew.config(state='disabled')
+            self.bOpen.config(state='disabled')
+            self.bFinalise.config(state='normal')
+            self.submit_button.config(state='normal')
+            config.readyToStart = True
+
 
     def on_open(self, event=None):
         """Open existing batch"""
@@ -144,23 +162,36 @@ class carrierEntry(tk.Frame):
             #os._exit(0)
         else:
             # Set up logging
-            self.setupLogging(self.text_handler)
-            logging.info(''.join(['*** Opening existing batch ', config.batchFolder, ' ***']))
+            successLogger = True
 
-            if config.batchFolder != '':
-                # Update state of buttons, taking into account whether batch was
-                # finalized by user
-                self.bNew.config(state='disabled')
-                self.bOpen.config(state='disabled')
-                if os.path.isfile(os.path.join(config.jobsFolder, 'eob.txt')):
-                    self.bFinalise.config(state='disabled')
-                    self.submit_button.config(state='disabled')
-                else:
-                    self.bFinalise.config(state='normal')
-                    self.submit_button.config(state='normal')
+            try:
+                self.setupLogger()
+                # Start polling log messages from the queue
+                self.after(100, self.poll_log_queue)
+            except OSError:
+                # Something went wrong while trying to write to lof file
+                msg = ('error trying to write log file')
+                tkMessageBox.showerror("ERROR", msg)
+                successLogger = False
 
-                # Set readyToStart
-                config.readyToStart = True
+            if successLogger:
+                logging.info(''.join(['*** Opening existing batch ', config.batchFolder, ' ***']))
+
+                if config.batchFolder != '':
+                    # Update state of buttons, taking into account whether batch was
+                    # finalized by user
+                    self.bNew.config(state='disabled')
+                    self.bOpen.config(state='disabled')
+                    if os.path.isfile(os.path.join(config.jobsFolder, 'eob.txt')):
+                        self.bFinalise.config(state='disabled')
+                        self.submit_button.config(state='disabled')
+                    else:
+                        self.bFinalise.config(state='normal')
+                        self.submit_button.config(state='normal')
+
+                    # Set readyToStart
+                    config.readyToStart = True
+
 
     def on_finalise(self, event=None):
         """Finalise batch after user pressed finalise button"""
@@ -309,7 +340,7 @@ class carrierEntry(tk.Frame):
                     self.title_entry.focus_set()
                 self.volumeNo_entry.delete(0, tk.END)
 
-    def setupLogging(self, handler):
+    def setupLogger(self):
         """Set up logging-related settings"""
         logFile = os.path.join(config.batchFolder, 'batch.log')
 
@@ -318,8 +349,34 @@ class carrierEntry(tk.Frame):
                             format='%(asctime)s - %(levelname)s - %(message)s')
 
         # Add the handler to logger
-        logger = logging.getLogger()
-        logger.addHandler(handler)
+        self.logger = logging.getLogger()
+        # This sets the console output format (slightly different from basicConfig!)
+        formatter = logging.Formatter('%(levelname)s: %(message)s')
+        self.queue_handler.setFormatter(formatter)
+        self.logger.addHandler(self.queue_handler)
+
+
+    def display(self, record):
+        """Display log record in scrolledText widget"""
+        msg = self.queue_handler.format(record)
+        self.st.configure(state='normal')
+        self.st.insert(tk.END, msg + '\n', record.levelname)
+        self.st.configure(state='disabled')
+        # Autoscroll to the bottom
+        self.st.yview(tk.END)
+
+
+    def poll_log_queue(self):
+        """Check every 100ms if there is a new message in the queue to display"""
+        while True:
+            try:
+                record = self.log_queue.get(block=False)
+            except queue.Empty:
+                break
+            else:
+                self.display(record)
+        self.after(100, self.poll_log_queue)
+
 
     def build_gui(self):
         """Build the GUI"""
@@ -461,8 +518,8 @@ class carrierEntry(tk.Frame):
         st.configure(font='TkFixedFont')
         st.grid(column=0, row=15, sticky='w', columnspan=4)
 
-        # Create textLogger
-        self.text_handler = TextHandler(st)
+        # Create Logger instance
+        self.queue_handler = QueueHandler(st)
 
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
@@ -477,31 +534,19 @@ class carrierEntry(tk.Frame):
             child.grid_configure(padx=5, pady=5)
 
 
-
-class TextHandler(logging.Handler):
-    """This class allows you to log to a Tkinter Text or ScrolledText widget
-    Adapted from: https://gist.github.com/moshekaplan/c425f861de7bbf28ef06
+class QueueHandler(logging.Handler):
+    """Class to send logging records to a queue
+    It can be used from different threads
+    The ConsoleUi class polls this queue to display records in a ScrolledText widget
+    Taken from https://github.com/beenje/tkinter-logging-text-widget/blob/master/main.py
     """
 
-    def __init__(self, text):
-        """Run the regular Handler __init__"""
-        logging.Handler.__init__(self)
-        # Store a reference to the Text it will log to
-        self.text = text
+    def __init__(self, log_queue):
+        super().__init__()
+        self.log_queue = log_queue
 
     def emit(self, record):
-        """Add a record to the widget"""
-        msg = self.format(record)
-
-        def append():
-            """Append text"""
-            self.text.configure(state='normal')
-            self.text.insert(tk.END, msg + '\n')
-            self.text.configure(state='disabled')
-            # Autoscroll to the bottom
-            self.text.yview(tk.END)
-        # This is necessary because we can't modify the Text from other threads
-        self.text.after(0, append)
+        self.log_queue.put(record)
 
 
 def representsInt(s):
