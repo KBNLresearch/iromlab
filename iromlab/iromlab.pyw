@@ -293,12 +293,19 @@ class carrierEntry(tk.Frame):
                 # Matching record found. Display title and ask for confirmation
                 record = next(response.records)
 
-                # Title can be in either title element OR in title element with maintitle attribute
+                # Title can be in either in:
+                # 1. title element
+                # 2. title element with maintitle attribute
+                # 3. title element with intermediatetitle attribute (3 in combination with 2)
+
                 titlesMain = record.titlesMain
+                titlesIntermediate = record.titlesIntermediate
                 titles = record.titles
 
                 if titlesMain != []:
                     title = titlesMain[0]
+                    if titlesIntermediate != []:
+                        title = title + ", " + titlesIntermediate[0]
                 else:
                     title = titles[0]
 
