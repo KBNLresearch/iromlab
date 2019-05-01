@@ -563,6 +563,9 @@ class carrierEntry(tk.Frame):
 
     def reset_gui(self):
         """Reset the GUI"""
+        # Clear contents of ScrolledText widget
+        # TODO: this does not appear to have any effect! 
+        self.st.delete(1.0, tk.END)
         # Logging stuff
         self.logger = logging.getLogger()
         # Create a logging handler using a queue
