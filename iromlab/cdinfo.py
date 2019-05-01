@@ -79,6 +79,7 @@ def getCarrierInfo(writeDirectory):
     cdExtra = shared.index_startswith_substring(analysisReport, "CD-Plus/Extra") != -1
     multiSession = shared.index_startswith_substring(analysisReport, "session #") != -1
     mixedMode = shared.index_startswith_substring(analysisReport, "mixed mode CD") != -1
+    cdInteractive = shared.index_startswith_substring(analysisReport, "CD-Interactive") != -1
 
     # Write cd-info output to log file
     with io.open(cdInfoLogFile, "w", encoding="utf-8") as fCdInfoLogFile:
@@ -92,6 +93,7 @@ def getCarrierInfo(writeDirectory):
     dictOut["cdExtra"] = cdExtra
     dictOut["multiSession"] = multiSession
     dictOut["mixedMode"] = mixedMode
+    dictOut["cdInteractive"] = cdInteractive
     dictOut["containsAudio"] = containsAudio
     dictOut["containsData"] = containsData
     dictOut["dataTrackLSNStart"] = dataTrackLSNStart
