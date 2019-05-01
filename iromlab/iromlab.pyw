@@ -132,10 +132,18 @@ class carrierEntry(tk.Frame):
             msg = 'Created batch ' + batchName
             tkMessageBox.showinfo("Created batch", msg)
 
-            # Update state of buttons
+            # Update state of buttons / widgets
             self.bNew.config(state='disabled')
             self.bOpen.config(state='disabled')
             self.bFinalise.config(state='normal')
+            if config.enablePPNLookup:
+                self.catid_entry.config(state='normal')
+                self.usepreviousPPN_button.config(state='normal')
+            else:
+                self.title_entry.config(state='normal')
+                self.usepreviousTitle_button.config(state='normal')
+            self.volumeNo_entry.config(state='normal')
+            self.increaseVolumeNumber_button.config(state='normal')
             self.submit_button.config(state='normal')
             config.readyToStart = True
 
@@ -178,7 +186,7 @@ class carrierEntry(tk.Frame):
                 logging.info(''.join(['*** Opening existing batch ', config.batchFolder, ' ***']))
 
                 if config.batchFolder != '':
-                    # Update state of buttons, taking into account whether batch was
+                    # Update state of buttons /widgets, taking into account whether batch was
                     # finalized by user
                     self.bNew.config(state='disabled')
                     self.bOpen.config(state='disabled')
@@ -188,6 +196,14 @@ class carrierEntry(tk.Frame):
                     else:
                         self.bFinalise.config(state='normal')
                         self.submit_button.config(state='normal')
+                    if config.enablePPNLookup:
+                        self.catid_entry.config(state='normal')
+                        self.usepreviousPPN_button.config(state='normal')
+                    else:
+                        self.title_entry.config(state='normal')
+                        self.usepreviousTitle_button.config(state='normal')
+                    self.volumeNo_entry.config(state='normal')
+                    self.increaseVolumeNumber_button.config(state='normal')
 
                     # Set readyToStart
                     config.readyToStart = True
@@ -207,6 +223,14 @@ class carrierEntry(tk.Frame):
             fJob.write(lineOut)
             self.bFinalise.config(state='disabled')
             self.submit_button.config(state='disabled')
+            if config.enablePPNLookup:
+                self.catid_entry.config(state='disabled')
+                self.usepreviousPPN_button.config(state='disabled')
+            else:
+                self.title_entry.config(state='disabled')
+                self.usepreviousTitle_button.config(state='disabled')
+            self.volumeNo_entry.config(state='disabled')
+            self.increaseVolumeNumber_button.config(state='disabled')
 
     def on_usepreviousPPN(self, event=None):
         """Add previously entered PPN to entry field"""
@@ -437,7 +461,7 @@ class carrierEntry(tk.Frame):
         if config.enablePPNLookup:
             # Catalog ID (PPN)
             tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
-            self.catid_entry = tk.Entry(self, width=20)
+            self.catid_entry = tk.Entry(self, width=20, state='disabled')
 
             # Pressing this button adds previously entered PPN to entry field
             self.usepreviousPPN_button = tk.Button(self,
@@ -446,7 +470,7 @@ class carrierEntry(tk.Frame):
                                width=2,
                                underline=0,
                                bg='#ded4db',
-                               state='normal',
+                               state='disabled',
                                command=self.on_usepreviousPPN)
             self.usepreviousPPN_button.grid(column=2, row=4, sticky='ew')
 
@@ -454,7 +478,7 @@ class carrierEntry(tk.Frame):
         else:
             # PPN lookup disabled, so present Title entry field
             tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
-            self.title_entry = tk.Entry(self, width=45)
+            self.title_entry = tk.Entry(self, width=45, state='disabled')
 
             # Pressing this button adds previously entered title to entry field
             self.usepreviousTitle_button = tk.Button(self,
@@ -463,14 +487,14 @@ class carrierEntry(tk.Frame):
                                width=2,
                                underline=0,
                                bg='#ded4db',
-                               state='normal',
+                               state='disabled',
                                command=self.on_usepreviousTitle)
             self.usepreviousTitle_button.grid(column=3, row=4, sticky='ew')
             self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
 
         # Volume number
         tk.Label(self, text='Volume number').grid(column=0, row=5, sticky='w')
-        self.volumeNo_entry = tk.Entry(self, width=5)
+        self.volumeNo_entry = tk.Entry(self, width=5, state='disabled')
         
         # Pressing this button increases volume number from previous value
         self.increaseVolumeNumber_button = tk.Button(self,
@@ -479,7 +503,7 @@ class carrierEntry(tk.Frame):
                            width=2,
                            underline=0,
                            bg='#ded4db',
-                           state='normal',
+                           state='disabled',
                            command=self.on_increaseVolumeNumber)
         self.increaseVolumeNumber_button.grid(column=3, row=5, sticky='ew')
 
@@ -550,11 +574,20 @@ class carrierEntry(tk.Frame):
         self.titleOld = ""
         self.volumeNoOld = ""
 
+        # Update state of buttons / widgets
         self.bNew.config(state='normal')
         self.bOpen.config(state='normal')
         self.bFinalise.config(state='disabled')
         self.bExit.config(state='normal')
         self.submit_button.config(state='normal')
+        if config.enablePPNLookup:
+            self.catid_entry.config(state='disabled')
+            self.usepreviousPPN_button.config(state='disabled')
+        else:
+            self.title_entry.config(state='disabled')
+            self.usepreviousTitle_button.config(state='disabled')
+        self.volumeNo_entry.config(state='disabled')
+        self.increaseVolumeNumber_button.config(state='disabled')
 
 class QueueHandler(logging.Handler):
     """Class to send logging records to a queue
