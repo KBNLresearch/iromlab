@@ -537,6 +537,24 @@ class carrierEntry(tk.Frame):
         for child in self.winfo_children():
             child.grid_configure(padx=5, pady=5)
 
+    def reset_gui(self):
+        """Reset the GUI"""
+        # Logging stuff
+        self.logger = logging.getLogger()
+        # Create a logging handler using a queue
+        self.log_queue = queue.Queue(-1)
+        self.queue_handler = QueueHandler(self.log_queue)
+        config.readyToStart = False
+        config.finishedBatch = False
+        self.catidOld = ""
+        self.titleOld = ""
+        self.volumeNoOld = ""
+
+        self.bNew.config(state='normal')
+        self.bOpen.config(state='normal')
+        self.bFinalise.config(state='disabled')
+        self.bExit.config(state='normal')
+        self.submit_button.config(state='normal')
 
 class QueueHandler(logging.Handler):
     """Class to send logging records to a queue
@@ -720,9 +738,9 @@ def main():
     """Main function"""
 
     root = tk.Tk()
-    carrierEntry(root)
+    myCarrierEntry = carrierEntry(root)
     # This ensures application quits normally if user closes window
-    root.protocol('WM_DELETE_WINDOW', carrierEntry.on_quit)
+    root.protocol('WM_DELETE_WINDOW', myCarrierEntry.on_quit)
     t1 = threading.Thread(target=cdworker.cdWorker, args=[])
     t1.start()
 
@@ -733,16 +751,30 @@ def main():
             time.sleep(0.1)
         except KeyboardInterrupt:
             if config.finishedBatch:
-                # Batch finished: notify user
-                msg = 'Completed processing this batch, click OK to exit'
+                t1.join()
+                handlers = myCarrierEntry.logger.handlers[:]
+                for handler in handlers:
+                    handler.close()
+                    myCarrierEntry.logger.removeHandler(handler)
+                # Notify user
+                msg = 'Finished processing this batch'
                 tkMessageBox.showinfo("Finished", msg)
+                # Reset the GUI
+                myCarrierEntry.reset_gui()
+                # Start cdworker
+                root.protocol('WM_DELETE_WINDOW', myCarrierEntry.on_quit)
+                t1 = threading.Thread(target=cdworker.cdWorker, args=[])
+                t1.start()
             elif config.quitFlag:
-                # User pressed exit; notify user
+                # User pressed exit
+                t1.join()
+                handlers = myCarrierEntry.logger.handlers[:]
+                for handler in handlers:
+                    handler.close()
+                    myCarrierEntry.logger.removeHandler(handler)
                 msg = 'Quitting because user pressed Exit, click OK to exit'
                 tkMessageBox.showinfo("Exit", msg)
-
-            t1.join()
-            os._exit(0)
+                os._exit(0)
 
 if __name__ == "__main__":
     main()
