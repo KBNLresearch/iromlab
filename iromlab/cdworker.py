@@ -261,7 +261,7 @@ def processDisc(carrierData):
                 logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
                 logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
-        elif carrierInfo["containsData"]:
+        elif carrierInfo["containsData"] and not carrierInfo["cdInteractive"]:
             logging.info('*** Extract data session to ISO ***')
             # Create ISO image of first session
             dirOut = dirDisc
@@ -293,6 +293,22 @@ def processDisc(carrierData):
             logging.info(''.join(['volumeIdentifier: ', str(resultIsoBuster['volumeIdentifier'])]))
             logging.info(''.join(['isolyzerSuccess: ', str(isolyzerSuccess)]))
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
+
+        elif carrierInfo["cdInteractive"]:
+            logging.info('*** Extract data from CD Interactive to raw image file ***')
+            dirOut = dirDisc
+
+            resultIsoBuster = isobuster.extractCdiData(dirOut)
+            statusIsoBuster = resultIsoBuster["log"].strip()
+
+            if statusIsoBuster != "0":
+                success = False
+                reject = True
+                logging.error("Isobuster exited with error(s)")
+
+            logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
+            logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
+            logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
 
         # Fetch metadata from KBMDO and store as file
         logging.info('*** Writing metadata from KB-MDO to file ***')
@@ -326,7 +342,7 @@ def processDisc(carrierData):
 
     # Create comma-delimited batch manifest entry for this carrier
 
-    # VolumeIdentifier only defined for ISOs, not for pure audio CDs!
+    # VolumeIdentifier only defined for ISOs, not for pure audio CDs and CD Interactive!
     if discLoaded and carrierInfo["containsData"]:
         try:
             volumeID = resultIsoBuster['volumeIdentifier'].strip()

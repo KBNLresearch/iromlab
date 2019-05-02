@@ -120,3 +120,52 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     dictOut["imageTruncated"] = imageTruncated
 
     return dictOut
+
+
+def extractCdiData(writeDirectory):
+    """Extract data from cd Interactive to raw image"""
+
+    # Temporary name for image file; base name
+    isoFileTemp = os.path.join(writeDirectory, "disc.bin")
+    logFile = os.path.join(writeDirectory, "isobuster.log")
+    reportFile = os.path.join(writeDirectory, "isobuster-report.xml")
+    
+    # Format string that defines DFXML output report
+    reportFormatString = config.reportFormatString
+
+    args = [config.isoBusterExe]
+    args.append("".join(["/d:", config.cdDriveLetter, ":"]))
+    args.append("".join(["/ei:", isoFileTemp]))
+    args.append("/et:r")
+    args.append("/ep:oea")
+    args.append("/ep:npc")
+    args.append("/c")
+    args.append("/m")
+    args.append("/nosplash")
+    args.append("".join(["/l:", logFile]))
+    args.append("".join(["/tree:all:", reportFile, '?', reportFormatString]))
+
+    # Command line as string (used for logging purposes only)
+    cmdStr = " ".join(args)
+
+    status, out, err = shared.launchSubProcess(args)
+
+    # Open and read log file
+    with io.open(logFile, "r", encoding="cp1252") as fLog:
+        log = fLog.read()
+    fLog.close()
+
+    # Rewrite as UTF-8
+    with io.open(logFile, "w", encoding="utf-8") as fLog:
+        fLog.write(log)
+    fLog.close()
+
+    # All results to dictionary
+    dictOut = {}
+    dictOut["cmdStr"] = cmdStr
+    dictOut["status"] = status
+    dictOut["stdout"] = out
+    dictOut["stderr"] = err
+    dictOut["log"] = log
+
+    return dictOut
