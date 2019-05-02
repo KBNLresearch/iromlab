@@ -187,6 +187,7 @@ def processDisc(carrierData):
         logging.info(''.join(['containsAudio: ', str(carrierInfo['containsAudio'])]))
         logging.info(''.join(['containsData: ', str(carrierInfo['containsData'])]))
         logging.info(''.join(['mixedMode: ', str(carrierInfo['mixedMode'])]))
+        logging.info(''.join(['cdInteractive: ', str(carrierInfo['cdInteractive'])]))
         logging.info(''.join(['multiSession: ', str(carrierInfo['multiSession'])]))
 
         # Assumptions in below workflow:
@@ -344,7 +345,9 @@ def processDisc(carrierData):
                          str(success),
                          str(carrierInfo['containsAudio']),
                          str(carrierInfo['containsData']),
-                         str(carrierInfo['cdExtra'])])
+                         str(carrierInfo['cdExtra']),
+                         str(carrierInfo['mixedMode']),
+                         str(carrierInfo['cdInteractive'])])
 
     # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
 
@@ -457,7 +460,9 @@ def cdWorker():
                                 'success',
                                 'containsAudio',
                                 'containsData',
-                                'cdExtra'])
+                                'cdExtra',
+                                'mixedMode',
+                                'cdInteractive'])
 
         # Open batch manifest in append mode
         if sys.version.startswith('3'):
