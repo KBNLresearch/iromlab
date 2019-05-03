@@ -196,8 +196,7 @@ def processDisc(carrierData):
         if carrierInfo["containsAudio"]:
             logging.info('*** Ripping audio ***')
             # Rip audio using dBpoweramp console ripper
-            dirOut = dirDisc
-            resultdBpoweramp = dbpoweramp.consoleRipper(dirOut)
+            resultdBpoweramp = dbpoweramp.consoleRipper(dirDisc)
             statusdBpoweramp = str(resultdBpoweramp["status"])
             logdBpoweramp = resultdBpoweramp["log"]
             # secureExtractionLog = resultdBpoweramp["secureExtractionLog"]
@@ -213,7 +212,7 @@ def processDisc(carrierData):
 
             # Verify that created audio files are not corrupt (using shntool / flac)
             logging.info('*** Verifying audio ***')
-            audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirOut, config.audioFormat)
+            audioHasErrors, audioErrorsList = verifyaudio.verifyCD(dirDisc, config.audioFormat)
             logging.info(''.join(['audioHasErrors: ', str(audioHasErrors)]))
 
             if audioHasErrors:
@@ -231,13 +230,12 @@ def processDisc(carrierData):
                 if carrierInfo["cdExtra"]:
                     logging.info('*** Extracting data session of cdExtra to ISO ***')
                     # Create ISO file from data on 2nd session
-                    dirOut = dirDisc
                     dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
-                    resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)
+                    resultIsoBuster = isobuster.extractData(dirDisc, 2, dataTrackLSNStart)
                 elif carrierInfo["mixedMode"]:
                     logging.info('*** Extracting data session of mixedMode disc to ISO ***')
                     dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
-                    resultIsoBuster = isobuster.extractData(dirOut, 1, dataTrackLSNStart)
+                    resultIsoBuster = isobuster.extractData(dirDisc, 1, dataTrackLSNStart)
 
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
@@ -269,9 +267,7 @@ def processDisc(carrierData):
         elif carrierInfo["containsData"] and not carrierInfo["cdInteractive"]:
             logging.info('*** Extract data session to ISO ***')
             # Create ISO image of first session
-            dirOut = dirDisc
-
-            resultIsoBuster = isobuster.extractData(dirOut, 1, 0)
+            resultIsoBuster = isobuster.extractData(dirDisc, 1, 0)
 
             statusIsoBuster = resultIsoBuster["log"].strip()
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
@@ -301,9 +297,7 @@ def processDisc(carrierData):
 
         elif carrierInfo["cdInteractive"]:
             logging.info('*** Extract data from CD Interactive to raw image file ***')
-            dirOut = dirDisc
-
-            resultIsoBuster = isobuster.extractCdiData(dirOut)
+            resultIsoBuster = isobuster.extractCdiData(dirDisc)
             statusIsoBuster = resultIsoBuster["log"].strip()
 
             if statusIsoBuster != "0":
@@ -314,11 +308,17 @@ def processDisc(carrierData):
             logging.info(''.join(['isobuster command: ', resultIsoBuster['cmdStr']]))
             logging.info(''.join(['isobuster-status: ', str(resultIsoBuster['status'])]))
             logging.info(''.join(['isobuster-log: ', statusIsoBuster]))
+        
+        else:
+            # We end up here if cd-info wasn't able to identify the disc
+            success = False
+            reject = True
+            logging.error("Unable to identify disc type")
 
         # Fetch metadata from KBMDO and store as file
         logging.info('*** Writing metadata from KB-MDO to file ***')
 
-        successMdoWrite = mdo.writeMDORecord(PPN, dirOut)
+        successMdoWrite = mdo.writeMDORecord(PPN, dirDisc)
         if not successMdoWrite:
             success = False
             reject = True
@@ -326,7 +326,7 @@ def processDisc(carrierData):
 
         # Generate checksum file
         logging.info('*** Computing checksums ***')
-        successChecksum = checksumDirectory(dirOut)
+        successChecksum = checksumDirectory(dirDisc)
 
         if not successChecksum:
             success = False
