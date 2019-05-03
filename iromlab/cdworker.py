@@ -227,13 +227,18 @@ def processDisc(carrierData):
                 for item in audioFile:
                     logging.info(item)
 
-            if carrierInfo["cdExtra"] and carrierInfo["containsData"]:
-                logging.info('*** Extracting data session of cdExtra to ISO ***')
-                # Create ISO file from data on 2nd session
-                dirOut = dirDisc
-                dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
+            if carrierInfo["containsData"]:
+                if carrierInfo["cdExtra"]:
+                    logging.info('*** Extracting data session of cdExtra to ISO ***')
+                    # Create ISO file from data on 2nd session
+                    dirOut = dirDisc
+                    dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
+                    resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)
+                elif carrierInfo["mixedMode"]:
+                    logging.info('*** Extracting data session of mixedMode disc to ISO ***')
+                    dataTrackLSNStart = int(carrierInfo['dataTrackLSNStart'])
+                    resultIsoBuster = isobuster.extractData(dirOut, 1, dataTrackLSNStart)
 
-                resultIsoBuster = isobuster.extractData(dirOut, 2, dataTrackLSNStart)
                 statusIsoBuster = resultIsoBuster["log"].strip()
                 isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
                 imageTruncated = resultIsoBuster['imageTruncated']
