@@ -29,6 +29,7 @@ try:
     from tkinter import filedialog as tkFileDialog
     from tkinter import scrolledtext as ScrolledText
     from tkinter import messagebox as tkMessageBox
+    from tkinter import ttk
 except ImportError:
     import Tkinter as tk  # Python 2.x
     import tkFileDialog
@@ -143,7 +144,7 @@ class carrierEntry(tk.Frame):
                 self.title_entry.config(state='normal')
                 self.usepreviousTitle_button.config(state='normal')
             self.volumeNo_entry.config(state='normal')
-            self.increaseVolumeNumber_button.config(state='normal')
+            self.volumeNo_entry.insert(tk.END, "1")
             self.submit_button.config(state='normal')
             config.readyToStart = True
 
@@ -203,7 +204,7 @@ class carrierEntry(tk.Frame):
                         self.title_entry.config(state='normal')
                         self.usepreviousTitle_button.config(state='normal')
                     self.volumeNo_entry.config(state='normal')
-                    self.increaseVolumeNumber_button.config(state='normal')
+                    self.volumeNo_entry.insert(tk.END, "1")
 
                     # Set readyToStart
                     config.readyToStart = True
@@ -230,41 +231,31 @@ class carrierEntry(tk.Frame):
                 self.title_entry.config(state='disabled')
                 self.usepreviousTitle_button.config(state='disabled')
             self.volumeNo_entry.config(state='disabled')
-            self.increaseVolumeNumber_button.config(state='disabled')
 
     def on_usepreviousPPN(self, event=None):
         """Add previously entered PPN to entry field"""
-        self.catid_entry.insert(tk.END, self.catidOld)
+        if self.catidOld == "":
+            msg = "Previous PPN is not defined"
+            tkMessageBox.showerror("PPN not defined", msg)
+        else:
+            self.catid_entry.insert(tk.END, self.catidOld)
+            if self.volumeNoOld != "":
+                # Increase volume number value
+                volumeNoNew = str(int(self.volumeNoOld) + 1)
+                self.volumeNo_entry.delete(0, tk.END)
+                self.volumeNo_entry.insert(tk.END, volumeNoNew)
 
     def on_usepreviousTitle(self, event=None):
         """Add previously entered title to title field"""
-        self.title_entry.insert(tk.END, self.titleOld)
-
-    def on_increaseVolumeNumber(self, event=None):
-        """Increase volume number from previous value"""
-        if self.volumeNoOld == "":
-            # No previous volume number
-            msg = "Previous volume number is not defined"
-            tkMessageBox.showerror("Cannot increase previous", msg)
-        elif config.enablePPNLookup and self.catid_entry.get().strip() == "":
-            # No PPN entered
-            msg = "PPN is not defined"
-            tkMessageBox.showerror("No PPN", msg)
-        elif config.enablePPNLookup and self.catid_entry.get().strip() != self.catidOld:
-            # New PPN
-            msg = "New PPN, cannot increase from previous"
-            tkMessageBox.showerror("New PPN", msg)
-        elif not config.enablePPNLookup and self.title_entry.get().strip() == "":
-            # No title entered
-            msg = "Title is not defined"
-            tkMessageBox.showerror("No title", msg)
-        elif not config.enablePPNLookup and self.title_entry.get().strip() != self.titleOld:
-            # New title
-            msg = "New title, cannot increase from previous"
-            tkMessageBox.showerror("New title", msg)
+        if self.titleOld == "":
+            msg = "Previous title is not defined"
+            tkMessageBox.showerror("Tile not defined", msg)
         else:
-            volumeNoNew = str(int(self.volumeNoOld) + 1)
-            self.volumeNo_entry.insert(tk.END, volumeNoNew)
+            self.title_entry.insert(tk.END, self.titleOld)
+            if self.volumeNoOld != "":
+                volumeNoNew = str(int(self.volumeNoOld) + 1)
+                self.volumeNo_entry.delete(0, tk.END)
+                self.volumeNo_entry.insert(tk.END, volumeNoNew)
 
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
@@ -364,6 +355,7 @@ class carrierEntry(tk.Frame):
                     self.title_entry.delete(0, tk.END)
                     self.title_entry.focus_set()
                 self.volumeNo_entry.delete(0, tk.END)
+                self.volumeNo_entry.insert(tk.END, "1")
 
     def setupLogger(self):
         """Set up logging-related settings"""
@@ -409,7 +401,7 @@ class carrierEntry(tk.Frame):
         # Read configuration file
         getConfiguration()
         
-        self.root.title('iromlab')
+        self.root.title('iromlab v.' + config.version)
         self.root.option_add('*tearOff', 'FALSE')
         self.grid(column=0, row=0, sticky='ew')
         self.grid_columnconfigure(0, weight=1, uniform='a')
@@ -450,11 +442,13 @@ class carrierEntry(tk.Frame):
         # Disable finalise button on startup
         self.bFinalise.config(state='disabled')
 
+        ttk.Separator(self, orient='horizontal').grid(column=0, row=2, columnspan=4, sticky='ew')
+
         # Entry elements for each carrier
 
         if config.enablePPNLookup:
             # Catalog ID (PPN)
-            tk.Label(self, text='PPN').grid(column=0, row=4, sticky='w')
+            tk.Label(self, text='PPN').grid(column=0, row=3, sticky='w')
             self.catid_entry = tk.Entry(self, width=20, state='disabled')
 
             # Pressing this button adds previously entered PPN to entry field
@@ -463,15 +457,14 @@ class carrierEntry(tk.Frame):
                                height=1,
                                width=2,
                                underline=0,
-                               bg='#ded4db',
                                state='disabled',
                                command=self.on_usepreviousPPN)
-            self.usepreviousPPN_button.grid(column=2, row=4, sticky='ew')
+            self.usepreviousPPN_button.grid(column=2, row=3, sticky='ew')
 
-            self.catid_entry.grid(column=1, row=4, sticky='w')
+            self.catid_entry.grid(column=1, row=3, sticky='w')
         else:
             # PPN lookup disabled, so present Title entry field
-            tk.Label(self, text='Title').grid(column=0, row=4, sticky='w')
+            tk.Label(self, text='Title').grid(column=0, row=3, sticky='w')
             self.title_entry = tk.Entry(self, width=45, state='disabled')
 
             # Pressing this button adds previously entered title to entry field
@@ -480,43 +473,34 @@ class carrierEntry(tk.Frame):
                                height=1,
                                width=2,
                                underline=0,
-                               bg='#ded4db',
                                state='disabled',
                                command=self.on_usepreviousTitle)
-            self.usepreviousTitle_button.grid(column=3, row=4, sticky='ew')
-            self.title_entry.grid(column=1, row=4, sticky='w', columnspan=3)
+            self.usepreviousTitle_button.grid(column=3, row=3, sticky='ew')
+            self.title_entry.grid(column=1, row=3, sticky='w', columnspan=3)
 
         # Volume number
-        tk.Label(self, text='Volume number').grid(column=0, row=5, sticky='w')
+        tk.Label(self, text='Volume number').grid(column=0, row=4, sticky='w')
         self.volumeNo_entry = tk.Entry(self, width=5, state='disabled')
         
-        # Pressing this button increases volume number from previous value
-        self.increaseVolumeNumber_button = tk.Button(self,
-                           text='Increase previous',
-                           height=1,
-                           width=2,
-                           underline=0,
-                           bg='#ded4db',
-                           state='disabled',
-                           command=self.on_increaseVolumeNumber)
-        self.increaseVolumeNumber_button.grid(column=3, row=5, sticky='ew')
+        self.volumeNo_entry.grid(column=1, row=4, sticky='w')
 
-        self.volumeNo_entry.grid(column=1, row=5, sticky='w')
+        ttk.Separator(self, orient='horizontal').grid(column=0, row=5, columnspan=4, sticky='ew')
 
         self.submit_button = tk.Button(self,
                                        text='Submit',
                                        height=2,
                                        width=4,
                                        underline=0,
-                                       bg='#ded4db',
                                        state='disabled',
                                        command=self.on_submit)
-        self.submit_button.grid(column=1, row=13, sticky='ew')
+        self.submit_button.grid(column=1, row=6, sticky='ew')
+
+        ttk.Separator(self, orient='horizontal').grid(column=0, row=7, columnspan=4, sticky='ew')
 
         # Add ScrolledText widget to display logging info
         self.st = ScrolledText.ScrolledText(self, state='disabled', height=15)
         self.st.configure(font='TkFixedFont')
-        self.st.grid(column=0, row=15, sticky='w', columnspan=4)
+        self.st.grid(column=0, row=8, sticky='w', columnspan=4)
 
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
@@ -551,7 +535,7 @@ class carrierEntry(tk.Frame):
         self.bOpen.config(state='normal')
         self.bFinalise.config(state='disabled')
         self.bExit.config(state='normal')
-        self.submit_button.config(state='normal')
+        self.submit_button.config(state='disabled')
         if config.enablePPNLookup:
             self.catid_entry.config(state='disabled')
             self.usepreviousPPN_button.config(state='disabled')
@@ -559,7 +543,6 @@ class carrierEntry(tk.Frame):
             self.title_entry.config(state='disabled')
             self.usepreviousTitle_button.config(state='disabled')
         self.volumeNo_entry.config(state='disabled')
-        self.increaseVolumeNumber_button.config(state='disabled')
 
 class QueueHandler(logging.Handler):
     """Class to send logging records to a queue
@@ -741,7 +724,7 @@ def getConfiguration():
 
 def main():
     """Main function"""
-
+    config.version = __version__
     root = tk.Tk()
     myCarrierEntry = carrierEntry(root)
     # This ensures application quits normally if user closes window
