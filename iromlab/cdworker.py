@@ -555,8 +555,8 @@ def cdWorker():
                 carrierData['volumeNo'] = jobList[3]
 
                 # Process the carrier
-                success = processDisc(carrierData)
-                # success = processDiscTest(carrierData)
+                #success = processDisc(carrierData)
+                success = processDiscTest(carrierData)
 
             if success and not endOfBatchFlag:
                 # Remove job file

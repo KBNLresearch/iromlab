@@ -144,6 +144,7 @@ class carrierEntry(tk.Frame):
                 self.title_entry.config(state='normal')
                 self.usepreviousTitle_button.config(state='normal')
             self.volumeNo_entry.config(state='normal')
+            self.volumeNo_entry.delete(0, tk.END)
             self.volumeNo_entry.insert(tk.END, "1")
             self.submit_button.config(state='normal')
             config.readyToStart = True
@@ -204,6 +205,7 @@ class carrierEntry(tk.Frame):
                         self.title_entry.config(state='normal')
                         self.usepreviousTitle_button.config(state='normal')
                     self.volumeNo_entry.config(state='normal')
+                    self.volumeNo_entry.delete(0, tk.END)
                     self.volumeNo_entry.insert(tk.END, "1")
 
                     # Set readyToStart
@@ -230,6 +232,7 @@ class carrierEntry(tk.Frame):
             else:
                 self.title_entry.config(state='disabled')
                 self.usepreviousTitle_button.config(state='disabled')
+            self.volumeNo_entry.delete(0, tk.END)
             self.volumeNo_entry.config(state='disabled')
 
     def on_usepreviousPPN(self, event=None):
