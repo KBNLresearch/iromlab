@@ -279,12 +279,6 @@ class carrierEntry(tk.Frame):
             self.titleOld = title
         volumeNo = self.volumeNo_entry.get().strip()
         self.volumeNoOld = volumeNo
-        carrierTypeCode = self.v.get()
-
-        # Lookup carrierType for carrierTypeCode value
-        for i in self.carrierTypes:
-            if i[1] == carrierTypeCode:
-                carrierType = i[0]
 
         if config.enablePPNLookup:
             # Lookup catalog identifier
@@ -356,7 +350,7 @@ class carrierEntry(tk.Frame):
                 jobCSV = csv.writer(fJob, lineterminator='\n')
 
                 # Row items to list
-                rowItems = ([jobID, catid, title, volumeNo, carrierType])
+                rowItems = ([jobID, catid, title, volumeNo])
 
                 # Write row to job and close file
                 jobCSV.writerow(rowItems)
@@ -508,31 +502,6 @@ class carrierEntry(tk.Frame):
         self.increaseVolumeNumber_button.grid(column=3, row=5, sticky='ew')
 
         self.volumeNo_entry.grid(column=1, row=5, sticky='w')
-
-        # Carrier type (radio button select)
-        self.v = tk.IntVar()
-        self.v.set(1)
-
-        # List with all possible carrier types, corresponding button codes, keyboard
-        # shortcut character (keyboard shortcuts not actually used yet)
-        self.carrierTypes = [
-            ['cd-rom', 1, 0],
-            ['cd-audio', 2, 3],
-            ['dvd-rom', 3, 0],
-            ['dvd-video', 4, 4]
-        ]
-
-        tk.Label(self, text='Carrier type').grid(column=0, row=6, sticky='w', columnspan=4)
-
-        rowValue = 6
-
-        for carrierType in self.carrierTypes:
-            self.rb = tk.Radiobutton(self,
-                                     text=carrierType[0],
-                                     variable=self.v,
-                                     value=carrierType[1])
-            self.rb.grid(column=1, row=rowValue, sticky='w')
-            rowValue += 1
 
         self.submit_button = tk.Button(self,
                                        text='Submit',

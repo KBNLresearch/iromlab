@@ -360,7 +360,6 @@ def processDisc(carrierData):
     rowBatchManifest = ([jobID,
                          carrierData['PPN'],
                          carrierData['volumeNo'],
-                         carrierData['carrierType'],
                          carrierData['title'],
                          volumeID,
                          str(success),
@@ -369,8 +368,6 @@ def processDisc(carrierData):
                          str(carrierInfo['cdExtra']),
                          str(carrierInfo['mixedMode']),
                          str(carrierInfo['cdInteractive'])])
-
-    # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
 
     # Open batch manifest in append mode
     if sys.version.startswith('3'):
@@ -417,15 +414,12 @@ def processDiscTest(carrierData):
     rowBatchManifest = ([jobID,
                          carrierData['PPN'],
                          carrierData['volumeNo'],
-                         carrierData['carrierType'],
                          carrierData['title'],
                          volumeID,
                          str(success),
                          str(carrierInfo['containsAudio']),
                          str(carrierInfo['containsData']),
                          str(carrierInfo['cdExtra'])])
-
-    # Note: carrierType is value entered by user, NOT auto-detected value! Might need some changes.
 
     # Open batch manifest in append mode
     if sys.version.startswith('3'):
@@ -475,7 +469,6 @@ def cdWorker():
         headerBatchManifest = (['jobID',
                                 'PPN',
                                 'volumeNo',
-                                'carrierType',
                                 'title',
                                 'volumeID',
                                 'success',
@@ -560,7 +553,6 @@ def cdWorker():
                 carrierData['PPN'] = jobList[1]
                 carrierData['title'] = jobList[2]
                 carrierData['volumeNo'] = jobList[3]
-                carrierData['carrierType'] = jobList[4]
 
                 # Process the carrier
                 success = processDisc(carrierData)
