@@ -132,6 +132,7 @@ class carrierEntry(tk.Frame):
             # Notify user
             msg = 'Created batch ' + batchName
             tkMessageBox.showinfo("Created batch", msg)
+            logging.info(''.join(['batchFolder set to ', config.batchFolder]))
 
             # Update state of buttons / widgets
             self.bNew.config(state='disabled')
@@ -147,7 +148,13 @@ class carrierEntry(tk.Frame):
             self.volumeNo_entry.delete(0, tk.END)
             self.volumeNo_entry.insert(tk.END, "1")
             self.submit_button.config(state='normal')
-            config.readyToStart = True
+
+            # Flag that is True if batch is open
+            config.batchIsOpen = True
+            # Set readyToStart flag to True, except if startOnFinalise flag is activated,
+            # in which case readyToStart is set to True on finalisation
+            if not config.startOnFinalise:
+                config.readyToStart = True
 
 
     def on_open(self, event=None):
@@ -208,9 +215,12 @@ class carrierEntry(tk.Frame):
                     self.volumeNo_entry.delete(0, tk.END)
                     self.volumeNo_entry.insert(tk.END, "1")
 
-                    # Set readyToStart
-                    config.readyToStart = True
-
+                    # Flag that is True if batch is open
+                    config.batchIsOpen = True
+                    # Set readyToStart flag to True, except if startOnFinalise flag is activated,
+                    # in which case readyToStart is set to True on finalisation
+                    if not config.startOnFinalise:
+                        config.readyToStart = True
 
     def on_finalise(self, event=None):
         """Finalise batch after user pressed finalise button"""
@@ -234,6 +244,10 @@ class carrierEntry(tk.Frame):
                 self.usepreviousTitle_button.config(state='disabled')
             self.volumeNo_entry.delete(0, tk.END)
             self.volumeNo_entry.config(state='disabled')
+            
+            # If the startOnFinalise option was activated, set readyToStart flag to True
+            if config.startOnFinalise:
+                config.readyToStart = True
 
     def on_usepreviousPPN(self, event=None):
         """Add previously entered PPN to entry field"""
@@ -286,7 +300,7 @@ class carrierEntry(tk.Frame):
         else:
             noGGCRecords = 1
 
-        if not config.readyToStart:
+        if not config.batchIsOpen:
             msg = "You must first create a batch or open an existing batch"
             tkMessageBox.showerror("Not ready", msg)
         elif not representsInt(volumeNo):
@@ -349,6 +363,12 @@ class carrierEntry(tk.Frame):
                 # Write row to job and close file
                 jobCSV.writerow(rowItems)
                 fJob.close()
+
+                # Create log entry of PPN/Title + Volume number
+                if config.enablePPNLookup:
+                    logging.info(''.join([catid, ' - ', title[:38], ' (', volumeNo, ')']))
+                else:
+                    logging.info(''.join([title[:38], ' (', volumeNo, ')']))
 
                 # Reset entry fields and set focus on PPN / Title field
                 if config.enablePPNLookup:
@@ -624,10 +644,7 @@ def getConfiguration():
     This assumes an non-frozen script (no Py2Exe!)
     """
 
-    # From where is this script executed?)
-    rootPath = os.path.abspath(get_main_dir())
     # Locate Windows profile directory
-    # userDir = os.path.expanduser('~') 
     userDir = os.environ['USERPROFILE']
     
     # Locate package directory
@@ -683,6 +700,10 @@ def getConfiguration():
         config.enablePPNLookup = True
     else:
         config.enablePPNLookup = False
+    if findElementText(configElt, './config/startOnFinalise') == "True":
+        config.startOnFinalise = True
+    else:
+        config.startOnFinalise = False
 
     # Normalise all file paths
     config.rootDir = os.path.normpath(config.rootDir)

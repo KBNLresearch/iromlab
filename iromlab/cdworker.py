@@ -459,8 +459,6 @@ def cdWorker():
     while not config.readyToStart:
         time.sleep(2)
 
-    logging.info(''.join(['batchFolder set to ', config.batchFolder]))
-
     # Define batch manifest (CSV file with minimal metadata on each carrier)
     config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
 
