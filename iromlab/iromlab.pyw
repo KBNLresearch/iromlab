@@ -24,17 +24,11 @@ import threading
 import uuid
 import logging
 import queue
-try:
-    import tkinter as tk  # Python 3.x
-    from tkinter import filedialog as tkFileDialog
-    from tkinter import scrolledtext as ScrolledText
-    from tkinter import messagebox as tkMessageBox
-    from tkinter import ttk
-except ImportError:
-    import Tkinter as tk  # Python 2.x
-    import tkFileDialog
-    import ScrolledText
-    import tkMessageBox
+import tkinter as tk
+from tkinter import filedialog as tkFileDialog
+from tkinter import scrolledtext as ScrolledText
+from tkinter import messagebox as tkMessageBox
+from tkinter import ttk
 from . import config
 from .kbapi import sru
 from . import cdworker
@@ -350,12 +344,7 @@ class carrierEntry(tk.Frame):
                 # Create and populate Job file
                 jobFile = os.path.join(config.jobsFolder, jobID + ".txt")
 
-                if sys.version.startswith('3'):
-                    # Py3: csv.reader expects file opened in text mode
-                    fJob = open(jobFile, "w", encoding="utf-8")
-                elif sys.version.startswith('2'):
-                    # Py2: csv.reader expects file opened in binary mode
-                    fJob = open(jobFile, "wb")
+                fJob = open(jobFile, "w", encoding="utf-8")
 
                 # Create CSV writer object
                 jobCSV = csv.writer(fJob, lineterminator='\n')

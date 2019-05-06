@@ -13,10 +13,7 @@ import hashlib
 import logging
 import pythoncom
 import wmi
-try:
-    import thread  # Python 2.x
-except ImportError:
-    import _thread as thread  # Python 3.x
+import _thread as thread
 from . import config
 from . import drivers
 from . import cdinfo
@@ -370,12 +367,7 @@ def processDisc(carrierData):
                          str(carrierInfo['cdInteractive'])])
 
     # Open batch manifest in append mode
-    if sys.version.startswith('3'):
-        # Py3: csv.reader expects file opened in text mode
-        bm = open(config.batchManifest, "a", encoding="utf-8")
-    elif sys.version.startswith('2'):
-        # Py2: csv.reader expects file opened in binary mode
-        bm = open(config.batchManifest, "ab")
+    bm = open(config.batchManifest, "a", encoding="utf-8")
 
     # Create CSV writer object
     csvBm = csv.writer(bm, lineterminator='\n')
@@ -422,12 +414,7 @@ def processDiscTest(carrierData):
                          str(carrierInfo['cdExtra'])])
 
     # Open batch manifest in append mode
-    if sys.version.startswith('3'):
-        # Py3: csv.reader expects file opened in text mode
-        bm = open(config.batchManifest, "a", encoding="utf-8")
-    elif sys.version.startswith('2'):
-        # Py2: csv.reader expects file opened in binary mode
-        bm = open(config.batchManifest, "ab")
+    bm = open(config.batchManifest, "a", encoding="utf-8")
 
     # Create CSV writer object
     csvBm = csv.writer(bm, lineterminator='\n')
@@ -482,12 +469,7 @@ def cdWorker():
                                 'cdInteractive'])
 
         # Open batch manifest in append mode
-        if sys.version.startswith('3'):
-            # Py3: csv.reader expects file opened in text mode
-            bm = open(config.batchManifest, "a", encoding="utf-8")
-        elif sys.version.startswith('2'):
-            # Py2: csv.reader expects file opened in binary mode
-            bm = open(config.batchManifest, "ab")
+        bm = open(config.batchManifest, "a", encoding="utf-8")
 
         # Create CSV writer object
         csvBm = csv.writer(bm, lineterminator='\n')
@@ -524,13 +506,7 @@ def cdWorker():
             jobOldest = files[0]
 
             # Open job file and read contents
-
-            if sys.version.startswith('3'):
-                # Py3: csv.reader expects file opened in text mode
-                fj = open(jobOldest, "r", encoding="utf-8")
-            elif sys.version.startswith('2'):
-                # Py2: csv.reader expects file opened in binary mode
-                fj = open(jobOldest, "rb")
+            fj = open(jobOldest, "r", encoding="utf-8")
 
             fjCSV = csv.reader(fj)
             jobList = next(fjCSV)
