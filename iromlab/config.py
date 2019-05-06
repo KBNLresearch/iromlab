@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 """Shared configuration constants"""
 
+version = ""
 cdDriveLetter = ""
 cdDeviceName = ""
 reportFormatString = ""

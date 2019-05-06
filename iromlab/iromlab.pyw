@@ -42,7 +42,7 @@ from . import cdinfo
 
 
 __version__ = '0.11.0'
-
+config.version = __version__
 
 class carrierEntry(tk.Frame):
 

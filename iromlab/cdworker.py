@@ -459,6 +459,11 @@ def cdWorker():
     while not config.readyToStart:
         time.sleep(2)
 
+    # Write Iromlab version to file in batch
+    versionFile = os.path.join(config.batchFolder, 'version.txt')
+    with open(versionFile, "w") as vf:
+        vf.write(config.version + '\n')
+
     # Define batch manifest (CSV file with minimal metadata on each carrier)
     config.batchManifest = os.path.join(config.batchFolder, 'manifest.csv')
 
