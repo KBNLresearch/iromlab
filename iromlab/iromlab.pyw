@@ -64,6 +64,7 @@ class carrierEntry(tk.Frame):
         self.catidOld = ""
         self.titleOld = ""
         self.volumeNoOld = ""
+        self.carrierNumber = 0
         self.build_gui()
 
     def on_quit(self, event=None):
@@ -277,6 +278,8 @@ class carrierEntry(tk.Frame):
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
 
+        self.carrierNumber += 1
+
         # Fetch entered values (strip any leading / tralue whitespace characters)
         if config.enablePPNLookup:
             catid = self.catid_entry.get().strip()
@@ -366,9 +369,9 @@ class carrierEntry(tk.Frame):
 
                 # Create log entry of PPN/Title + Volume number
                 if config.enablePPNLookup:
-                    logging.info(''.join([catid, ' - ', title[:38], ' (', volumeNo, ')']))
+                    logging.info(''.join([str(self.carrierNumber), ' - ', catid, ' - ', title[:46], ' (', volumeNo, ')']))
                 else:
-                    logging.info(''.join([title[:38], ' (', volumeNo, ')']))
+                    logging.info(''.join([str(self.carrierNumber), ' - ', title[:46], ' (', volumeNo, ')']))
 
                 # Reset entry fields and set focus on PPN / Title field
                 if config.enablePPNLookup:
