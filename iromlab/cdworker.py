@@ -536,6 +536,7 @@ def cdWorker():
                 endOfBatchFlag = True
                 config.readyToStart = False
                 config.finishedBatch = True
+                config.batchIsOpen = False
                 os.remove(jobOldest)
                 shutil.rmtree(config.jobsFolder)
                 shutil.rmtree(config.jobsFailedFolder)
