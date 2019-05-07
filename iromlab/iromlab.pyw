@@ -68,8 +68,9 @@ class carrierEntry(tk.Frame):
         config.quitFlag = True
         self.bExit.config(state='disabled')
         self.bFinalise.config(state='disabled')
-        msg = 'User pressed Exit, quitting after current disc has been processed'
-        tkMessageBox.showinfo("Info", msg)
+        if config.batchIsOpen:
+            msg = 'User pressed Exit, quitting after current disc has been processed'
+            tkMessageBox.showinfo("Info", msg)
         if not config.readyToStart:
             # Wait 2 seconds to avoid race condition
             time.sleep(2)
