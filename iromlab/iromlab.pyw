@@ -521,9 +521,10 @@ class carrierEntry(tk.Frame):
         self.tv.heading('#1', text='PPN')
         self.tv.heading('#2', text='Title')
         self.tv.heading('#3', text='Volume number')
-        self.tv.column('#1', stretch=tk.YES)
-        self.tv.column('#2', stretch=tk.YES)
-        self.tv.column('#3', stretch=tk.YES)
+        self.tv.column('#0', stretch=tk.YES, width=5)
+        self.tv.column('#1', stretch=tk.YES, width=10)
+        self.tv.column('#2', stretch=tk.YES, width=250)
+        self.tv.column('#3', stretch=tk.YES, width=5)
         self.tv.grid(column=0, row=8, sticky='ew', columnspan=4)
 
         # ScrolledText widget displays logging info
@@ -551,8 +552,10 @@ class carrierEntry(tk.Frame):
         for item in tvItems:
            self.tv.delete(item)
         # Clear contents of ScrolledText widget
-        # TODO: this does not appear to have any effect! 
+        # Only works if state is 'normal'
+        self.st.config(state='normal')
         self.st.delete(1.0, tk.END)
+        self.st.config(state='disabled')
         # Logging stuff
         self.logger = logging.getLogger()
         # Create a logging handler using a queue
