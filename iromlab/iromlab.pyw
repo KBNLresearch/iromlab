@@ -544,6 +544,11 @@ class carrierEntry(tk.Frame):
 
     def reset_gui(self):
         """Reset the GUI"""
+        # Clear items in treeview widget
+
+        tvItems = self.tv.get_children()
+        for item in tvItems:
+           self.tv.delete(item)
         # Clear contents of ScrolledText widget
         # TODO: this does not appear to have any effect! 
         self.st.delete(1.0, tk.END)
