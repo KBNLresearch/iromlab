@@ -356,11 +356,8 @@ class carrierEntry(tk.Frame):
                 jobCSV.writerow(rowItems)
                 fJob.close()
 
-                # Create log entry of PPN/Title + Volume number
-                if config.enablePPNLookup:
-                    logging.info(''.join([str(self.carrierNumber), ' - ', catid, ' - ', title[:46], ' (', volumeNo, ')']))
-                else:
-                    logging.info(''.join([str(self.carrierNumber), ' - ', title[:46], ' (', volumeNo, ')']))
+                # Display PPN/Title + Volume number in treeview widget
+                self.tv.insert('', 0, text=str(self.carrierNumber), values=(catid, title, volumeNo))
 
                 # Reset entry fields and set focus on PPN / Title field
                 if config.enablePPNLookup:
@@ -512,10 +509,22 @@ class carrierEntry(tk.Frame):
 
         ttk.Separator(self, orient='horizontal').grid(column=0, row=7, columnspan=4, sticky='ew')
 
-        # Add ScrolledText widget to display logging info
+        # Treeview widget displays info on entered carriers
+        self.tv = ttk.Treeview(self, height=10,
+                               columns=('PPN', 'Title', 'VolumeNo'))
+        self.tv.heading('#0', text='Queue number')
+        self.tv.heading('#1', text='PPN')
+        self.tv.heading('#2', text='Title')
+        self.tv.heading('#3', text='Volume number')
+        self.tv.column('#1', stretch=tk.YES)
+        self.tv.column('#2', stretch=tk.YES)
+        self.tv.column('#3', stretch=tk.YES)
+        self.tv.grid(column=0, row=8, sticky='ew', columnspan=4)
+
+        # ScrolledText widget displays logging info
         self.st = ScrolledText.ScrolledText(self, state='disabled', height=15)
         self.st.configure(font='TkFixedFont')
-        self.st.grid(column=0, row=8, sticky='w', columnspan=4)
+        self.st.grid(column=0, row=10, sticky='ew', columnspan=4)
 
         # Define bindings for keyboard shortcuts: buttons
         self.root.bind_all('<Control-Key-n>', self.on_create)
