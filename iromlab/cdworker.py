@@ -174,6 +174,8 @@ def processDisc(carrierData):
         carrierInfo['containsAudio'] = False
         carrierInfo['containsData'] = False
         carrierInfo['cdExtra'] = False
+        carrierInfo['mixedMode'] = False
+        carrierInfo['cdInteractive'] = False
     else:
         # Get disc info
         logging.info('*** Running cd-info ***')
