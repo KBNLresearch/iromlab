@@ -286,14 +286,18 @@ class carrierEntry(tk.Frame):
         self.volumeNoOld = volumeNo
 
         if config.enablePPNLookup:
-            # Lookup catalog identifier
-            sruSearchString = '"PPN=' + str(catid) + '"'
-            response = sru.search(sruSearchString, "GGC")
-
-            if not response:
+            # Check for empty string
+            if str(catid) == '':
                 noGGCRecords = 0
             else:
-                noGGCRecords = response.sru.nr_of_records
+                # Lookup catalog identifier
+                sruSearchString = '"PPN=' + str(catid) + '"'
+                response = sru.search(sruSearchString, "GGC")
+
+                if not response:
+                    noGGCRecords = 0
+                else:
+                    noGGCRecords = response.sru.nr_of_records
         else:
             noGGCRecords = 1
 
