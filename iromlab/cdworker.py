@@ -312,14 +312,15 @@ def processDisc(carrierData):
             reject = True
             logging.error("Unable to identify disc type")
 
-        # Fetch metadata from KBMDO and store as file
-        logging.info('*** Writing metadata from KB-MDO to file ***')
+        if config.enablePPNLookup:
+            # Fetch metadata from KBMDO and store as file
+            logging.info('*** Writing metadata from KB-MDO to file ***')
 
-        successMdoWrite = mdo.writeMDORecord(PPN, dirDisc)
-        if not successMdoWrite:
-            success = False
-            reject = True
-            logging.error("Could not write metadata from KB-MDO")
+            successMdoWrite = mdo.writeMDORecord(PPN, dirDisc)
+            if not successMdoWrite:
+                success = False
+                reject = True
+                logging.error("Could not write metadata from KB-MDO")
 
         # Generate checksum file
         logging.info('*** Computing checksums ***')
