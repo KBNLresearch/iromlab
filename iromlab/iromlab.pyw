@@ -170,9 +170,6 @@ class carrierEntry(tk.Frame):
         if not os.path.isdir(config.jobsFolder):
             msg = 'cannot open finalized batch'
             tkMessageBox.showerror("Error", msg)
-            #errorExit(msg)
-            #quit()
-            #os._exit(0)
         else:
             # Set up logging
             successLogger = True
