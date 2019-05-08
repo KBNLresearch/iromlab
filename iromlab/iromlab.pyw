@@ -189,6 +189,8 @@ class carrierEntry(tk.Frame):
                 logging.info(''.join(['*** Opening existing batch ', config.batchFolder, ' ***']))
 
                 if config.batchFolder != '':
+                    # Import info on jobs in queue to the treeview widget
+
                     # Get directory listing of job files sorted by creation time
                     jobFiles = list(filter(os.path.isfile, glob.glob(config.jobsFolder + '/*')))
                     jobFiles.sort(key=lambda x: os.path.getctime(x))
