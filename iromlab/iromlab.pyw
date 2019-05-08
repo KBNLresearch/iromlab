@@ -19,6 +19,7 @@ import os
 import csv
 import imp
 import time
+import glob
 import xml.etree.ElementTree as ETree
 import threading
 import uuid
@@ -188,6 +189,27 @@ class carrierEntry(tk.Frame):
                 logging.info(''.join(['*** Opening existing batch ', config.batchFolder, ' ***']))
 
                 if config.batchFolder != '':
+                    # Get directory listing of job files sorted by creation time
+                    jobFiles = list(filter(os.path.isfile, glob.glob(config.jobsFolder + '/*')))
+                    jobFiles.sort(key=lambda x: os.path.getctime(x))
+                    jobCount = 1
+
+                    for job in  jobFiles:
+                         # Open job file, read contents to list
+                        fj = open(job, "r", encoding="utf-8")
+                        fjCSV = csv.reader(fj)
+                        jobList = next(fjCSV)
+                        fj.close()
+
+                        if jobList[0] != 'EOB':
+                            PPN = jobList[1]
+                            title = jobList[2]
+                            volumeNo = jobList[3]
+
+                            # Add PPN/Title + Volume number to treeview widget
+                            self.tv.insert('', 0, text=str(jobCount), values=(PPN, title, volumeNo))
+                            jobCount += 1
+
                     # Update state of buttons /widgets, taking into account whether batch was
                     # finalized by user
                     self.bNew.config(state='disabled')
