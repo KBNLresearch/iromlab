@@ -264,7 +264,7 @@ def processDisc(carrierData):
                 logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
         elif carrierInfo["containsData"] and not carrierInfo["cdInteractive"]:
-            logging.info('*** Extract data session to ISO ***')
+            logging.info('*** Extracting data session to ISO ***')
             # Create ISO image of first session
             resultIsoBuster = isobuster.extractData(dirDisc, 1, 0)
 
@@ -295,7 +295,7 @@ def processDisc(carrierData):
             logging.info(''.join(['imageTruncated: ', str(imageTruncated)]))
 
         elif carrierInfo["cdInteractive"]:
-            logging.info('*** Extract data from CD Interactive to raw image file ***')
+            logging.info('*** Extracting data from CD Interactive to raw image file ***')
             resultIsoBuster = isobuster.extractCdiData(dirDisc)
             statusIsoBuster = resultIsoBuster["log"].strip()
 
