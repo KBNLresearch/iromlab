@@ -567,8 +567,9 @@ class carrierEntry(tk.Frame):
 
     def reset_gui(self):
         """Reset the GUI"""
+        # Reset carrierNumber
+        self.carrierNumber = 0
         # Clear items in treeview widget
-
         tvItems = self.tv.get_children()
         for item in tvItems:
            self.tv.delete(item)
