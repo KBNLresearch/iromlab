@@ -732,6 +732,8 @@ def getConfiguration():
     config.rejectExe = findElementText(configElt, './config/rejectExe')
     config.isoBusterExe = findElementText(configElt, './config/isoBusterExe')
     config.dBpowerampConsoleRipExe = findElementText(configElt, './config/dBpowerampConsoleRipExe')
+    config.socketHost = findElementText(configElt, './config/socketHost')
+    config.socketPort = findElementText(configElt, './config/socketPort')
     if findElementText(configElt, './config/enablePPNLookup') == "True":
         config.enablePPNLookup = True
     else:
@@ -740,6 +742,10 @@ def getConfiguration():
         config.startOnFinalise = True
     else:
         config.startOnFinalise = False
+    if findElementText(configElt, './config/enableSocketAPI') == "True":
+        config.enableSocketAPI = True
+    else:
+        config.enableSocketAPI = False
 
     # Normalise all file paths
     config.rootDir = os.path.normpath(config.rootDir)
