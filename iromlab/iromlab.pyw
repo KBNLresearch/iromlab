@@ -32,6 +32,7 @@ from tkinter import messagebox as tkMessageBox
 from tkinter import ttk
 from . import config
 from .kbapi import sru
+from .socketserver import server
 from . import cdworker
 from . import cdinfo
 
@@ -795,8 +796,15 @@ def main():
     myCarrierEntry = carrierEntry(root)
     # This ensures application quits normally if user closes window
     root.protocol('WM_DELETE_WINDOW', myCarrierEntry.on_quit)
+    # Start worker as separate thread
     t1 = threading.Thread(target=cdworker.cdWorker, args=[])
     t1.start()
+    # Start socket API as separate thread
+    if config.enableSocketAPI:
+        myServer = server()
+        t2 = threading.Thread(target=server.start_server,
+                              args=[myServer, config.socketHost, int(config.socketPort)])
+        t2.start()
 
     while True:
         try:
@@ -822,6 +830,8 @@ def main():
             elif config.quitFlag:
                 # User pressed exit
                 t1.join()
+                if config.enableSocketAPI:
+                    t2.join()
                 handlers = myCarrierEntry.logger.handlers[:]
                 for handler in handlers:
                     handler.close()

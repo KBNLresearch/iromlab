@@ -55,4 +55,7 @@ def main():
     port = 65432
     myServer = server()
     myServer.start_server(host, port)
-main()
+
+
+if __name__ == "__main__":
+    main()
