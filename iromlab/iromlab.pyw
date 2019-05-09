@@ -24,6 +24,7 @@ import xml.etree.ElementTree as ETree
 import threading
 import uuid
 import logging
+import json
 import queue
 import tkinter as tk
 from tkinter import filedialog as tkFileDialog
@@ -273,6 +274,7 @@ class carrierEntry(tk.Frame):
             msg = "Previous PPN is not defined"
             tkMessageBox.showerror("PPN not defined", msg)
         else:
+            self.catid_entry.delete(0, tk.END)
             self.catid_entry.insert(tk.END, self.catidOld)
             if self.volumeNoOld != "":
                 # Increase volume number value
@@ -286,6 +288,7 @@ class carrierEntry(tk.Frame):
             msg = "Previous title is not defined"
             tkMessageBox.showerror("Tile not defined", msg)
         else:
+            self.title_entry.delete(0, tk.END)
             self.title_entry.insert(tk.END, self.titleOld)
             if self.volumeNoOld != "":
                 volumeNoNew = str(int(self.volumeNoOld) + 1)
@@ -788,6 +791,39 @@ def getConfiguration():
         msg = '"' + config.audioFormat + '" is not a valid audio format (expected "wav" or "flac")!'
         errorExit(msg)
 
+def handleSocketRequests(q, carrierEntry):
+    """ Update contents of PPN and Title widgets on incoming requests from socket interface
+    """
+    try:
+        # Message is a dictionary
+        message = q.get_nowait()
+        if config.enablePPNLookup:
+            try:
+                catid = (message['catid'])
+                carrierEntry.catid_entry.delete(0, tk.END)
+                carrierEntry.catid_entry.insert(tk.END, catid)
+                if catid == carrierEntry.catidOld:
+                    # Increase volume number value if existing catid
+                    volumeNoNew = str(int(carrierEntry.volumeNoOld) + 1)
+                    carrierEntry.volumeNo_entry.delete(0, tk.END)
+                    carrierEntry.volumeNo_entry.insert(tk.END, volumeNoNew)
+            except KeyError:
+                pass
+        else:
+            try:
+                title = (message['title'])
+                carrierEntry.title_entry.delete(0, tk.END)
+                carrierEntry.title_entry.insert(tk.END, title)
+                if title == carrierEntry.titleOld:
+                    # Increase volume number value if existing catid
+                    volumeNoNew = str(int(carrierEntry.volumeNoOld) + 1)
+                    carrierEntry.volumeNo_entry.delete(0, tk.END)
+                    carrierEntry.volumeNo_entry.insert(tk.END, volumeNoNew)
+            except KeyError:
+                pass
+    except queue.Empty:
+        pass
+
 
 def main():
     """Main function"""
@@ -801,13 +837,16 @@ def main():
     t1.start()
     # Start socket API as separate thread
     if config.enableSocketAPI:
+        q = queue.Queue()
         myServer = server()
         t2 = threading.Thread(target=server.start_server,
-                              args=[myServer, config.socketHost, int(config.socketPort)])
+                              args=[myServer, config.socketHost, int(config.socketPort), q])
         t2.start()
 
     while True:
         try:
+            if config.enableSocketAPI:
+                handleSocketRequests(q, myCarrierEntry)
             root.update_idletasks()
             root.update()
             time.sleep(0.1)

@@ -50,7 +50,7 @@ class Message:
 
     def _write(self):
         if self._send_buffer:
-            print("sending", repr(self._send_buffer), "to", self.addr)
+            #print("sending", repr(self._send_buffer), "to", self.addr)
             try:
                 # Should be ready to write
                 sent = self.sock.send(self._send_buffer)
@@ -136,7 +136,7 @@ class Message:
         self._write()
 
     def close(self):
-        print("closing connection to", self.addr)
+        #print("closing connection to", self.addr)
         try:
             self.selector.unregister(self.sock)
         except Exception as e:
@@ -193,10 +193,11 @@ class Message:
         else:
             # Binary or unknown content-type
             self.request = data
-            print(
-                f'received {self.jsonheader["content-type"]} request from',
-                self.addr,
-            )
+            pass
+            #print(
+            #    f'received {self.jsonheader["content-type"]} request from',
+            #    self.addr,
+            #)
         # Set selector to listen for write events, we're done reading.
         self._set_selector_events_mask("w")
 
