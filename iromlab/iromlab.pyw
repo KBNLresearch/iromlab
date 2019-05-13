@@ -607,6 +607,40 @@ class carrierEntry(tk.Frame):
             self.usepreviousTitle_button.config(state='disabled')
         self.volumeNo_entry.config(state='disabled')
 
+    def handleSocketRequests(self, q):
+        """ Update contents of PPN and Title widgets on incoming requests from socket interface
+        """
+        try:
+            # Message is a dictionary
+            message = q.get_nowait()
+            if config.enablePPNLookup:
+                try:
+                    catid = (message['catid'])
+                    self.catid_entry.delete(0, tk.END)
+                    self.catid_entry.insert(tk.END, catid)
+                    if catid == self.catidOld:
+                        # Increase volume number value if existing catid
+                        volumeNoNew = str(int(self.volumeNoOld) + 1)
+                        self.volumeNo_entry.delete(0, tk.END)
+                        self.volumeNo_entry.insert(tk.END, volumeNoNew)
+                except KeyError:
+                    pass
+            else:
+                try:
+                    title = (message['title'])
+                    self.title_entry.delete(0, tk.END)
+                    self.title_entry.insert(tk.END, title)
+                    if title == self.titleOld:
+                        # Increase volume number value if existing catid
+                        volumeNoNew = str(int(self.volumeNoOld) + 1)
+                        self.volumeNo_entry.delete(0, tk.END)
+                        self.volumeNo_entry.insert(tk.END, volumeNoNew)
+                except KeyError:
+                    pass
+        except queue.Empty:
+            pass
+
+
 class QueueHandler(logging.Handler):
     """Class to send logging records to a queue
     It can be used from different threads
@@ -791,39 +825,6 @@ def getConfiguration():
         msg = '"' + config.audioFormat + '" is not a valid audio format (expected "wav" or "flac")!'
         errorExit(msg)
 
-def handleSocketRequests(q, carrierEntry):
-    """ Update contents of PPN and Title widgets on incoming requests from socket interface
-    """
-    try:
-        # Message is a dictionary
-        message = q.get_nowait()
-        if config.enablePPNLookup:
-            try:
-                catid = (message['catid'])
-                carrierEntry.catid_entry.delete(0, tk.END)
-                carrierEntry.catid_entry.insert(tk.END, catid)
-                if catid == carrierEntry.catidOld:
-                    # Increase volume number value if existing catid
-                    volumeNoNew = str(int(carrierEntry.volumeNoOld) + 1)
-                    carrierEntry.volumeNo_entry.delete(0, tk.END)
-                    carrierEntry.volumeNo_entry.insert(tk.END, volumeNoNew)
-            except KeyError:
-                pass
-        else:
-            try:
-                title = (message['title'])
-                carrierEntry.title_entry.delete(0, tk.END)
-                carrierEntry.title_entry.insert(tk.END, title)
-                if title == carrierEntry.titleOld:
-                    # Increase volume number value if existing catid
-                    volumeNoNew = str(int(carrierEntry.volumeNoOld) + 1)
-                    carrierEntry.volumeNo_entry.delete(0, tk.END)
-                    carrierEntry.volumeNo_entry.insert(tk.END, volumeNoNew)
-            except KeyError:
-                pass
-    except queue.Empty:
-        pass
-
 
 def main():
     """Main function"""
@@ -846,7 +847,7 @@ def main():
     while True:
         try:
             if config.enableSocketAPI:
-                handleSocketRequests(q, myCarrierEntry)
+                myCarrierEntry.handleSocketRequests(q)
             root.update_idletasks()
             root.update()
             time.sleep(0.1)
