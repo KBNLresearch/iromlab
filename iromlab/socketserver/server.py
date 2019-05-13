@@ -21,15 +21,12 @@ class server():
 
     def start_server(self, host, port, messageQueue):
 
-        # Set up queue
-        #q = queue.Queue()
-
         lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Avoid bind() exception: OSError: [Errno 48] Address already in use
         lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         lsock.bind((host, port))
         lsock.listen()
-        #print("listening on", (host, port))
+        print("listening on", (host, port))
         lsock.setblocking(False)
         self.sel.register(lsock, selectors.EVENT_READ, data=None)
 
@@ -44,7 +41,7 @@ class server():
                         try:
                             message.process_events(mask)
                             if mask & selectors.EVENT_READ:
-                                #print(message.request)
+                                print(message.request)
                                 messageQueue.put(message.request)
                         except Exception:
                             print(
