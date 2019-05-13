@@ -615,26 +615,28 @@ class carrierEntry(tk.Frame):
             message = q.get_nowait()
             if config.enablePPNLookup:
                 try:
-                    catid = (message['catid'])
-                    self.catid_entry.delete(0, tk.END)
-                    self.catid_entry.insert(tk.END, catid)
-                    if catid == self.catidOld:
-                        # Increase volume number value if existing catid
-                        volumeNoNew = str(int(self.volumeNoOld) + 1)
-                        self.volumeNo_entry.delete(0, tk.END)
-                        self.volumeNo_entry.insert(tk.END, volumeNoNew)
+                    if message['fieldName'] == 'catid':
+                        catid = (message['value'])
+                        self.catid_entry.delete(0, tk.END)
+                        self.catid_entry.insert(tk.END, catid)
+                        if catid == self.catidOld:
+                            # Increase volume number value if existing catid
+                            volumeNoNew = str(int(self.volumeNoOld) + 1)
+                            self.volumeNo_entry.delete(0, tk.END)
+                            self.volumeNo_entry.insert(tk.END, volumeNoNew)
                 except KeyError:
                     pass
             else:
                 try:
-                    title = (message['title'])
-                    self.title_entry.delete(0, tk.END)
-                    self.title_entry.insert(tk.END, title)
-                    if title == self.titleOld:
-                        # Increase volume number value if existing catid
-                        volumeNoNew = str(int(self.volumeNoOld) + 1)
-                        self.volumeNo_entry.delete(0, tk.END)
-                        self.volumeNo_entry.insert(tk.END, volumeNoNew)
+                    if message['fieldName'] == 'title':
+                        title = (message['value'])
+                        self.title_entry.delete(0, tk.END)
+                        self.title_entry.insert(tk.END, title)
+                        if title == self.titleOld:
+                            # Increase volume number value if existing catid
+                            volumeNoNew = str(int(self.volumeNoOld) + 1)
+                            self.volumeNo_entry.delete(0, tk.END)
+                            self.volumeNo_entry.insert(tk.END, volumeNoNew)
                 except KeyError:
                     pass
         except queue.Empty:
