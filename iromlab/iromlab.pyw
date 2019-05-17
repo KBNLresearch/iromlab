@@ -619,7 +619,7 @@ class carrierEntry(tk.Frame):
                         catid = (message['value'])
                         self.catid_entry.delete(0, tk.END)
                         self.catid_entry.insert(tk.END, catid)
-                        if catid == self.catidOld:
+                        if catid == self.catidOld and catid != "":
                             # Increase volume number value if existing catid
                             volumeNoNew = str(int(self.volumeNoOld) + 1)
                             self.volumeNo_entry.delete(0, tk.END)
@@ -632,7 +632,7 @@ class carrierEntry(tk.Frame):
                         title = (message['value'])
                         self.title_entry.delete(0, tk.END)
                         self.title_entry.insert(tk.END, title)
-                        if title == self.titleOld:
+                        if title == self.titleOld and title != "":
                             # Increase volume number value if existing catid
                             volumeNoNew = str(int(self.volumeNoOld) + 1)
                             self.volumeNo_entry.delete(0, tk.END)
