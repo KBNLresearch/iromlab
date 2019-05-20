@@ -611,37 +611,35 @@ class carrierEntry(tk.Frame):
         """ Update contents of PPN and Title widgets on incoming requests from socket interface
         """
         try:
-            # Message is a dictionary
             message = q.get_nowait()
             if config.enablePPNLookup:
                 try:
-                    if message['fieldName'] == 'catid':
-                        catid = (message['value'])
-                        self.catid_entry.delete(0, tk.END)
-                        self.catid_entry.insert(tk.END, catid)
-                        if catid == self.catidOld and catid != "":
-                            # Increase volume number value if existing catid
-                            volumeNoNew = str(int(self.volumeNoOld) + 1)
-                            self.volumeNo_entry.delete(0, tk.END)
-                            self.volumeNo_entry.insert(tk.END, volumeNoNew)
-                except KeyError:
+                    catid = message
+                    self.catid_entry.delete(0, tk.END)
+                    self.catid_entry.insert(tk.END, catid)
+                    if catid == self.catidOld and catid != "":
+                        # Increase volume number value if existing catid
+                        volumeNoNew = str(int(self.volumeNoOld) + 1)
+                        self.volumeNo_entry.delete(0, tk.END)
+                        self.volumeNo_entry.insert(tk.END, volumeNoNew)
+                except:
+                    # TODO: catch more specific errors here?
                     pass
             else:
                 try:
-                    if message['fieldName'] == 'title':
-                        title = (message['value'])
-                        self.title_entry.delete(0, tk.END)
-                        self.title_entry.insert(tk.END, title)
-                        if title == self.titleOld and title != "":
-                            # Increase volume number value if existing catid
-                            volumeNoNew = str(int(self.volumeNoOld) + 1)
-                            self.volumeNo_entry.delete(0, tk.END)
-                            self.volumeNo_entry.insert(tk.END, volumeNoNew)
-                except KeyError:
+                    title = message
+                    self.title_entry.delete(0, tk.END)
+                    self.title_entry.insert(tk.END, title)
+                    if title == self.titleOld and title != "":
+                        # Increase volume number value if existing catid
+                        volumeNoNew = str(int(self.volumeNoOld) + 1)
+                        self.volumeNo_entry.delete(0, tk.END)
+                        self.volumeNo_entry.insert(tk.END, volumeNoNew)
+                except:
+                    # TODO: catch more specific errors here?
                     pass
         except queue.Empty:
             pass
-
 
 class QueueHandler(logging.Handler):
     """Class to send logging records to a queue
@@ -842,8 +840,8 @@ def main():
     if config.enableSocketAPI:
         q = queue.Queue()
         myServer = server()
-        t2 = threading.Thread(target=server.start_server,
-                              args=[myServer, config.socketHost, int(config.socketPort), q])
+        t2 = threading.Thread(target=server.start,
+                              args=[myServer, config.socketHost, config.socketPort, q])
         t2.start()
 
     while True:

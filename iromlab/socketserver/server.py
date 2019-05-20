@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Simple socket communication server
+Adapted from https://medium.com/python-pandemonium/python-socket-communication-e10b39225a4c
+Original code by Rodgers Ouma Mc'Alila
+""" 
 
 import sys
 import socket
@@ -6,60 +11,50 @@ import selectors
 import traceback
 import queue
 
-from . import libserver
-
 class server():
 
-    sel = selectors.DefaultSelector()
+    def start(self, host, port, messageQueue):
+        """Start server"""
+        # Create a TCP/IP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def accept_wrapper(self, sock):
-        conn, addr = sock.accept()  # Should be ready to read
-        print("accepted connection from", addr)
-        conn.setblocking(False)
-        message = libserver.Message(self.sel, conn, addr)
-        self.sel.register(conn, selectors.EVENT_READ, data=message)
+        # Bind the socket to the port
+        server_address = (host, int(port))
+        print('Starting up on {} port {}'.format(*server_address))
+        sock.bind(server_address)
 
-    def start_server(self, host, port, messageQueue):
+        # Listen for incoming connections
+        sock.listen(1)
 
-        lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Avoid bind() exception: OSError: [Errno 48] Address already in use
-        lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        lsock.bind((host, port))
-        lsock.listen()
-        print("listening on", (host, port))
-        lsock.setblocking(False)
-        self.sel.register(lsock, selectors.EVENT_READ, data=None)
-
-        try:
-            while True:
-                events = self.sel.select(timeout=None)
-                for key, mask in events:
-                    if key.data is None:
-                        self.accept_wrapper(key.fileobj)
+        while True:
+            # Wait for a connection
+            print('waiting for a connection')
+            connection, client_address = sock.accept()
+            try:
+                print('connection from', client_address)
+                myBytes = b''
+                # Receive the data in small chunks and retransmit it
+                while True:
+                    data = connection.recv(16)
+                    myBytes += data
+                    if data:
+                        # print('sending data back to the client')
+                        connection.sendall(data)
                     else:
-                        message = key.data
-                        try:
-                            message.process_events(mask)
-                            if mask & selectors.EVENT_READ:
-                                print(message.request)
-                                messageQueue.put(message.request)
-                        except Exception:
-                            print(
-                                "main: error: exception for",
-                                f"{message.addr}:\n{traceback.format_exc()}",
-                            )
-                            message.close()
-        except KeyboardInterrupt:
-            print("caught keyboard interrupt, exiting")
-        finally:
-            self.sel.close()
+                        # print('no data from', client_address)
+                        break
+            finally:
+                # Decode data to string, and submit it to the queue
+                myString = myBytes.decode('utf-8')
+                messageQueue.put(myString)
+                print("Closing current connection")
+                connection.close()
 
 def main():
     host = '127.0.0.1'
     port = 65432
     myServer = server()
-    myServer.start_server(host, port, queue)
-
+    myServer.start(host, port, queue)
 
 if __name__ == "__main__":
     main()
