@@ -1,10 +1,10 @@
 % Handleiding Workflow Optische Dragers
 % Johan van der Knijff
-% 27 september 2018
+% 21 mei 2019
 
 # Over deze handleiding
 
-Deze handleiding beschrijft de workflow voor het maken van disc images van optische dragers met de *Iromlab* software[^1]. Hierbij wordt verondersteld dat *Iromlab* en alle afhankelijkheden geïnstalleerd en geconfigureerd zijn. Raadpleeg de *Iromlab* Setup Guide[^2] als dit niet het geval is.
+Deze handleiding beschrijft de workflow voor het maken van disc images van optische dragers met de *Iromlab* software[^1]. Hierbij wordt verondersteld dat *Iromlab* en alle afhankelijkheden geïnstalleerd en geconfigureerd zijn. Raadpleeg de *Iromlab* Setup Guide[^2] als dit niet het geval is. Verder wordt verondersteld dat de *startOnFinalize* optie geactiveerd is.
 
 [^1]: Iromlab: <https://github.com/KBNLresearch/iromlab>
 [^2]: Iromlab Setup Guide: <https://github.com/KBNLresearch/iromlab/blob/master/doc/setupGuide.md>
@@ -44,8 +44,7 @@ Voor elke drager moeten de volgende stappen doorlopen worden:
     ![](./img/iromAllesBestandsformaten.png)
 
 * *PPN* is de PPN-identifier waar de drager onder valt (in het voorbeeld hierboven: *155658050*). In veel gevallen bevat een PPN meerdere dragers. In dat geval kan de *Use Previous* knop naast het invoerveld gebruikt worden om de laatst ingevoerde PPN te herhalen.
-* *Volume number* is het volgnummer van de dragers binnen de PPN. Voor de eerste drager is dit 1, voor de tweede 2, enzovoort. De *Increase Previous* knop naast het invoerveld hoogt de laatst ingevoerde waarde op met 1 op. Binnen een PPN worden alle dragers (ongeacht het type) doorgenummerd. Bij een nieuwe PPN begint de nummering weer bij 1.
-* *Carrier type* is het type drager (in het voorbeeld *cd-rom*).
+* *Volume number* is het volgnummer van de dragers binnen de PPN. Voor de eerste drager is dit 1, voor de tweede 2, enzovoort. Wanneer je de *Use Previous* knop voor de PPN invoer gebruikt, worden nieuwe dragers binnen een PPN automatisch doorgenummerd. 
 
 4. druk op de *Submit* knop. *Iromlab* probeert nu de ingevoerde *PPN* op te zoeken in de catalogus. Hierbij kunnen zich drie situaties voordoen:
 
@@ -61,9 +60,11 @@ Voor elke drager moeten de volgende stappen doorlopen worden:
 
     ![](./img/loadDisc.png)
 
-    Plaats nu de drager in de invoer van de discrobot. De eerste drager moet op de drie witte schijfjes rusten (de hierna volgende dragers kunnen bovenop de eerdere ingevoerde dragers worden geplaatst). Let er hierbij op dat de drager goed gecentreerd is, en niet bijvoorbeeld naar één kant uitsteekt (hierdoor kan een drager blijven hangen). Druk vervolgens op *OK*.
+    Plaats nu de drager in de invoer van de discrobot. De eerste drager moet op de drie witte schijfjes rusten (de hierna volgende dragers kunnen bovenop de eerdere ingevoerde dragers worden geplaatst). Let er hierbij op dat de drager goed gecentreerd is, en niet bijvoorbeeld naar één kant uitsteekt (hierdoor kan een drager blijven hangen). Druk vervolgens op *OK*. De ingevoerde gegevens (PPN, titel, volgnummer) verschijnen nu in het middelste venster:
 
-Enkele seconden nadat de eerste drager in de discrobot geplaatst is, wordt deze automatisch geladen in de optische drive, en verder verwerkt. De voortgang van het verwerkingsproces is hierbij te volgen in de tekstwidget onderin het *Iromlab* venster. Nieuwe dragers kunnen continu worden toegevoegd terwijl de discrobot op de achtergrond bezig is met het verwerken van eerder ingevoerde dragers.
+    ![](./img/irompostsubmit.png)
+
+Herhaal de bovenstaande stappen voor de volgende dragers.
 
 # Afsluiten van de batch
 
@@ -75,11 +76,12 @@ Klik nu op *Yes*. Vanaf nu is de batch afgesloten. De *Submit* knop is na het af
 
 ![](./img/postFinalize.png)
 
-De verwerking van de resterende dragers in de batch gaat na het afsluiten gewoon door. Nadat de laatste drager is verwerkt, verschijnt het volgende dialoogvenster:
+Kort na het afsluiten van de batch begint Iromlab nu met het verwerken van de ingevoerde dragers. De voortgang van het verwerkingsproces is hierbij te volgen in de tekstwidget onderin het *Iromlab* venster. Nadat de laatste drager is verwerkt, verschijnt het volgende dialoogvenster:
 
 ![](./img/finished.png)
 
-Klik op *OK*; *Iromlab* wordt nu afgeloten. Start voor het maken van een nieuwe batch *Iromlab* opnieuw op, en volg dan verder de voorgaande instructies.  
+Klik op *OK*; de *Iromlab* interface wordt nu gereset naar de begintoestand, en er kan een nieuwe batch worden aangemaakt.
+
 
 # Verwerking van een lopende batch onderbreken
 
@@ -87,7 +89,7 @@ Het is mogelijk om de verwerking van een lopende batch te onderbreken. Klik hier
 
 | |
 |:--|
-|**Belangrijk**: als het de bedoeling is om de verwerking van de batch later te hervatten (zie volgende paragraaf), laat dan de dragers in de invoer van de discrobot zitten!| 
+|**Belangrijk**: als het de bedoeling is om de verwerking van de batch later te hervatten (zie volgende paragraaf), laat dan de dragers in de invoer van de discrobot zitten!|
 
 # Onderbroken batch hervatten
 
@@ -95,7 +97,7 @@ Druk na het opstarten van *Iromlab* op de *Open* knop. Dit resulteert in een dia
 
 ![](./img/iromlabOpenBatch.png)
 
-Kies nu de gewenste batch en klik dan op *Select Folder*. De verwerking van de batch wordt nu hervat (en er kunnen ook nieuwe dragers worden toegevoegd).
+Kies nu de gewenste batch en klik dan op *Select Folder*. De verwerking van de batch wordt nu hervat.
 
 # Inscannen van hoesjes
 
