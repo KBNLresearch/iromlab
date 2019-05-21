@@ -9,9 +9,9 @@ ISO images are verified using [Isolyzer](https://github.com/KBNLresearch/isolyze
 The disc images/rips are saved in a simple batch structure. Each batch contains a batch manifest, which is a comma-delimited text file with basic information about each carriers, such as:
 
 - An identifier that links to a record in the KB catalogue.
-- A serial number (because carriers may span multiple volumes).
-- A carrier type code (cd-rom, dvd-rom, cd-audio or dvd-video).
+- A volume number (because carriers may span multiple volumes).
 - A True/False flag that indicates the status of iromlab's imaging/ripping process.
+- A series of True/False flags that indicate the presence of audio, data, or particular CD layouts (e.g. CD-extra, mixed mode, of cd-interactive).
 
 These batches can be further processed into ingest-ready Submission Information Packages using [omSipCreator](https://github.com/KBNLresearch/omSipCreator).
 
@@ -51,8 +51,8 @@ Both IsoBuster and dBpoweramp require a license, and they must be installed sepa
 
 ## Contributors
 
-Written by Johan van der Knijff, except *sru.py* which was adapted from the [KB Python API](https://github.com/KBNLresearch/KB-python-API) which is written by WillemJan Faber. 
+Written by Johan van der Knijff, except *sru.py* which was adapted from the [KB Python API](https://github.com/KBNLresearch/KB-python-API) which is written by WillemJan Faber, and the socket server code which  was adapted from an example in [Python Socket Communication](https://medium.com/python-pandemonium/python-socket-communication-e10b39225a4c) by Rodgers Ouma Mc'Alila.
 
 ## License
 
-Iromlab is released under the  Apache License 2.0. The KB Python API is released under the GNU GENERAL PUBLIC LICENSE. The code in the `socketserver` directory was adapted from the source code of the [Socket Programming in Python (Guide)](https://realpython.com/python-sockets/), which is released under the MIT License (see the file LICENSE in the `socketserver` directory). Libcdio, shntool and flac are released under the GNU GENERAL PUBLIC LICENSE. See the directories under `tools` for the respective license statements of these tools. dBpoweramp console rip tool: copyright Illustrate Ltd., 2017.
+Iromlab is released under the  Apache License 2.0. The KB Python API is released under the GNU GENERAL PUBLIC LICENSE. Libcdio, shntool and flac are released under the GNU GENERAL PUBLIC LICENSE. See the directories under `tools` for the respective license statements of these tools. dBpoweramp console rip tool: copyright Illustrate Ltd., 2017.
