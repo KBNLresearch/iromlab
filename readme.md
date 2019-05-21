@@ -2,7 +2,16 @@
 
 ## What it does
 
-Iromlab (Image and Rip Optical Media Like A Boss ) provides a simple and straightforward way to save the content of offline optical media from the KB collection. Internally it wraps around a number of widely-used software tools. Iromlab automatically detects if a carrier contains data, audio, or both. The content of data sessions is extracted and saved as an ISO image using [IsoBuster](https://www.isobuster.com/). For audio sessions all tracks are ripped to WAV or FLAC format with [dBpoweramp](https://www.dbpoweramp.com/). Iromlab supports 'enhanced' audio CDs that contain both audio and data sessions. ('Mixed mode' discs, which contain 1 session that holds both audio and data tracks, are currently not supported).
+Iromlab (Image and Rip Optical Media Like A Boss ) provides a simple and straightforward way to save the content of offline optical media from the KB collection. It currently supports the following carrier types:
+
+- CD-ROM
+- DVD (includes DVD-ROM, DVD-Video and DVD-Audio) 
+- Audio CD
+- 'Enhanced'(Blue Book) CD
+- Mixed mode CD
+- Philip CD-Interactive
+
+Internally Iromlab wraps around a number of widely-used software tools. Iromlab automatically detects the carrier type, including whether it contains data, audio, or a comination of both. The content of data sessions is extracted and saved as an ISO image using [IsoBuster](https://www.isobuster.com/). For audio sessions all tracks are ripped to WAV or FLAC format with [dBpoweramp](https://www.dbpoweramp.com/). Iromlab supports both 'enhanced' audio CDs that contain both audio and data sessions, as well as 'Mixed mode' discs, which contain 1 session that holds both audio and data tracks. Data from Philip CD-Interactive discs is saved as a raw binary image.
 
 ISO images are verified using [Isolyzer](https://github.com/KBNLresearch/isolyzer). Audio files are checked for errors using [shntool](http://www.etree.org/shnutils/shntool/) (WAV format) or [flac](https://xiph.org/flac/) (FLAC format).
 
