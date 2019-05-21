@@ -41,7 +41,7 @@ Voor elke drager moeten de volgende stappen doorlopen worden:
 
 3. Voer in de *Iromlab* interface de vereiste velden in voor deze drager:
 
-    ![](./img/iromAllesBestandsformaten.png)
+    ![](./img/iromAllesBestandsformaten-alt.png)
 
 * *PPN* is de PPN-identifier waar de drager onder valt (in het voorbeeld hierboven: *155658050*). In veel gevallen bevat een PPN meerdere dragers. In dat geval kan de *Use Previous* knop naast het invoerveld gebruikt worden om de laatst ingevoerde PPN te herhalen.
 * *Volume number* is het volgnummer van de dragers binnen de PPN. Voor de eerste drager is dit 1, voor de tweede 2, enzovoort. Wanneer je de *Use Previous* knop voor de PPN invoer gebruikt, worden nieuwe dragers binnen een PPN automatisch doorgenummerd. 
@@ -62,7 +62,7 @@ Voor elke drager moeten de volgende stappen doorlopen worden:
 
     Plaats nu de drager in de invoer van de discrobot. De eerste drager moet op de drie witte schijfjes rusten (de hierna volgende dragers kunnen bovenop de eerdere ingevoerde dragers worden geplaatst). Let er hierbij op dat de drager goed gecentreerd is, en niet bijvoorbeeld naar één kant uitsteekt (hierdoor kan een drager blijven hangen). Druk vervolgens op *OK*. De ingevoerde gegevens (PPN, titel, volgnummer) verschijnen nu in het middelste venster:
 
-    ![](./img/irompostsubmit.png)
+    ![](./img/irompostsubmit-alt.png)
 
 Herhaal de bovenstaande stappen voor de volgende dragers.
 
@@ -72,16 +72,15 @@ Nadat de laatste drager van een batch is ingevoerd, kan de batch afgesloten word
 
 ![](./img/finalize.png)
 
-Klik nu op *Yes*. Vanaf nu is de batch afgesloten. De *Submit* knop is na het afsluiten niet langer actief, en er kunnen geen nieuwe dragers meer worden toegevoegd: 
+Klik nu op *Yes*. Vanaf nu is de batch afgesloten. De *Submit* knop is na het afsluiten niet langer actief, en er kunnen geen nieuwe dragers meer worden toegevoegd. Kort na het afsluiten van de batch begint Iromlab nu met het verwerken van de ingevoerde dragers. De voortgang van het verwerkingsproces is hierbij te volgen in de tekstwidget onderin het *Iromlab* venster:
 
 ![](./img/postFinalize.png)
 
-Kort na het afsluiten van de batch begint Iromlab nu met het verwerken van de ingevoerde dragers. De voortgang van het verwerkingsproces is hierbij te volgen in de tekstwidget onderin het *Iromlab* venster. Nadat de laatste drager is verwerkt, verschijnt het volgende dialoogvenster:
+ Nadat de laatste drager is verwerkt, verschijnt het volgende dialoogvenster:
 
 ![](./img/finished.png)
 
 Klik op *OK*; de *Iromlab* interface wordt nu gereset naar de begintoestand, en er kan een nieuwe batch worden aangemaakt.
-
 
 # Verwerking van een lopende batch onderbreken
 
