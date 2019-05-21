@@ -29,7 +29,7 @@ Klik op de *New* knop linksboven. Iromlab bevestigt de aanmaak van de batch met 
 
 Klik deze melding weg met *OK*. De *Iromlab* interface ziet er nu als volgt uit: 
 
-![](./img/iromBatchCreated.png)
+![](./img/iromBatchCreated-alt.png)
 
 # Verwerking van de dragers
 
