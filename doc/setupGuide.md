@@ -15,7 +15,7 @@ Getting Iromlab up running requires a number of installation and configuration s
 4. Install dBpoweramp
 5. Configure dBpoweramp
 6. Install Iromlab
-7. Configure Iromlab 
+7. Configure Iromlab
 
 This is a bit tedious, but you only have to do this once. Each step is described in detail below.
 
@@ -31,10 +31,8 @@ For this you need the installation disc that is shipped with the Nimbie machine.
 
 **Note:** you don't need to install any of the other software on the installation disc.
 
-
 ## [Isobuster setup and configuration](./setupIsobuster.md)
 
 ## [dBpoweramp setup and configuration](./setupDbpoweramp.md)
 
 ## [Iromlab setup and configuration](./setupIromlab.md)
-

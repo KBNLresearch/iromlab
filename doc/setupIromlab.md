@@ -99,6 +99,18 @@ Defines the maximum number of seconds that Iromlab will wait while trying to loa
 
     <secondsToTimeout>20</secondsToTimeout>
 
+### socketHost
+
+Defines the host address that is used if the socket API is enabled (see below). Use 127.0.0.1 for localhost:
+
+    <socketHost>127.0.0.1</socketHost>
+
+### socketPort
+
+Defines the port that is used if the socket API is enabled (see below):
+
+    <socketPort>65432</socketPor
+
 ### enablePPNLookup
 
 Flag that controls whether PPN lookup is enabled. If set to *True*, the Iromlab interface contains a widget for entering a *PPN* identifier. After submitting, Iromlab then performs a lookup on the PPN in the KB catalogue, and automatically extracts the title of the corresponding entry (which is then added to the batch manifest). If set to *False*, the Iromlab interface contains a widget in which an operator can manually enter a *Title* string; the entered value is written to the batch manifest. In this case no PPN lookup is performed, and the PPN-value in the batch manifest will be a zero-length string.
@@ -110,6 +122,18 @@ Allowed values:
 and:
 
     <enablePPNLookup>False</enablePPNLookup>
+
+### startOnFinalise
+
+This is a flag that -if set to *True*- delays the processing of any discs until the operator finalises the batch (disabled by default):
+
+    <startOnFinalise>False</startOnFinalise>
+
+### enableSocketAPI
+
+This is a flag that -if set to *True*- enables Iromlab to pick up Title and PPN info from a client application through a socket interface (disabled by default):
+
+    <enableSocketAPI>False</enableSocketAPI>
 
 ### reportFormatString
 
