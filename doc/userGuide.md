@@ -41,8 +41,7 @@ We start by entering the required fields:
 ![](./img/iromAllesBestandsformaten.png)
 
 * *PPN* is the PPN that is associated with the carrier (here: *155658050*).
-* *Volume number* is *1* (the assignment of volume numbers and how they are related to carrier type is explained further below).
-* *Carrier type* is *cd-rom*.
+* Leave *Volume number* at the default value of *1* (the assignment of volume numbers and how they are related to carrier type is explained further below).
 
 Now press the *Submit* button. Iromlab now tries to look up up the entered *PPN* in the catalogue. If a matching record is found it will display the corresponding title, and ask for confirmation:
 
@@ -52,7 +51,9 @@ If the displayed title doesn't match your disc (because you accidentally entered
 
 ![](./img/loadDisc.png)
 
-Now load the first disc in the Nimbie loader by placing it on top of the three white loader wheels. After that, press *OK*.
+Now load the first disc in the Nimbie loader by placing it on top of the three white loader wheels. After that, press *OK*. The details (*PPN*, title) of the carrier are added as an entry to the widget in the centr of the *Iromlab* window:  
+
+![](./img/irompostsubmit.png)
 
 After some seconds the Nimbie starts loading the disc. The processing of each disc involves the following steps:
 
@@ -66,12 +67,9 @@ After some seconds the Nimbie starts loading the disc. The processing of each di
 
 ## Process more discs
 
-In order to process additional discs, simply repeat the steps from the previous section for each disc. For multi-volume PPNs you can use the *Use previous* and *Increase previous* buttons:
+In order to process additional discs, simply repeat the steps from the previous section for each disc. For multi-volume PPNs you can use the *Use previous* button. After pressing it, you will see the most recently submitted *PPN* in the *PPN* entry widget, and the *Volume number* widget increases the previously entered value by 1.
 
-* The *Use previous* button next to the *PPN* widget lets you re-use the PPN value from the previous disc.
-* Likewise, the *Increase previous* button next to the *Volume number* widget increases the previously entered volume number by 1.
-
-You can add new discs while the Nimbie is busy processing a disc; in fact you can keep adding discs until the disc loader is full (which is at 30 discs by default, and 100 if the extension rods are used). For each disc, Iromlab creates a *job file* that contains the fields that were entered by the operator (PPN, volume number, carrier type). The job file is then placed in a ["first in first out"](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) (FIFO)  queue. The job files are physically written to the *jobs* directory inside the batch. 
+You can add new discs while the Nimbie is busy processing a disc; in fact you can keep adding discs until the disc loader is full (which is at 30 discs by default, and 100 if the extension rods are used). For each disc, Iromlab creates a *job file* that contains the fields that were entered by the operator (PPN, volume number, carrier type). The job file is then placed in a ["first in first out"](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) (FIFO)  queue. The job files are physically written to the *jobs* directory inside the batch.
 
 **Important:** you should *never* modify any of the files inside the *jobs* folder in *any* way. This includes opening them in a text editor and re-saving them. This is because Iromlab uses the timestamps of the job files (their creation times) to establish the processing order. Modifying a job file will change its timestamp, and mess up the processing order as a result.
 
@@ -89,7 +87,7 @@ Meanwhile, Iromlab will continue processing the remaining discs / jobs that are 
 
 ![](./img/finished.png)
 
-Now press *OK*, and Iromlab will close.
+After pressing *OK*, Iromlab will reset to its initial state and you can create a new batch.
 
 ## Exiting Iromlab
 
