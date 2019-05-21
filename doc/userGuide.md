@@ -87,7 +87,7 @@ Meanwhile, Iromlab will continue processing the remaining discs / jobs that are 
 
 ![](./img/finished.png)
 
-After pressing *OK*, Iromlab will reset to its initial state and you can create a new batch.
+After pressing *OK*, Iromlab will reset to its initial state. You can now create a new batch, open an existing one, or exit *Iromlab*.
 
 ## Exiting Iromlab
 
@@ -99,7 +99,7 @@ After pressing the *Open* button upon startup you will see a file dialog that sh
 
 ![](./img/iromlabOpenBatch.png)
 
-This allows you to continue a batch that was interrupted with the *Exit* command.
+This allows you to continue a batch that was interrupted with the *Exit* command. 
 
 ## All discs of a PPN must be in same batch
 
@@ -129,33 +129,36 @@ With this setting, the *PPN* widget in the Iromlab interface is replaced by a *T
 
 The batch manifest is a comma-delimited text file named *manifest.csv* which is located at the root of a batch. It contains all information that is needed to process the batch into ingest-ready Submission Information Packages further down the processing chain (using [omSipCreator](https://github.com/KBNLresearch/omSipCreator)). For each processed disc, it contains the following fields:
 
+jobID,PPN,volumeNo,title,volumeID,success,containsAudio,containsData,cdExtra,mixedMode,cdInteractive
+
 1. *jobID* - internal carrier-level identifier. The image file(s) of this disc are stored in an eponymous directory within the batch.
 2. *PPN* - identifier of the physical item in the KB Collection to which this disc belongs. For the KB case this is the PPN identifier in the KB catalogue (GGC). If *enablePPNLookup* is set to *False*, it will be an empty (zero-length) string.
 3. *volumeNo* - for intellectual entities that span multiple discs, this defines the volume number (1 for single-volume items). Values must be unique within each *carrierType* (see below)  
-4. *carrierType* - code that specifies the disc type. Currently the following values are permitted:
-    - cd-rom
-    - dvd-rom
-    - cd-audio
-    - dvd-video
-5. *title* - text string with the title of the disc (or the publication it is part of). If *enablePPNLookup* is *True* the title field is extracted from the KB catalogue record. If *enablePPNLookup* is *False* the manually entered *Title* value is used.
-6. *volumeID* - text string, extracted from Primary Volume descriptor, empty if cd-audio.
-7. *success* - True/False flag that indicates status of *iromlab*'s imaging process. 
-8. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   
-9. *containsData* - True/False flag that indicates the disc contains data tracks (detected by cd-info)
-9. *cdExtra* - True/False flag that indicates if the disc is [*cd-Extra*](https://en.wikipedia.org/wiki/Blue_Book_(CD_standard)) (Blue Book) disc (detected by cd-info)
+4. *title* - text string with the title of the disc (or the publication it is part of). If *enablePPNLookup* is *True* the title field is extracted from the KB catalogue record. If *enablePPNLookup* is *False* the manually entered *Title* value is used.
+5. *volumeID* - text string, extracted from Primary Volume descriptor, empty if cd-audio or cd-Interactive.
+6. *success* - True/False flag that indicates status of *iromlab*'s imaging process. 
+7. *containsAudio* - True/False flag that indicates the disc contains audio tracks (detected by cd-info)   
+8. *containsData* - True/False flag that indicates the disc contains data tracks (detected by cd-info)
+9. *cdExtra* - True/False flag that indicates if the disc is a [*cd-Extra*](https://en.wikipedia.org/wiki/Blue_Book_(CD_standard)) (Blue Book) disc (detected by cd-info)
+10. *mixedMode* - True/False flag that indicates if the disc is a [*mixed-mode*](https://en.wikipedia.org/wiki/Mixed_Mode_CD) disc (detected by cd-info)
+11. *cdInteractive* - True/False flag that indicates if the disc is a [Phiilip *cd-interactive*](https://en.wikipedia.org/wiki/Philips_CD-i) disc (detected by cd-info)
 
 The first line of the file contains column headers.
 
 Example:
 
-    jobID,PPN,volumeNo,carrierType,title,volumeID,success,containsAudio,containsData,cdExtra
-    8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,cd-rom,(Bijna) alles over bestandsformaten,Handbook,True,False,True,False
+    jobID,PPN,volumeNo,title,volumeID,success,containsAudio,containsData,cdExtra,mixedMode,cdInteractive
+    8a7ea9f0-0a65-11e7-b41c-00237d497a29,155658050,1,(Bijna) alles over bestandsformaten,bformat,True,False,True,False,False,False
 
 ## The log file
 
 Each batch contains a log file *batch.log*. It contains detailed information about the detection, imaging and ripping subprocesses (including the exit status and output of wrapped tools). If a disc gets rejected or if anything unexpected happens, checking the batch log will help you identify the problem.
 
 <!-- TODO: link to some example log files -->
+
+## The version file
+
+Each batch contains a file *version.txt*, which holds the Iromlab version number (introduced in *Iromlab* 1.0.0; batches from earlier *Iromlab* versions don't have a version file).
 
 ## Created files for each disc
 
@@ -169,9 +172,9 @@ For each disc, Iromlab creates a folder in the batch folder. The name of each fo
 * *dbpoweramp.log* - dbpoweramp log file (only if disc contains audio).
 * *checksums.sha512* - checksum file with SHA-512 hashes of all the above files in this directory.
 
-## How to use the Volume number and Carrier type fields
+## How to use the Volume number field
 
-The correct use of the *Volume number* field in the Iromlab interface needs some explaining. First of, it is important to understand that one *PPN* (catalogue entry) can contain multiple discs. Moreover, there can be multiple disc *types* inside one *PPN*. Here's an example:
+The correct use of the *Volume number* field in the Iromlab interface needs some explaining. First of, it is important to understand that one *PPN* (catalogue entry) can contain multiple discs. Moreover, there can be multiple carrier types inside one *PPN*. Here's an example:
 
 ![](./img/cataloguePPN.png)
 
@@ -182,17 +185,14 @@ In this case the *PPN* contains:
 
 The *Volume number* values apply to discs *within each PPN*. So, in the above example we appply the numbers like this:
 
-|Disc|Volume number|Carrier type|
-|:--|:--|:--|
-|First audio CD|1|cd-audio|
-|Second audio CD|2|cd-audio|
-|Third audio CD|3|cd-audio|
-|First DVD|4|dvd-rom|
-|Second DVD|5|dvd-rom|
+|Disc|Volume number|
+|:--|:--|
+|First audio CD|1|
+|Second audio CD|2|
+|Third audio CD|3|
+|First DVD|4|
+|Second DVD|5|
 
-### Impact of data entry errors
- 
-The selected value of *Carrier type* does *not* influence the imaging or ripping process; it is only used to describe the disc at the metadata level. For example, suppose an operator accidentally selects *cd-audio* for a *cd-rom*, Iromlab automatically detects that the disc contains data, and the data are then correctly extracted to an ISO image. Verification of the batch with the [omSipCreator](https://github.com/KBNLresearch/omSipCreator) tool will result in an error mesage in this case, as it checks the consistency between the values of *carrierType* and the *containsAudio* and *containsData* flags for each entry. OmSipCreator also checks for duplicate *Volume number* values within each *Carrier type* set.
 
 ## Troubleshooting
 
