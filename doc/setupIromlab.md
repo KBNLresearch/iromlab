@@ -123,11 +123,11 @@ and:
 
     <enablePPNLookup>False</enablePPNLookup>
 
-### startOnFinalise
+### startOnFinalize
 
-This is a flag that -if set to *True*- delays the processing of any discs until the operator finalises the batch (disabled by default):
+This is a flag that -if set to *True*- delays the processing of any discs until the operator finalizes the batch (disabled by default):
 
-    <startOnFinalise>False</startOnFinalise>
+    <startOnFinalize>False</startOnFinalize>
 
 ### enableSocketAPI
 

@@ -150,9 +150,9 @@ class carrierEntry(tk.Frame):
 
             # Flag that is True if batch is open
             config.batchIsOpen = True
-            # Set readyToStart flag to True, except if startOnFinalise flag is activated,
+            # Set readyToStart flag to True, except if startOnFinalize flag is activated,
             # in which case readyToStart is set to True on finalisation
-            if not config.startOnFinalise:
+            if not config.startOnFinalize:
                 config.readyToStart = True
 
 
@@ -236,9 +236,9 @@ class carrierEntry(tk.Frame):
 
                     # Flag that is True if batch is open
                     config.batchIsOpen = True
-                    # Set readyToStart flag to True, except if startOnFinalise flag is activated,
+                    # Set readyToStart flag to True, except if startOnFinalize flag is activated,
                     # in which case readyToStart is set to True on finalisation
-                    if not config.startOnFinalise:
+                    if not config.startOnFinalize:
                         config.readyToStart = True
 
     def on_finalise(self, event=None):
@@ -264,8 +264,8 @@ class carrierEntry(tk.Frame):
             self.volumeNo_entry.delete(0, tk.END)
             self.volumeNo_entry.config(state='disabled')
             
-            # If the startOnFinalise option was activated, set readyToStart flag to True
-            if config.startOnFinalise:
+            # If the startOnFinalize option was activated, set readyToStart flag to True
+            if config.startOnFinalize:
                 config.readyToStart = True
 
     def on_usepreviousPPN(self, event=None):
@@ -776,10 +776,10 @@ def getConfiguration():
         config.enablePPNLookup = True
     else:
         config.enablePPNLookup = False
-    if findElementText(configElt, './config/startOnFinalise') == "True":
-        config.startOnFinalise = True
+    if findElementText(configElt, './config/startOnFinalize') == "True":
+        config.startOnFinalize = True
     else:
-        config.startOnFinalise = False
+        config.startOnFinalize = False
     if findElementText(configElt, './config/enableSocketAPI') == "True":
         config.enableSocketAPI = True
     else:

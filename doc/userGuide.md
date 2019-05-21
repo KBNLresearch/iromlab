@@ -101,6 +101,14 @@ After pressing the *Open* button upon startup you will see a file dialog that sh
 
 This allows you to continue a batch that was interrupted with the *Exit* command. 
 
+## startOnFinalize option
+
+By default, Iromlab will start processing discs shortly after the first disc has been submitted. This means that the actual imaging and ripping takes place in parallel to entering the carriers and their associated identifiers or titles. It is possible to change this behaviour by setting the value of the *startOnFinalise* option in Iromlab's configuration file to *True* (the default is *False*):
+
+    <startOnFinalize>False</startOnFinalize>
+
+If *startOnFinalise* is activated like this, 
+
 ## All discs of a PPN must be in same batch
 
 All discs that belong to one *PPN* must *always* be in the same batch. This is because the batches must be processed into ingest-ready Submission Information Packages (SIPs) further down the processing chain, and all discs that are part of a *PPN* are grouped into one SIP. This doesn't work if a *PPN* is spread across multiple batches.  

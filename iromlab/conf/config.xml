@@ -47,7 +47,7 @@ operator must enter descriptive Title field in UI
 <!-- flag that -if True- causes Iromlab to wait processing any discs until the operator
 finalises the batch 
 -->
-<startOnFinalise>False</startOnFinalise>
+<startOnFinalize>False</startOnFinalize>
 
 <!-- flag that -if True- enables Iromlab to pick up Title and PPN info from a client
 application through a socket interface 
