@@ -109,7 +109,7 @@ def post_install():
 
     try:
         # Scripts directory (location of launcher script)
-        scriptsDir = sysconfig.get_path('scripts')
+        scriptsDir = sysconfig.get_path('Scripts')
 
         # Target of shortcut
         target = os.path.join(scriptsDir, packageName + '.exe')
