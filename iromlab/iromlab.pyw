@@ -770,20 +770,38 @@ def getConfiguration():
     config.rejectExe = findElementText(configElt, './config/rejectExe')
     config.isoBusterExe = findElementText(configElt, './config/isoBusterExe')
     config.dBpowerampConsoleRipExe = findElementText(configElt, './config/dBpowerampConsoleRipExe')
-    config.socketHost = findElementText(configElt, './config/socketHost')
-    config.socketPort = findElementText(configElt, './config/socketPort')
-    if findElementText(configElt, './config/enablePPNLookup') == "True":
-        config.enablePPNLookup = True
-    else:
-        config.enablePPNLookup = False
-    if findElementText(configElt, './config/startOnFinalize') == "True":
-        config.startOnFinalize = True
-    else:
-        config.startOnFinalize = False
-    if findElementText(configElt, './config/enableSocketAPI') == "True":
-        config.enableSocketAPI = True
-    else:
-        config.enableSocketAPI = False
+ 
+    # For below configuration variables, use default value if value cannot be
+    # read from config file (this ensures v1 will work with old config files)
+    try:
+        config.socketHost = findElementText(configElt, './config/socketHost')
+    except:
+        pass
+    try:
+        config.socketPort = findElementText(configElt, './config/socketPort')
+    except:
+        pass
+    try:
+        if findElementText(configElt, './config/enablePPNLookup') == "True":
+            config.enablePPNLookup = True
+        else:
+            config.enablePPNLookup = False
+    except:
+        pass
+    try:
+        if findElementText(configElt, './config/startOnFinalize') == "True":
+            config.startOnFinalize = True
+        else:
+            config.startOnFinalize = False
+    except:
+        pass
+    try:
+        if findElementText(configElt, './config/enableSocketAPI') == "True":
+            config.enableSocketAPI = True
+        else:
+            config.enableSocketAPI = False
+    except:
+        pass
 
     # Normalise all file paths
     config.rootDir = os.path.normpath(config.rootDir)
