@@ -125,9 +125,6 @@ def post_install():
         # Scripts directory (location of launcher script)
         #scriptsDir = sysconfig.get_path('scripts', 'nt_user')
         scriptsDir = get_main_dir()
-        ## TEST
-        print("scriptsDir = " + scriptsDir)
-        ## TEST
 
         # Target of shortcut
         target = os.path.join(scriptsDir, packageName + '.exe')
@@ -149,9 +146,6 @@ def post_install():
         logging.info("Done!")
     except Exception:
         msg = 'Failed to create desktop shortcut'
-        ## TEST
-        raise
-        ## TEST
         errorExit(msg)
 
     msg = 'Iromlab configuration completed successfully, click OK to exit!'
