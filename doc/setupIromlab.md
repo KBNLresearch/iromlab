@@ -2,17 +2,26 @@
 
 ## Installation
 
-The recommended way to install Iromlab is to use *pip*. Installing with *pip* will also automatically install any Python packages that are used by Iromlab. On Windows systems the *pip* executable is located in the *Scripts* directory which is located under Python's top-level installation folder (e.g. *C:\Python36\Scripts*). To install Iromlab, follow the steps below:
+The recommended way to install Iromlab is to use *pip*. Installing with *pip* will also automatically install any Python packages that are used by Iromlab. On Windows systems the *pip* executable is located in the *Scripts* directory which is located under Python's top-level installation folder (e.g. *C:\Python36\Scripts*). To install Iromlab, follow the steps in either the *Global install* or *User install* subsections below.
+
+### Global install
 
 1. Launch a Command Prompt window. Depending on your system settings you may need to do this with Administrator privilege (right-click on the *Command Prompt* icon and the choose *Run as Administrator*).
 2. Type:
 
       `%path-to-pip%\pip install iromlab`
-   
+
     Here, replace %path-to-pip% with the actual file bpath on your system. For example:
 
      `C:\Python36\Scripts\pip install iromlab`
-    
+
+### User install
+
+1. Launch a Command Prompt window (no admin rights required)
+2. Type:
+
+      `%path-to-pip%\pip install --user iromlab`
+
 The above steps will install Iromlab and all required libraries. It also installs Windows binaries of the following tools:
 
 * [cd-info](https://linux.die.net/man/1/cd-info) - this tool is part of [libcdio](https://www.gnu.org/software/libcdio/),  the "GNU Compact Disc Input and Control Library".
@@ -21,9 +30,11 @@ The above steps will install Iromlab and all required libraries. It also install
 
 ## Configuration
 
-Before Iromlab is ready for use you need to configure it. As a first step, locate the *iromlab-configure.exe* application which you can find directly under the *Scripts* directory of the *Python* installation folder:
+Before Iromlab is ready for use you need to configure it. As a first step, locate the *iromlab-configure.exe* application. In case of a global install you can find it directly under the *Scripts* directory of the *Python* installation folder:
 
 ![](./img/iromlab-configure-location.png)
+
+If you did a user install, it will be somewhere in your Windows user profile (see below). The exact location depends on your local Windows configuration. As an example, in my case it is located in the folder *C:\Users\jkn010\AppData\Roaming\Python\Python36\Scripts*.
 
 Run the configuration application by double-clicking on it. The application will create a configuration directory in your Windows user directory, copy a default configuration file to it, and create a shortcut to the main Iromlab application on the Windows Desktop [^1]. If all goes well the following window appears:
 
