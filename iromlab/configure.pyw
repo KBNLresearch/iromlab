@@ -2,6 +2,8 @@
 """Post-install / configuration script for Iromlab"""
 
 import os
+import sys
+import imp
 import site
 import sysconfig
 from shutil import copyfile
@@ -37,6 +39,18 @@ def get_reg(name, path):
         return value
     except WindowsError:
         return None
+
+
+def main_is_frozen():
+    return (hasattr(sys, "frozen") or # new py2exe
+            hasattr(sys, "importers") # old py2exe
+    or imp.is_frozen("__main__")) # tools/freeze
+
+
+def get_main_dir():
+    if main_is_frozen():
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(sys.argv[0])
 
 
 def post_install():
@@ -109,7 +123,11 @@ def post_install():
 
     try:
         # Scripts directory (location of launcher script)
-        scriptsDir = sysconfig.get_path('Scripts')
+        #scriptsDir = sysconfig.get_path('scripts', 'nt_user')
+        scriptsDir = get_main_dir()
+        ## TEST
+        print("scriptsDir = " + scriptsDir)
+        ## TEST
 
         # Target of shortcut
         target = os.path.join(scriptsDir, packageName + '.exe')
@@ -131,6 +149,9 @@ def post_install():
         logging.info("Done!")
     except Exception:
         msg = 'Failed to create desktop shortcut'
+        ## TEST
+        raise
+        ## TEST
         errorExit(msg)
 
     msg = 'Iromlab configuration completed successfully, click OK to exit!'
