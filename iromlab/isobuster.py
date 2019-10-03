@@ -114,8 +114,11 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     if volumeLabel != '':
         # Rename ISO image using volumeLabel as a base name
         # Any spaces in volumeLabel are replaced with dashes
-        isoFile = os.path.join(writeDirectory, volumeLabel.replace(' ', '-') + '.iso')
-        os.rename(isoFileTemp, isoFile)
+        try:
+            isoFile = os.path.join(writeDirectory, volumeLabel.replace(' ', '-') + '.iso')
+            os.rename(isoFileTemp, isoFile)
+        except:
+            pass
 
     # All results to dictionary
     dictOut = {}
