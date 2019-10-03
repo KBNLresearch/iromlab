@@ -56,9 +56,17 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
         except AttributeError:
             isolyzerSuccess = False
 
-        # Is ISO image smaller than expected (if True, this indicates the image may be truncated)
+        # Assume image is truncated if either smallerThanExpected is True,
+        # or if expected or actual size are 0
         try:
-            imageTruncated = isolyzerResult.find('tests/smallerThanExpected').text
+            smallerThanExpected = isolyzerResult.find('tests/smallerThanExpected').text
+            sizeExpected = int(isolyzerResult.find('tests/sizeExpected').text)
+            sizeActual = int(isolyzerResult.find('tests/sizeActual').text)
+            
+            if smallerThanExpected or sizeExpected == 0 or sizeActual == 0:
+                imageTruncated = True
+            else:
+                imageTruncated = False
         except AttributeError:
             imageTruncated = True
 
@@ -97,7 +105,8 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
         else:
             volumeLabel = ''
 
-    except IOError:
+    except:
+        # This catches any unexpected errors in Isolyzer
         volumeLabel = ''
         isolyzerSuccess = False
         imageTruncated = True

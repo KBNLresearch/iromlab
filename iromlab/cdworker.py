@@ -272,6 +272,12 @@ def processDisc(carrierData):
             isolyzerSuccess = resultIsoBuster['isolyzerSuccess']
             imageTruncated = resultIsoBuster['imageTruncated']
 
+            ## TEST
+            print("statusIsoBuster = " + str(statusIsoBuster))
+            print("isolyzerSuccess = " + str(isolyzerSuccess))
+            print("imageTruncated = " + str(imageTruncated))
+            ## TEST
+
             if statusIsoBuster != "0":
                 success = False
                 reject = True
