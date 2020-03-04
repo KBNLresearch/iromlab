@@ -26,7 +26,7 @@ Under *Unconfigured Drives*, locate the Nimbie's drive select the CD-drive that 
 
 Change *Loading Method* (top of the window) to *Nimbie* and then press *Configure Drive*:
 
-![](./img/dbpaBatchripperConfig2.png)
+![](./img/dbpaBatchripperConfig3.png)
 
 If all went well the drive is now moved to the *Configured Drives* section on the opening screen. Press *OK* to close *Batch Ripper - Configuration*.
 
