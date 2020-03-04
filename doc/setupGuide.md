@@ -27,6 +27,7 @@ For this you need the installation disc that is shipped with the Nimbie machine.
 * If the installer program does not launch automatically, navigate to the disc in Windows Explorer, right-click on *Autorun.exe* and select *Run as administrator*.
 * In the opening menu, click on *Nimbie USB*.
 * From the menu that appears, now select *Install Driver*.
+* Finally, press *Install* and follow the instructions.
 * The device driver is now installed!
 
 **Note:** you don't need to install any of the other software on the installation disc.
