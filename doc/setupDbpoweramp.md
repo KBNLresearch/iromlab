@@ -131,9 +131,9 @@ AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.
 
     ![](./img/dbpaAccurateRip3.png)
 
-    Press *OK* and then press the *Rip* button (top-left) to test the settings. Inspect the ripping information that is displayed once the CD is ripped. In particular, check if (most of) the tracks have an *accurate* status. If so, unload the CD by calling the *Unload.exe* driver application. Again you need to do this from the command prompt, using:
+    Press *OK* and then press the *Rip* button (top-left) to test the settings. Inspect the ripping information that is displayed once the CD is ripped. In particular, check if (most of) the tracks have an *accurate* status. If so, unload the CD by pressing the *Eject CD* button (directly to to the right of the *Rip* button). Alternatively you may also use the *Unload.exe* driver application from the command prompt for this, using:
 
-    `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload" --drive= "I"`
+    `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload" --drive="I"`
     
     Again, replace "I" by your actual drive letter here.
 
