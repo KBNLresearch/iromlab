@@ -55,7 +55,7 @@ At the bottom you can configure a number of settings. Select the following:
     
     (This option adds metadata on a track's loudness to the audio file. This information can be used by some audio players for volume matching / correcting. It doesn't change the audio itself.)
 * *Path* - leave this at the default (whatever it may be).
-* *Naming* - change the default to *TrackNum*. The effect of this is that track numbers will be used as the base names of the audio files that are written (*001.wav*, *002.wav*, and so on).
+* *Naming* - click on the *set* button, remove the default value, then click on the *Add Tag* button and select 'Track Number'. Press *OK* (the value of the *Naming* field now shows as *TrackNum*). The effect of this is that track numbers will be used as the base names of the audio files that are written (*001.wav*, *002.wav*, and so on).
 * *CD Drive* - select the CD-drive that corresponds to the Nimbie discrobot (make sure *not* to select the computer's built-in drive here; the Nimbie has a *Teac* drive so you should be able to identify it from its description.)
 
 The following sections are largely based on dBpoweramp's *CD Ripper Setup Guide*, which is part of dBpoweramp's documentation.
@@ -112,7 +112,7 @@ AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.
 1. Insert a (preferrably well-known/popular) audio CD into the disc robot's loader.
 2. Load the CD using the *Load* command-line tool that is part of the Nimbie Batch Ripper Driver. It is typically located under `C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\`. To run it, open a Windows command prompt, and enter the following:
 
-    `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load" --drive= "I"`
+    `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load" --drive="I"`
 
     Make sure to replace "I" by the actual drive letter on your system.
 
