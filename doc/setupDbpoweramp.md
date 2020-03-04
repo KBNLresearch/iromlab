@@ -95,6 +95,8 @@ Scrolling down we see the following options:
 * *When have to Re-Rip* - set to 100 frames
 * *After Ripping a Track For* - set to 10 minutes
 
+<!-- Might be a bit short, esp. for CDs with very long tracks? -->
+
 Also, check *Mark Track as Error if Insecure*, and check both the *Secure Extraction Log* options. 
 
 ## Log filename
