@@ -49,8 +49,8 @@ def main_is_frozen():
 
 def get_main_dir():
     if main_is_frozen():
-        return os.path.dirname(sys.executable)
-    return os.path.dirname(sys.argv[0])
+        return os.path.abspath(os.path.dirname(sys.executable))
+    return os.path.abspath(os.path.dirname(sys.argv[0]))
 
 
 def post_install():
@@ -63,6 +63,12 @@ def post_install():
 
     # Package name
     packageName = 'iromlab'
+
+    # Scripts directory (location of launcher script)
+    scriptsDir = get_main_dir()
+
+    # Package directory (parent of scriptsDir)
+    packageDir = os.path.join(scriptsDir, os.pardir)
 
     # Part 1: install config file
 
@@ -92,14 +98,26 @@ def post_install():
 
         logging.info("Copying configuration file to user directory ...")
 
-        # Locate site-packages dir (this returns multiple entries)
-        sitePackageDirs = site.getsitepackages()
+        # Locate global site-packages dir (this returns multiple entries)
+        sitePackageDirsGlobal = site.getsitepackages()
 
         # Assumptions: site package dir is called 'site-packages' and is
         # unique (?)
-        for directory in sitePackageDirs:
+        for directory in sitePackageDirsGlobal:
             if 'site-packages' in directory:
-                sitePackageDir = directory
+                sitePackageDirGlobal = directory
+        
+        # Locate user site-packages dir
+        sitePackageDirUser = site.getusersitepackages()
+
+        # Determine which site package dir to use
+        if packageDir in sitePackageDirGlobal:
+            sitePackageDir = sitePackageDirGlobal
+        elif packageDir in sitePackageDirUser:
+            sitePackageDir = sitePackageDirUser
+        else:
+            msg = 'could not establish package dir to use'
+            errorExit(msg)
 
         # Construct path to config file
         configFilePackage = os.path.join(sitePackageDir, packageName,
@@ -122,9 +140,6 @@ def post_install():
     logging.info("Creating desktop shortcut ...")
 
     try:
-        # Scripts directory (location of launcher script)
-        #scriptsDir = sysconfig.get_path('scripts', 'nt_user')
-        scriptsDir = get_main_dir()
 
         # Target of shortcut
         target = os.path.join(scriptsDir, packageName + '.exe')
