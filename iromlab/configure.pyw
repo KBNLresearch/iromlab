@@ -49,8 +49,8 @@ def main_is_frozen():
 
 def get_main_dir():
     if main_is_frozen():
-        return os.path.abspath(os.path.dirname(sys.executable))
-    return os.path.abspath(os.path.dirname(sys.argv[0]))
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(sys.argv[0])
 
 
 def post_install():
@@ -68,7 +68,7 @@ def post_install():
     scriptsDir = get_main_dir()
 
     # Package directory (parent of scriptsDir)
-    packageDir = os.path.join(scriptsDir, os.pardir)
+    packageDir = os.path.abspath(os.path.join(scriptsDir, os.pardir))
 
     # Part 1: install config file
 
