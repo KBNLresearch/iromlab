@@ -76,6 +76,7 @@ def post_install():
     userDir = os.path.expanduser('~')
     # Config directory
     configDirUser = os.path.join(userDir, packageName)
+    logging.info("User configuration directory: " + configDirUser)
 
     # Create config directory if it doesn't exist
 
@@ -107,8 +108,14 @@ def post_install():
             if 'site-packages' in directory:
                 sitePackageDirGlobal = directory
         
+        try:
+            logging.info("Global site package directory: " + sitePackageDirGlobal)
+        except:
+            pass
+
         # Locate user site-packages dir
         sitePackageDirUser = site.getusersitepackages()
+        logging.info("User site package directory: " + sitePackageDirUser)
 
         # Determine which site package dir to use
         if packageDir in sitePackageDirGlobal:
@@ -118,6 +125,8 @@ def post_install():
         else:
             msg = 'could not establish package dir to use'
             errorExit(msg)
+
+        logging.info("Site package directory: " + sitePackageDir)
 
         # Construct path to config file
         configFilePackage = os.path.join(sitePackageDir, packageName,
@@ -150,6 +159,7 @@ def post_install():
         regName = 'Desktop'
         regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
         desktopFolder = os.path.normpath(get_reg(regName, regPath))
+        logging.info("Desktop directory: " + desktopFolder)
         # Path to location of link file
         pathLink = os.path.join(desktopFolder, linkName)
         shell = Dispatch('WScript.Shell')
