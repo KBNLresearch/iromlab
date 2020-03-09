@@ -38,13 +38,17 @@ If you did a user install, it will be somewhere in your Windows user profile (se
 
 Run the configuration application by double-clicking on it. The application will create a configuration directory in your Windows user directory, copy a default configuration file to it, and create a shortcut to the main Iromlab application on the Windows Desktop [^1]. If all goes well the following window appears:
 
-![](./img/iromlab-configure-1.png) 
+![](./img/iromlab-configure-1.png)
 
 Click on the *OK* button on the messagebox to close the configuration application:
 
-![](./img/iromlab-configure-2.png) 
+![](./img/iromlab-configure-2.png)
 
 The automatically generated configuration file needs some further manual editing, which is explained in the sections below.
+
+### If the configuration tool fails
+
+If running the configuration tool doesn't have any effect (i.e. nothing happens, and no window appears, the most likely cause is a bug in the Python pywin32 module that is used by Iromlab. A workaround can be found [here](https://github.com/KBNLresearch/iromlab/issues/100#issuecomment-594656069). (I ran into this issue myself while trying to do a user install of Iromlab under Windows 10.)
 
 ## Finding the configuration file
 
