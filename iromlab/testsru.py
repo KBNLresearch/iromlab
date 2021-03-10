@@ -5,7 +5,11 @@ import xml.etree.ElementTree as ETree
 from .kbapi import sru
 
 def main():
-    catid = "159281539"
+    """
+    Script for testing SRU interface outside Iromlab
+    (not used by main Iromlab application)
+    """
+    catid = "184556155"
 
     # Lookup catalog identifier
     #sruSearchString = '"PPN=' + str(catid) + '"'
