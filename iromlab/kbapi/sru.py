@@ -45,7 +45,7 @@ SETS = {'ANP': {'collection': 'ANP',
                 'metadataPrefix': 'dcx',
                 'recordschema': 'dcx',
                 'setname': 'ggc',
-                'time_period': [1937, 2016]}}  # No idea what to use here?
+                'time_period': [1937, 2021]}}  # No idea what to use here?
 
 # Name spaces in GGC records
 
