@@ -12,7 +12,7 @@ def writeMDORecord(PPN, writeDirectory):
 
     fileOut = os.path.join(writeDirectory, "meta-kbmdo.xml")
 
-    sruSearchString = '"PPN=' + str(PPN) + '"'
+    sruSearchString = 'OaiPmhIdentifier="GGC:AC:' + str(PPN) + '"'
     response = sru.search(sruSearchString, "GGC")
 
     if not response:

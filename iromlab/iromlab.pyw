@@ -317,7 +317,7 @@ class carrierEntry(tk.Frame):
                 noGGCRecords = 0
             else:
                 # Lookup catalog identifier
-                sruSearchString = '"PPN=' + str(catid) + '"'
+                sruSearchString = 'OaiPmhIdentifier="GGC:AC:' + str(catid) + '"'
                 response = sru.search(sruSearchString, "GGC")
 
                 if not response:
