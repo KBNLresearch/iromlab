@@ -122,9 +122,11 @@ def post_install():
         logging.info("User site package directory: " + sitePackageDirUser)
 
         # Determine which site package dir to use
-        if packageDir in sitePackageDirGlobal:
+        # Convert to lowercase because result of site.getsitepackages()
+        # sometimes results in lowercase output (observed with Python 3.7 on Windows 10) 
+        if packageDir.lower() in sitePackageDirGlobal.lower():
             sitePackageDir = sitePackageDirGlobal
-        elif packageDir in sitePackageDirUser:
+        elif packageDir.lower() in sitePackageDirUser.lower():
             sitePackageDir = sitePackageDirUser
         else:
             msg = 'could not establish package dir to use'
