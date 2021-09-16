@@ -67,8 +67,12 @@ def post_install():
     # Scripts directory (location of launcher script)
     scriptsDir = get_main_dir()
 
+    logging.info("Scripts directory: " + scriptsDir)
+
     # Package directory (parent of scriptsDir)
     packageDir = os.path.abspath(os.path.join(scriptsDir, os.pardir))
+
+    logging.info("Package directory: " + packageDir)
 
     # Part 1: install config file
 
