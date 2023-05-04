@@ -3,6 +3,7 @@
 
 import os
 import io
+import time
 from isolyzer import isolyzer
 from . import config
 from . import shared
@@ -36,6 +37,13 @@ def extractData(writeDirectory, session, dataTrackLSNStart):
     cmdStr = " ".join(args)
 
     status, out, err = shared.launchSubProcess(args)
+
+    # For some reason sometimes a FileNotFoundError occurs on the log file, so
+    # we'll wait until it is actually available
+    logFileExists = False
+    while not logFileExists:
+        time.sleep(2)
+        logFileExists = os.path.isfile(logFile)
 
     # Open and read log file
     with io.open(logFile, "r", encoding="cp1252") as fLog:
@@ -161,6 +169,13 @@ def extractCdiData(writeDirectory):
     cmdStr = " ".join(args)
 
     status, out, err = shared.launchSubProcess(args)
+
+    # For some reason sometimes a FileNotFoundError occurs on the log file, so
+    # we'll wait until it is actually available
+    logFileExists = False
+    while not logFileExists:
+        time.sleep(2)
+        logFileExists = os.path.isfile(logFile)
 
     # Open and read log file
     with io.open(logFile, "r", encoding="cp1252") as fLog:

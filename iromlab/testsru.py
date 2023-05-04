@@ -9,7 +9,7 @@ def main():
     Script for testing SRU interface outside Iromlab
     (not used by main Iromlab application)
     """
-    catid = "184556155"
+    catid = "312537689"
 
     # Lookup catalog identifier
     #sruSearchString = '"PPN=' + str(catid) + '"'
