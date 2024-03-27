@@ -10,12 +10,12 @@ Before trying to set up Iromlab, check if the following requirements are met:
 Getting Iromlab up running requires a number of installation and configuration steps:
 
 1. Install the device driver for the Nimbie disc robot
-2. Install Isobuster
-3. Configure Isobuster to make it play nicely with Iromlab
-4. Install dBpoweramp
-5. Configure dBpoweramp
-6. Install Iromlab
-7. Configure Iromlab
+1. Install Isobuster
+1. Configure Isobuster to make it play nicely with Iromlab
+1. Install dBpoweramp
+1. Configure dBpoweramp
+1. Install Iromlab
+1. Configure Iromlab
 
 This is a bit tedious, but you only have to do this once. Each step is described in detail below.
 

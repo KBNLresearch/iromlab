@@ -175,6 +175,16 @@ Location of the dBpoweramp console ripper tool (note: not included with dBpowera
 
     <dBpowerampConsoleRipExe>C:\Program Files\dBpoweramp\kb-nl-consolerip.exe</dBpowerampConsoleRipExe>
 
+## Disable unused optical drives
+
+As a final step, you need to disable any unused optical drives on your machine (including the internal one, if present!). If you don't do this, this may result in unexpected behaviour of the disc robot drivers[^3].
+
+To do this, follow these steps:
+
+1. Start the Windows device manager.
+1. Expand the list of DVD/CD-ROM drives.
+1. For each drive that *isn't* the Nimbie discrobot's built-in optical drive, right-click and select "disable device" (see also [screenshot here](https://forums.tomshardware.com/threads/how-to-stop-cdrom-drive-from-work-after-sleep-mode.3630050/post-21877311)).
+
 If all went well, Iromlab will now be ready to use!
 
 | |
@@ -183,4 +193,6 @@ If all went well, Iromlab will now be ready to use!
 
 [^1]: This will *not* overwrite any pre-existing configuration files.
 
-[^2]: To be more precise: the profile of the user that installed Iromlab (in case of multiple user profiles)
+[^2]: To be more precise: the profile of the user that installed Iromlab (in case of multiple user profiles).
+
+[^3]: In particular, the drivers may try to communicate with any of the unused drives, which can lead to large delays (up to several minutes!) on loading, unloading and rejecting a disc.
