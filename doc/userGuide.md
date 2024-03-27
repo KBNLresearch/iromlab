@@ -226,6 +226,9 @@ Possible causes:
 * *cdDriveLetter* in configuration file is not configured properly (see [setup and configuration guide](./setupIromlab.md)).
 * If you connected a removable storage device (e.g. a USB-connected hard disk) before switching on the disc robot, that device may be mapped to *cdDriveLetter*, and the disc robot will be mapped to another value. **Solution:** disconnect the storage device, and log out of your Windows session. Then log in again, switch on the disc robot and then launch Iromlab. 
 
+### Loading, unloading or rejecting a disc takes a very long time
+
+This usually happens if more than one optical drive is connected to the machine that Iromlab is running on. The result is that the disc robot driver tools will try to communicate with any of the unused drives, which can lead to delays for up to several minutes for one single load, unload or reject command. The solution is to disable any unused optical drives (including the internal drive, if present!) in the Windows device manager. See the [Iromlab Setup Guide for instructions](./setupGuide.md#disable-unused-optical-drives).
 
 <!-- You can inspect the batch folder with Windows Explorer:
 
