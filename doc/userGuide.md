@@ -228,7 +228,7 @@ Possible causes:
 
 ### Loading, unloading or rejecting a disc takes a very long time
 
-This usually happens if more than one optical drive is connected to the machine that Iromlab is running on. The result is that the disc robot driver tools will try to communicate with any of the unused drives, which can lead to delays for up to several minutes for one single load, unload or reject command. The solution is to disable any unused optical drives (including the internal drive, if present!) in the Windows device manager. See the [Iromlab Setup Guide for instructions](./setupGuide.md#disable-unused-optical-drives).
+This usually happens if more than one optical drive is connected to the machine that Iromlab is running on. The result is that the disc robot driver tools will try to communicate with any of the unused drives, which can lead to delays for up to several minutes for one single load, unload or reject command. The solution is to disable any unused optical drives (including the internal drive, if present!) in the Windows device manager. See the [Iromlab setup and configuration documentation for instructions](./setupIromlab.md#disable-unused-optical-drives).
 
 <!-- You can inspect the batch folder with Windows Explorer:
 
