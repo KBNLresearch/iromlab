@@ -17,7 +17,6 @@ Research department,  KB / National Library of the Netherlands
 import sys
 import os
 import csv
-import imp
 import time
 import glob
 import xml.etree.ElementTree as ETree
@@ -686,20 +685,6 @@ def errorExit(error):
     """Show error message in messagebox and then exit after userv presses OK"""
     tkMessageBox.showerror("Error", error)
     sys.exit()
-
-
-def main_is_frozen():
-    """Return True if application is frozen (Py2Exe), and False otherwise"""
-    return (hasattr(sys, "frozen") or  # new py2exe
-            hasattr(sys, "importers") or  # old py2exe
-            imp.is_frozen("__main__"))  # tools/freeze
-
-
-def get_main_dir():
-    """Return application (installation) directory"""
-    if main_is_frozen():
-        return os.path.dirname(sys.executable)
-    return os.path.dirname(sys.argv[0])
 
 
 def findElementText(elt, elementPath):
