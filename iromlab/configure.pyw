@@ -56,7 +56,8 @@ def post_install():
     packageName = 'iromlab'
 
     # Scripts directory (location of launcher script)
-    scriptsDir = get_main_dir()
+    #scriptsDir = get_main_dir()
+    scriptsDir = os.path.split(sys.argv[0])[0]
 
     logging.info("Scripts directory: " + scriptsDir)
 
@@ -149,13 +150,18 @@ def post_install():
 
         # Target of shortcut
         target = os.path.join(scriptsDir, packageName + '.exe')
+        logging.info("Target of shortcut: " + target)
 
         # Name of link file
         linkName = packageName + '.lnk'
         # Read location of Windows desktop folder from registry
-        regName = 'Desktop'
-        regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
-        desktopFolder = os.path.normpath(get_reg(regName, regPath))
+        #regName = 'Desktop'
+        #regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
+        #desktopFolder = os.path.normpath(get_reg(regName, regPath))
+        # User profile folder
+        profileFolder = os.getenv('USERPROFILE')
+        # Desktop folder
+        desktopFolder = os.path.join(profileFolder, "Desktop")
         logging.info("Desktop directory: " + desktopFolder)
         # Path to location of link file
         pathLink = os.path.join(desktopFolder, linkName)
