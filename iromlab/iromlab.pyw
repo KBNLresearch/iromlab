@@ -37,7 +37,7 @@ from . import cdworker
 from . import cdinfo
 
 
-__version__ = '1.0.10b1'
+__version__ = '1.0.10b2'
 config.version = __version__
 
 class carrierEntry(tk.Frame):
@@ -449,6 +449,24 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(1, weight=1, uniform='a')
         self.grid_columnconfigure(2, weight=1, uniform='a')
         self.grid_columnconfigure(3, weight=1, uniform='a')
+
+        # Set GUI geometry
+        windowWidth = self.root.winfo_width()
+        windowHeight = self.root.winfo_heigth()
+
+        # get the screen dimension
+        screenWidth = self.root.winfo_screenwidth()
+        screenHeight = self.root.winfo_screenheight()
+
+        # find the center point
+        centerX = int(screenWidth/2 - windowWidth / 2)
+        centerY = int(screenHeight/2 - windowHeight / 2)
+
+        # set the position of the window to the center of the screen
+        self.root.geometry(f'{windowWidth}x{windowHeight}+{centerX}+{centerY}')
+        # Disable resize
+        self.root.resizable(False, False)
+
 
         # Batch toolbar
         self.bNew = tk.Button(self,
