@@ -451,8 +451,8 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(3, weight=1, uniform='a')
 
         # Set GUI geometry
-        windowWidth = self.winfo_width()
-        windowHeight = self.winfo_height()
+        windowWidth = 675
+        windowHeight = 700
 
         # get the screen dimension
         screenWidth = self.root.winfo_screenwidth()
@@ -466,7 +466,6 @@ class carrierEntry(tk.Frame):
         self.root.geometry(f'{windowWidth}x{windowHeight}+{centerX}+{centerY}')
         # Disable resize
         self.root.resizable(False, False)
-
 
         # Batch toolbar
         self.bNew = tk.Button(self,
