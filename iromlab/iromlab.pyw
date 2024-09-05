@@ -297,8 +297,6 @@ class carrierEntry(tk.Frame):
     def on_submit(self, event=None):
         """Process one record and add it to the queue after user pressed submit button"""
 
-        self.carrierNumber += 1
-
         # Fetch entered values (strip any leading / tralue whitespace characters)
         if config.enablePPNLookup:
             catid = self.catid_entry.get().strip()
@@ -385,7 +383,10 @@ class carrierEntry(tk.Frame):
                 jobCSV.writerow(rowItems)
                 fJob.close()
 
-                # Display PPN/Title + Volume number in treeview widget
+                # Update carrierNumber (=queue number in treeview widget)
+                self.carrierNumber += 1
+
+                # Display queue number, PPN/Title + Volume number in treeview widget
                 self.tv.insert('', 0, text=str(self.carrierNumber), values=(catid, title, volumeNo))
 
                 # Reset entry fields and set focus on PPN / Title field
