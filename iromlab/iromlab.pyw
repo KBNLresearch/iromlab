@@ -37,7 +37,7 @@ from . import cdworker
 from . import cdinfo
 
 
-__version__ = '1.0.10b2'
+__version__ = '1.0.10b6'
 config.version = __version__
 
 class carrierEntry(tk.Frame):
@@ -451,8 +451,8 @@ class carrierEntry(tk.Frame):
         self.grid_columnconfigure(3, weight=1, uniform='a')
 
         # Set GUI geometry
-        windowWidth = self.root.winfo_width()
-        windowHeight = self.root.winfo_heigth()
+        windowWidth = self.winfo_width()
+        windowHeight = self.winfo_height()
 
         # get the screen dimension
         screenWidth = self.root.winfo_screenwidth()
