@@ -1,0 +1,62 @@
+shntool for DOS/Windows
+-----------------------
+
+shntool was built as a native DOS/Windows console application using the MinGW
+toolkit, available at <http://www.mingw.org/>.
+
+Support for various file formats is available by downloading the appropriate
+win32 helper program linked from the shntool webpage.
+
+
+============
+Installation
+============
+
+To install shntool, first extract the files contained in the distribution .zip
+file to a temporary directory, and copy shntool.exe to any directory that is
+in your PATH.  To find out what directories are in your PATH, open a DOS prompt
+and type:
+
+  C:\> echo %PATH%
+
+Any of the listed directories will do, but perhaps the best choice is one of the
+Windows directories, e.g. C:\Windows, C:\Windows\Command, C:\Windows\System,
+C:\WinNT, C:\WinNT\System32, et cetera.  Of course, yours may be different than
+these, and there may be more than one Windows directory listed.
+
+To make sure shntool working correctly, go to the DOS prompt and type:
+
+  C:\> shntool -v
+
+If that doesn't work, you may need to add the extension:
+
+  C:\> shntool.exe -v
+
+You should see shntool's version information (verify that it shows the correct
+version - if not, then you probably have an outdated copy of shntool.exe
+somewhere on your hard drive that you need to remove).  If you don't see the
+version information, or if you get a message saying that the command was not
+found, then shntool is not installed correctly.
+
+After you are sure that shntool is installed correctly, you can install any of
+the helper programs listed above by copying them to the same directory in which
+shntool.exe resides.
+
+
+=====
+Usage
+=====
+
+To use shntool, simply invoke it from a DOS prompt as follows:
+
+  C:\> shntool
+
+To learn more about shntool command-line parameters and how to use its various
+modes, see the shntool.txt or shntool.pdf files included in this distribution.
+
+
+==================
+Document revision:
+==================
+
+$Id: INSTALL.mingw,v 1.2 2006/12/23 06:10:11 jason Exp $
