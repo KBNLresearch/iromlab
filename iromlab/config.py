@@ -1,9 +1,15 @@
 #! /usr/bin/env python
 """Shared configuration constants"""
 
+# Application
 version = ""
+
+# Disc Robot
+driverScript  = ""
 cdDriveLetter = ""
-cdDeviceName = ""
+comPort       = "COM1" # default for Cronus
+comSpeed      = "9600" # default for Cronus
+
 reportFormatString = ""
 cdInfoExe = ""
 prebatchExe = ""

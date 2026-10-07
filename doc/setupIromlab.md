@@ -124,7 +124,14 @@ Defines the host address that is used if the socket API is enabled (see below). 
 
 Defines the port that is used if the socket API is enabled (see below):
 
-    <socketPort>65432</socketPor
+    <socketPort>65432</socketPort>
+
+### driverScript
+
+Defines which disc robot hardware is being used. Defaults to 'Nimbie', change to 'Cronus' and comment out the Nimbie drivers (see below) to enable Iromlab to use a Vinpower Cronus disc robot.
+
+    <driverScript>Nimbie</driverScript>
+
 
 ### enablePPNLookup
 
@@ -156,12 +163,15 @@ Defines the format of the output report that is generated  by IsoBuster. The for
     
 ### Location of disc robot drivers
 
-The following four settings define the full file paths to the driver programs for the disc robot. These are all located in dBpoweramp's BatchRipper folder (installation instructions for dBpoweramp and the drivers can be found [here](./setupDbpoweramp.md)). Example:
+The following settings define the full file paths to the driver programs for the disc robot. These are all located in dBpoweramp's BatchRipper folder (installation instructions for dBpoweramp and the drivers can be found [here](./setupDbpoweramp.md)). Defaults to Nimbie:
 
     <prebatchExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Pre-Batch\Pre-Batch.exe</prebatchExe>
     <loadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Load\Load.exe</loadExe>
     <unloadExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload.exe</unloadExe>
     <rejectExe>C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Reject\Reject.exe</rejectExe>
+
+**To enable Vinpower Cronus use**
+Comment out the Nimbie driver paths, and uncomment the Vinpower Cronus paths.
 
 ### isoBusterExe
 
@@ -177,7 +187,7 @@ Location of the dBpoweramp console ripper tool (note: not included with dBpowera
 
 ## Disable unused optical drives
 
-As a final step, you need to disable any unused optical drives on your machine (including the internal one, if present!). If you don't do this, this may result in unexpected behaviour of the disc robot drivers[^3].
+As a final step, you need to disable any unused optical drives on your machine (including the internal one, if present!). Vinpower Cronus users should disable any unused optical drives as well, currently only one drive is supported. If you don't do this, this may result in unexpected behaviour of the disc robot drivers[^3].
 
 To do this, follow these steps:
 

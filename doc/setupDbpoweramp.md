@@ -7,6 +7,7 @@ Download and install the following:
 * dBPoweramp Reference, 64-bit version. You can purchase it [here](https://www.dbpoweramp.com/purchase.htm). Use the download link in the order details e-mail that you received from dBpoweramp after you purchased the software. 
 * [dBpoweramp Batch Ripper](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper.exe)
 * [Nimbie Batch Ripper Driver](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper-Nimbie.exe)
+* [Vinpower Digital Batch Ripper Driver R1](https://www.dbpoweramp.com/install/dBpoweramp-Batch-Ripper-Vinpower-Loader.exe)
 
 Finally, you need the *dBpoweramp* console ripping tool. This is a custom tool that was developed specifically for the KB, but Illustrate Ltd. agreed to make it publicly available with *Iromlab*. You can [download a 64-bit Windows executable here](https://github.com/KBNLresearch/iromlab/raw/master/dBpowerampconsolerip/kb-nl-consolerip.exe) . Drop the file in the same directory where the *CDGrab.exe* is located.  This is typically dBpoweramp's top-level installation folder (*C:\Program Files\dBpoweramp*). Drop the executable of the console riping tool (*kb-nl-consolerip.exe*) in this folder, as shown below:
 
@@ -18,19 +19,33 @@ After installing, locate the *dBpoweramp* item in the Windows Start Menu, and la
 
 ![](./img/dbpaBatchripperConfig.png)
 
+### Nimbie configuration
 Now the following window appears:
 
 ![](./img/dbpaBatchripperConfig2.png)
-    
+*Note: both drives will be set as unconfigured when setting up initially*
+
 Under *Unconfigured Drives*, locate the Nimbie's drive select the CD-drive that corresponds to the Nimbie discrobot (make sure *not* to select the computer's built-in drive here; the Nimbie has a *Teac* drive so you should be able to identify it from its description). Click on *Configure* to the right-hand side of the drive.
 
 Change *Loading Method* (top of the window) to *Nimbie* and then press *Configure Drive*:
 
 ![](./img/dbpaBatchripperConfig3.png)
 
+### Vinpower Cronus configuration
+Now the following window appears:
+
+![](./img/dBpaBatchripperCronusConfig1.png)
+
+Under *Unconfigured Drives*, locate the Cronus' drive select the CD-drive that corresponds to the top disk bay (should be the top/first drive listed but you may need to manually load a disc to identify the drives). Click on *Configure* to the right-hand side of the drive.
+
+Change *Loading Method* (top of the window) to *VinpowerCronusDrive1* (it will auto populate the CLI fields *do not* change these) and then press *Configure Drive*:
+
+![](./img/dBpaBatchripperCronusConfig2.png)
+
 If all went well the drive is now moved to the *Configured Drives* section on the opening screen. Press *OK* to close *Batch Ripper - Configuration*.
 
 ## Configure general settings
+Now the following window appears:
 
 Locate the *dBpoweramp* item in the Windows Start Menu, and launch the *CD Ripper* application, as shown below: 
 
@@ -56,7 +71,7 @@ At the bottom you can configure a number of settings. Select the following:
     (This option adds metadata on a track's loudness to the audio file. This information can be used by some audio players for volume matching / correcting. It doesn't change the audio itself.)
 * *Path* - leave this at the default (whatever it may be).
 * *Naming* - click on the *set* button, remove the default value, then click on the *Add Tag* button and select 'Track Number'. Press *OK* (the value of the *Naming* field now shows as *TrackNum*). The effect of this is that track numbers will be used as the base names of the audio files that are written (*001.wav*, *002.wav*, and so on).
-* *CD Drive* - select the CD-drive that corresponds to the Nimbie discrobot (make sure *not* to select the computer's built-in drive here; the Nimbie has a *Teac* drive so you should be able to identify it from its description.)
+* *CD Drive* - select the CD-drive that corresponds to the configured discrobot (**Nimbie users:** make sure *not* to select the computer's built-in drive here; the Nimbie has a *Teac* drive so you should be able to identify it from its description.)
 
 The following sections are largely based on dBpoweramp's *CD Ripper Setup Guide*, which is part of dBpoweramp's documentation.
 
@@ -118,6 +133,8 @@ AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.
 
     Make sure to replace "I" by the actual drive letter on your system.
 
+    **Cronus users can just eject the drive manually.**
+    
 3. Wait until the CD has loaded and you can see its details in the *CD Ripper* window.
 4. Close *CD Ripper* and then re-start it.
 
@@ -138,6 +155,8 @@ AccurateRip is a technique that performs a [Cyclic Redundancy Check](https://en.
     `"C:\Program Files\dBpoweramp\BatchRipper\Loaders\Nimbie\Unload\Unload" --drive="I"`
     
     Again, replace "I" by your actual drive letter here.
+
+   **Cronus users can just eject the drive manually.**
 
 ## Album art and metadata options
 

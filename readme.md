@@ -38,7 +38,9 @@ MS Windows only. It may be possible to adapt the software to other platforms.
 
 ## Hardware dependencies
 
-Iromlab was created to be used in conjuction with Acronova Nimbie disc autoloaders. It has been tested with the [Nimbie NB21-DVD model](http://www.acronova.com/product/auto-blu-ray-duplicator-publisher-ripper-nimbie-usb-nb21/9/review.html). It may work with other models as well.
+Iromlab was created to be used in conjuction with Acronova Nimbie disc autoloaders. It has been tested with the [Nimbie NB21-DVD model](http://www.acronova.com/product/auto-blu-ray-duplicator-publisher-ripper-nimbie-usb-nb21/9/review.html). 
+[Vinpower CRONUS 220‐S2T‐NP‐BK support](https://www.vinpowerdigital.com/products/cronus220-s2t-np-bk-series) has been tested and added (currently only supports using a single drive).
+It may work with other models supported by drivers provided by [dBpoweramp Batch Ripper](https://www.dbpoweramp.com/batch-ripper) as well.
 
 ## Wrapped software
 
